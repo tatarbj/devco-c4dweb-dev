@@ -6,10 +6,6 @@ node('master') {
     env.PROJECT = env.REPO.replaceAll('-reference','')
 
     checkout scm
-  
-    stage('Package') {
-      archiveArtifacts artifacts: 'web/**', fingerprint: true
-    }
 
     if (env.DEPLOY_SERVER) {
       stage('Deploy') {
