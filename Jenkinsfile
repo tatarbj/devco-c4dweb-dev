@@ -38,7 +38,6 @@ node('master') {
             sh 'git push'
         }
         dir('deploy') {
-            sh 'drush rr'
 	    sh 'drush updb -y'
             sh 'drush fra -y'
             sh 'drush vset maintenance_mode 0'
