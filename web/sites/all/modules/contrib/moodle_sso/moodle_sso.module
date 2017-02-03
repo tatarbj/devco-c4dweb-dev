@@ -1,0 +1,122 @@
+<?php
+/**
+ * @file
+ * Code for the Moodle Authentication feature.
+ */
+
+include_once 'moodle_sso.features.inc';
+
+
+/** Implements hook services_resources to declare a moodlesso specific service call that provides
+ *  a few things:
+ * 1) the cookie domain drupal requires
+ * 2) the roleid of the sso specific permission mapped to the service user account(s)
+ * 3) the field list of the user object?
+ * 4) anything else. (unsure what that is at the moment)
+
+ */
+
+/**
+ *  Implements hook_services_resources().
+ */
+function moodle_sso_services_resources()
+{
+  return array(
+    'moodlesso'=>array(
+      'operations'=>array(
+        'index'=>array(
+          'help' => 'Return a list of important settings',
+          'callback' => 'moodle_sso_get_settings',
+          'access callback'=> 'moodle_sso_access',
+          'args' => array(
+          ),
+        )
+      )
+    )
+  );
+}
+
+/**
+ *  Implements hook_services_resources_alter().
+ * the goal is to override how users are listed in the index service for
+ * just the moodlesso service endpoint. This endpoint has the specific task of providing paginated
+ * user results to the sync script of the drupalservices moodle plugin.
+ *
+ */
+function moodle_sso_services_resources_alter(&$resources, $endpoint)
+{
+
+  if($endpoint->name=='moodlesso') {
+    //alter the user resource index callback to use this one.
+    // this will allow us to specify proper sorting of users based on pagination and sorting
+    $resources['user']['operations']['index']['callback'] = 'moodle_sso_user_resource_index';
+    $resources['user']['operations']['index']['args'] = array(
+      array(
+        'name' => 'vid',
+        'optional' => TRUE,
+        'type' => 'int',
+        'description' => 'The zero-based index of the page to get, defaults to 0.',
+        'default value' => 0,
+        'source' => array('param' => 'vid'),
+      ),
+      array(
+        'name' => 'page',
+        'optional' => TRUE,
+        'type' => 'int',
+        'description' => 'The zero-based index of the page to get, defaults to 0.',
+        'default value' => 0,
+        'source' => array('param' => 'page'),
+      ),
+      array(
+        'name' => 'pagesize',
+        'optional' => TRUE,
+        'type' => 'int',
+        'description' => 'Number of records to get per page.',
+        'default value' => variable_get('services_user_index_page_size', 20),
+        'source' => array('param' => 'pagesize'),
+      ),
+    );
+  }
+
+}
+
+function moodle_sso_access(){
+  return true;
+}
+
+function moodle_sso_get_settings(){
+
+  foreach(field_info_instances('user','user') as $name=>$instance){
+    $fields[]=field_info_field($instance['field_name']);
+  }
+
+  $settings=array(
+    'cookie_domain'=>ini_get('session.cookie_domain'),
+    'role'=>array(), //todo: convert this to a role lookup by machine name
+//    'userdef'=>$fields,
+//    'userdef'=>field_info_instances('user','user'),
+//    'userdef'=>field_info_extra_fields('user','user','form'),
+  );
+  return $settings;
+}
+
+function moodle_sso_user_resource_index($vid, $page, $page_size) {
+  $fields="uid,vid,name,created,mail,status";
+
+  // change the ordering to allow for paginated optimizations
+  // this module also depends on user_revision so we can rely on the vid for ordering
+  // so that changes can be tracked
+  $user_select = db_select('users', 't');
+  $user_select->fields('r', array('timestamp'));
+  $user_select->addJoin('left','user_revision','r', "t.vid=r.vid");
+  $user_select->condition('t.vid',$vid,">");
+  //$user_select->orderBy('r.timestamp', 'asc');
+  $user_select->orderBy('t.vid', 'asc');
+
+  services_resource_build_index_query($user_select, $page, $fields, array(), $page_size, 'user');
+
+  $results = services_resource_execute_index_query($user_select);
+  // passing a 2nd argument of 'user' will cause services to strip out the email address - something that
+  // is needed for account creation on the moodle side
+  return services_resource_build_index_list($results, 'moodleSSOuserData', 'uid');
+}

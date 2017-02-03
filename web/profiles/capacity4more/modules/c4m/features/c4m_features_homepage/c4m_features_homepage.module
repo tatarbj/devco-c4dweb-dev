@@ -1,0 +1,454 @@
+<?php
+
+/**
+ * @file
+ * Code for the Homepage feature.
+ */
+
+include_once 'c4m_features_homepage.features.inc';
+
+/**
+ * Maximum groups to display on blocks.
+ *
+ * On the homepage we have "suggested groups" and "my groups" blocks where we
+ * should limit the amount of groups to be displayed.
+ */
+define('C4M_FEATURES_HOMEPAGE_MAX_GROUPS_PER_BLOCK', 3);
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Remove access to certain standard Drupal paths.
+ */
+function c4m_features_homepage_menu_alter(&$items) {
+  // Disable node path.
+  if (isset($items['node'])) {
+    unset($items['node']);
+  }
+
+  // Disable default RSS feed.
+  if (isset($items['rss.xml'])) {
+    unset($items['rss.xml']);
+  }
+
+  // Disable filter tips.
+  if (isset($items['filter/tips'])) {
+    unset($items['filter/tips']);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function c4m_features_homepage_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Returns suggested items (groups / projects) for the current user.
+ *
+ * @param string $bundle
+ *   The bundle of the items to get.
+ */
+function c4m_features_homepage_get_suggested_items($bundle) {
+  if (user_is_anonymous()) {
+    return;
+  }
+
+  global $user;
+  $account = user_load($user->uid);
+
+  // Can't suggest groups for user that got no interests.
+  if (!$interests = c4m_user_profile_get_interests()) {
+    return;
+  }
+
+  $user_groups = og_get_groups_by_user($account, 'node', TRUE);
+
+  $query = new EntityFieldQuery();
+
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $bundle)
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition('c4m_og_status', 'value', 'published');
+
+  if (!empty($user_groups['node'])) {
+    $query->propertyCondition('nid', $user_groups['node'], 'NOT IN');
+  }
+
+  $query->fieldCondition('c4m_vocab_topic', 'tid', $interests, 'IN');
+
+  $result = $query
+    ->addTag('random')
+    ->execute();
+
+  return !empty($result['node']) ? $result['node'] : FALSE;
+}
+
+/**
+ * Renders suggested groups for the user.
+ *
+ * Suggests 3 random groups for the user which he is not subscribed to.
+ * Select groups which have at least one common topic of interest with the
+ * user.
+ * Interests are taken from user's profile.
+ *
+ * @return mixed
+ *   Rendered HTML of suggested groups.
+ */
+function c4m_features_homepage_c4m_suggested_groups_get_groups() {
+  if (!$suggested_groups = c4m_features_homepage_get_suggested_items('group')) {
+    return;
+  }
+
+  // Determine if to display the "show more" button.
+  $display_more_button = count($suggested_groups) > C4M_FEATURES_HOMEPAGE_MAX_GROUPS_PER_BLOCK;
+
+  $groups = c4m_features_homepage_alphabetically_render_node_list($suggested_groups);
+
+  $variables['groups'] = $groups;
+  $link_options = array(
+    'absolute' => TRUE,
+    'query' => array(
+      'filter' => 'interests',
+    ),
+  );
+  $variables['link'] = url('groups', $link_options);
+  $variables['display_more_button'] = $display_more_button;
+
+  return theme('c4m_features_homepage_c4m_suggested_groups', $variables);
+}
+
+/**
+ * Renders suggested projects for the user.
+ *
+ * Suggests 3 random projects for the user which he is not subscribed to.
+ * Select projects which have at least one common topic of interest with the
+ * user.
+ * Interests are taken from user's profile.
+ *
+ * @return mixed
+ *   Rendered HTML of suggested projects.
+ */
+function c4m_features_homepage_c4m_suggested_projects_get_projects() {
+  if (!$suggested_projects = c4m_features_homepage_get_suggested_items('project')) {
+    return;
+  }
+
+  // Determine if to display the "show more" button.
+  $display_more_button = count($suggested_projects) > C4M_FEATURES_HOMEPAGE_MAX_GROUPS_PER_BLOCK;
+
+  $projects = c4m_features_homepage_alphabetically_render_node_list($suggested_projects);
+
+  $variables['projects'] = $projects;
+  $link_options = array(
+    'absolute' => TRUE,
+    'query' => array(
+      'filter' => 'interests',
+    ),
+  );
+  $variables['link'] = url('projects', $link_options);
+  $variables['display_more_button'] = $display_more_button;
+
+  return theme('c4m_features_homepage_c4m_suggested_projects', $variables);
+}
+
+/**
+ * Renders featured groups.
+ *
+ * @return mixed
+ *   Rendered HTML of featured groups.
+ */
+function c4m_features_homepage_c4m_featured_groups_get_groups() {
+  if (!$groups = c4m_features_homepage_c4m_get_featured_og_groups('group')) {
+    return '';
+  }
+
+  $variables = array(
+    'groups' => $groups,
+  );
+
+  return theme('c4m_features_homepage_c4m_featured_groups', $variables);
+}
+
+/**
+ * Renders 3 featured projects.
+ *
+ * @return mixed
+ *   Rendered HTML of 3 featured projects.
+ */
+function c4m_features_homepage_c4m_featured_projects_get_projects() {
+  if (!$projects = c4m_features_homepage_c4m_get_featured_og_groups('project')) {
+    return '';
+  }
+
+  $variables = array(
+    'projects' => $projects,
+  );
+
+  return theme('c4m_features_homepage_c4m_featured_projects', $variables);
+}
+
+/**
+ * Gets the list of featured OG.
+ *
+ * @param string $bundle
+ *   The type of the OG. Can be 'group' or 'project'.
+ *
+ * @return mixed
+ *   NULL | List of nodes of OG.
+ */
+function c4m_features_homepage_c4m_get_featured_og_groups($bundle) {
+  // Suggested $bundle block should appear when a user has interests.
+  if (c4m_features_homepage_get_suggested_items($bundle)) {
+    return;
+  }
+
+  $query = new EntityFieldQuery();
+
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $bundle)
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->propertyCondition('promote', NODE_PROMOTED);
+
+  $result = $query
+    ->addTag('random')
+    ->execute();
+
+  if (empty($result['node'])) {
+    return;
+  }
+
+  return c4m_features_homepage_alphabetically_render_node_list($result['node']);
+}
+
+/**
+ * Loads list of nodes, sorts them and renders them as block list.
+ */
+function c4m_features_homepage_alphabetically_render_node_list($node_ids) {
+  module_load_include('inc', 'c4m_features_homepage', 'plugins/content_types/my_groups/my_groups');
+  $items = node_load_multiple(array_keys($node_ids));
+
+  // Removes groups where the logged in user has no access.
+  $items = array_filter($items, 'c4m_features_homepage_node_access_view_filter');
+  $items = array_slice($items, 0, C4M_FEATURES_HOMEPAGE_MAX_GROUPS_PER_BLOCK);
+
+  uasort($items, 'c4m_features_homepage_node_sort_by_title');
+
+  $rendered_nodes = '';
+  foreach ($items as $node) {
+    $node_view = node_view($node, 'block_list');
+    $rendered_nodes .= drupal_render($node_view);
+  }
+
+  return $rendered_nodes;
+}
+
+/**
+ * Callback function to be used within uasort to order alphabetically nodes.
+ */
+function c4m_features_homepage_node_sort_by_title($first_node, $second_node) {
+  // Function strcasecmp can't be used directly on uasort, as we need to get
+  // the node title.
+  return strcasecmp($first_node->title, $second_node->title);
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ */
+function c4m_features_homepage_query_random_alter($query) {
+  $query->orderRandom();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function c4m_features_homepage_theme() {
+  $theme['c4m_voices_views_carousel'] = array(
+    'template' => 'voices-views-carousel',
+    'path' => drupal_get_path('module', 'c4m_features_homepage') . '/templates',
+    'variables' => array(
+      'carousels' => NULL,
+      'link' => NULL,
+    ),
+  );
+
+  return $theme;
+}
+
+/**
+ * Render homepage carousel for anonymous users.
+ *
+ * Fetches 3 "Article" entities which has "Banner" and "Into text",
+ * Adds these entity to the setting for the angular-carousel directive,
+ *
+ * @return string
+ *   Rendered HTML of the angular-carousel directive.
+ */
+function c4m_features_homepage_voices_views_carousel() {
+  $carousels = array();
+
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'article')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition('c4m_banner', 'fid', '', '!=')
+    ->fieldCondition('c4m_intro_text', 'value', '', '!=')
+    ->propertyOrderBy('sticky', 'DESC')
+    ->propertyOrderBy('created', 'DESC')
+    ->range(0, 3)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return FALSE;
+  }
+
+  foreach ($result['node'] as $article) {
+    $wrapper = entity_metadata_wrapper('node', $article->nid);
+    $banner = $wrapper->c4m_banner->value();
+    $carousels[] = array(
+      'id' => $wrapper->getIdentifier(),
+      'title' => l($wrapper->label(), 'node/' . $wrapper->nid->value()),
+      'text' => $wrapper->c4m_intro_text->value(),
+      'date' => c4m_helper_date_time_ago($wrapper->created->value()),
+      'image' => theme('image_style', array(
+        'style_name' => 'banner',
+        'path' => $banner['uri'],
+      )),
+      'date' => format_date($wrapper->changed->value(), 'c4m_long_without_time'),
+      'alias' => drupal_get_path_alias('node/' . $article->nid),
+      'link' => l(t('Read more.'), 'node/' . $article->nid, array('attributes' => array('class' => 'see-more-link'))),
+    );
+  }
+
+  // This js will enable the owl carousel.
+  drupal_add_js(drupal_get_path('module', 'c4m_features_homepage') . '/js/carousel.js');
+
+  $variables['carousels'] = $carousels;
+
+  // Theme function adds the carousel.
+  return theme('c4m_voices_views_carousel', $variables);
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function c4m_features_homepage_block_info() {
+  $blocks = array();
+
+  $blocks['c4m_features_homepage_newsletter'] = array(
+    'info' => t('Homepage: Subscribe to newsletter'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function c4m_features_homepage_block_view($delta) {
+  $module = 'c4m_features_homepage';
+
+  module_load_include('inc', $module, $module . '.block');
+  $callback = "_{$module}_block_" . $delta;
+  if (function_exists($callback)) {
+    return $callback();
+  }
+
+  return array();
+}
+
+/**
+ * Form constructor for the newsletter form.
+ *
+ * @see c4m_features_homepage_newsletter_form_validate()
+ * @see c4m_features_homepage_newsletter_form_submit()
+ *
+ * @ingroup forms
+ */
+function c4m_features_homepage_newsletter_form($form, &$form_state) {
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#attributes' => array('placeholder' => t('Type your email address...')),
+    '#maxlength' => 200,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Subscribe to our newsletter'),
+    '#attributes' => array(
+      'class' => array('btn-warning'),
+    ),
+    '#suffix' => '<p class="more-info">' . l(t('Look at a sample newsletter') . ' <i class="fa fa-chevron-right"></i>', 'newsletters', array('html' => TRUE)) . '</p>',
+  );
+
+  return $form;
+}
+
+/**
+ * Form validation handler for c4m_features_homepage_newsletter_form().
+ *
+ * @see c4m_features_homepage_newsletter_form_submit()
+ */
+function c4m_features_homepage_newsletter_form_validate($form, &$form_state) {
+  if (!valid_email_address($form_state['values']['email'])) {
+    form_set_error('email', t('Please provide a valid email address.'));
+  }
+}
+
+/**
+ * Form submission handler for c4m_features_homepage_newsletter_form_form().
+ *
+ * @see c4m_features_homepage_newsletter_form_validate()
+ */
+function c4m_features_homepage_newsletter_form_submit($form, &$form_state) {
+  if ($list_title = variable_get('campaignmonitor_list_title')) {
+    $email_address = $form_state['values']['email'];
+
+    // Get connected to the API and get lists.
+    $cm = CampaignMonitor::getConnector();
+    $lists_info = $cm->getLists();
+    $list_id = 0;
+    foreach ($lists_info as $list_id => $list) {
+      if ($list['name'] == $list_title) {
+        break;
+      }
+    }
+
+    if ($list_id && !$cm->isSubscribed($list_id, $email_address)) {
+      if ($cm->subscribe($list_id, $email_address, $email_address)) {
+        drupal_set_message(t('Thank you for subscribing to our newsletter!'));
+        return;
+      }
+    }
+  }
+
+  drupal_set_message(t('We could not subscribe you to the newsletter, please try again later or !contact_us!', array('!contact_us' => l(t('contact us'), 'about'))));
+}
+
+/**
+ * Returns the CTA button to create a group.
+ *
+ * @param string $node_type
+ *   The type of the node to be created after using the CTA.
+ *
+ * @returns Array
+ *   Returns a renderable array with the CTA button.
+ */
+function c4m_features_homepage_node_creation_button_cta($node_type) {
+  $cta = array(
+    '#theme' => 'c4m_group_visitor_cta',
+    '#button_label' => t('Create @type', array('@type' => $node_type)),
+    '#button_icon' => 'fa-plus',
+    '#url' => url('/node/add/' . $node_type),
+  );
+
+  return $cta;
+}
