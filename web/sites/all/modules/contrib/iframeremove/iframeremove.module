@@ -1,0 +1,163 @@
+<?php
+
+
+/*
+* implementation of hook_help()
+*/
+function iframeremove_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#customfilter":
+      return '<p>'.t("Customized security filter to page contents. Removes unsafe iframes from page display.").'</p>';
+  }
+}
+
+
+/**
+* implementation of hook_filter_info()
+* delcare that this module has a filter 
+*/
+function iframeremove_filter_info() {
+  $filters['iframeremove'] = array(
+    'title' => t('iFrame removing filter'),
+    'description' => t('Remove iframes from displaying according to hostnames. This is especially useful for sites that allow full HTML inputs.'),
+    'process callback' => '_iframeremove_process_callback',
+    'settings callback' => '_iframeremove_settings_callback',
+    'cache' => FALSE,
+  );
+  return $filters;
+}
+
+
+/**
+* callback function for hook_filter_info()
+* implementation of hook_filter_FILTER_callback()
+*/
+function _iframeremove_process_callback($text, $filter, $format, $langcode, $cache, $cache_id) {
+  return _iframeremove_iframe($text, $filter->settings['iframeremove_whitelist']);
+}
+
+
+/**
+* callback function for hook_filter_info()
+* implementation of hook_filter_FILTER_settings()
+*/
+function _iframeremove_settings_callback($form, &$form_state, $filter, $format, $defaults, $filters) {
+  $filter->settings += $defaults;
+  $elements = array();
+
+  $default_value = isset($filter->settings['iframeremove_whitelist']) ? 
+    $filter->settings['iframeremove_whitelist'] : array();
+  $elements['iframeremove_whitelist'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Whitelist'),
+    '#description' => t('Only iframes of these domains are allowed. (One domain per line)'),
+    '#default_value' => $default_value,
+    '#value_callback' => '_iframeremove_whitelist_value_callback',
+  );
+  return $elements;
+}
+
+
+/*
+* helper function
+* value callback for hook_filter_FILTER_settings() field
+* implementation of value callback of Form API
+*/
+function _iframeremove_whitelist_value_callback($element, $input = FALSE, $form_state = array()) {
+  if ($input) {
+    return _iframeremove_whitelist_encode(
+      $form_state["input"]["filters"]["iframeremove"]["settings"]["iframeremove_whitelist"]
+    );
+  } else {
+    return _iframeremove_whitelist_decode($element['#default_value']);
+  }
+}
+
+
+/*
+* helper function
+* encode whitelist, from text, to array
+* used in value callback
+*/
+function _iframeremove_whitelist_encode($text) {
+  $text = trim($text);
+  $array = !empty($text) ? preg_split("/([ \t]*(\n|\r\n)+[ \t]*)+/", $text) : array();
+  return $array;
+}
+
+
+/*
+* helper function
+* called by _iframeremove_whitelist_value_callback()
+* decode whitelist, from array, to text
+*/
+function _iframeremove_whitelist_decode($array) {
+  $array = (array) $array;
+  $text = implode("\r\n", $array);
+  return $text;
+}	
+
+
+/*
+* helper functions
+* called by _iframeremove_whitelist_value_callback()
+* remove all iframes which host is not within whitelist
+*/
+function _iframeremove_iframe($string, $whitelist=array()) {
+  _iframeremove_iframe_allowed_host(FALSE, $whitelist);
+  $preg_attrs = "[ \s\w\"'=]*?";
+  return preg_replace_callback(
+    array(
+      "/\<iframe {$preg_attrs}src=\"(.+?)\"{$preg_attrs}\/\>/mis",
+      "/\<iframe {$preg_attrs}src='(.+?)'{$preg_attrs}\/\>/mis",
+      "/\<iframe {$preg_attrs}src=\"(.+?)\"{$preg_attrs}\>.*?\<\/iframe\>/mis",
+      "/\<iframe {$preg_attrs}src='(.+?)'{$preg_attrs}\>.*?\<\/iframe\>/mis",
+    ),
+    "_iframeremove_iframe_callback",
+    $string
+  );
+}
+
+
+/**
+* helper function
+* called by _iframereove_iframe_callback()
+* if the host is within whitelist, return TRUE
+* otherwise, return FALSE
+*/
+function _iframeremove_iframe_allowed_host($host=FALSE, $whitelist=FALSE) {
+  static $_whitelist;
+  if ($host==FALSE) $_whitelist = is_array($whitelist) ? $whitelist : array();
+  return in_array($host, $_whitelist);
+}
+
+
+/**
+* helper function
+* callback of preg_replace_callback() in _iframeremove_iframe()
+* only return the matches when the iframe's host is within whitelist
+*/
+function _iframeremove_iframe_callback($matches) {
+  $n = _iframeremove_count();
+  $src = $matches[1];
+  $src = preg_replace('@^//@','http://', $src); // workaround for PHP before 5.4.7
+  $url_parsed = parse_url($src);
+  if (isset($url_parsed['host']) && _iframeremove_iframe_allowed_host($url_parsed['host'])) {
+    return $matches[0];
+  }
+  return "";
+}
+
+
+/**
+* helper function
+*/
+function _iframeremove_count($count=TRUE) {
+  static $n;
+  if (!isset($n)) $n = 0;
+  if ($count == TRUE) $n++;
+  return $n;
+}
+
+
+

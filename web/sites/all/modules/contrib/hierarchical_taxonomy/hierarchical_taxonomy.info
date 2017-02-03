@@ -1,0 +1,11 @@
+name = Hierarchical taxonomy
+description = "API module to provide a hierarchically-structured taxonomy_get_tree function.."
+core = 7.x
+dependencies[] = taxonomy
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "hierarchical_taxonomy"
+datestamp = "1380581890"
+

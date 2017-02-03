@@ -1,0 +1,28 @@
+name = Moodle SSO
+description = Provides moodle authentication services
+core = 7.x
+package = Moodle Tools
+version = 7.x-1.0
+project = moodle_sso
+dependencies[] = ctools
+dependencies[] = libraries
+dependencies[] = rest_server
+dependencies[] = services
+dependencies[] = user_revision
+dependencies[] = features
+dependencies[] = views
+dependencies[] = strongarm
+features[ctools][] = services:services:3
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[services_endpoint][] = moodlesso
+features[user_role][] = service-authentication
+features_exclude[dependencies][features] = features
+mtime = 1415685171
+
+; Information added by Drupal.org packaging script on 2016-02-03
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "moodle_sso"
+datestamp = "1454472312"
+

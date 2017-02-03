@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * @file
+ * Code for the Search Content feature.
+ */
+
+include_once 'c4m_search_nodes.features.inc';
+
+/**
+ * Implements hook_c4m_search_page_info().
+ */
+function c4m_search_nodes_c4m_search_page_info() {
+  $site_name = variable_get('site_name');
+  return array(
+    'search_api_views_c4m_search_nodes' => array(
+      'name' => t('All @site-name', array('@site-name' => $site_name)),
+      'description' => t('Search in all the site content.'),
+      'machine_name' => 'search_api_views_c4m_search_nodes',
+      'path' => 'search',
+      'weight' => 0,
+      'default' => TRUE,
+      'type' => 'global',
+    ),
+  );
+}
+
+/**
+ * Mark a node for re-indexing.
+ *
+ * @param int $nid
+ *   The Node ID of the node that needs to be re-indexed.
+ */
+function c4m_search_nodes_track_change($nid) {
+  search_api_track_item_change('node', array($nid));
+}
+
+/**
+ * Implements hook_views_pre_render().
+ *
+ * Set search page title to "Search <site-name>".
+ */
+function c4m_search_nodes_views_pre_render(&$view) {
+  if ($view->name === 'c4m_search_nodes') {
+    $site_name = variable_get('site_name');
+    $title = t('Search @site-name', array('@site-name' => $site_name));
+    $view->build_info['title'] = $title;
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function c4m_search_nodes_block_info() {
+  $blocks['search_overview'] = array(
+    'info' => t('Search: Global overview'),
+    'cache' => DRUPAL_CACHE_GLOBAL,
+  );
+  $blocks['search_overview_no_summary'] = array(
+    'info' => t('Search: Global overview without summary'),
+    'cache' => DRUPAL_CACHE_GLOBAL,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function c4m_search_nodes_block_view($delta = '') {
+  module_load_include('inc', 'c4m_search_nodes', 'includes/c4m_search_nodes.block');
+  $callback = '_c4m_search_nodes_block_' . $delta;
+  if (!function_exists($callback)) {
+    return NULL;
+  }
+  return $callback();
+}
+
+/**
+ * Implements hook_exit().
+ *
+ * Reindex the viewed node if statistics are enabled. The same hook is used by
+ * statistics module.
+ *
+ * @see statistics_exit()
+ * @see search_api_entity_update()
+ */
+function c4m_search_nodes_exit($destination = NULL) {
+  // Return if statistics is not enabled or AJAX is used for counting.
+  if (!variable_get('statistics_count_content_views', 0) || variable_get('statistics_count_content_views_ajax', 0)) {
+    return;
+  }
+
+  // Return if we are not on the view node page - node/nn.
+  if (arg(0) != 'node' || !is_numeric(arg(1)) || !empty(arg(2))) {
+    return;
+  }
+
+  // Same logic as in search_api_entity_update().
+  $node = node_load(arg(1));
+  search_api_entity_update($node, 'node');
+}
+
+/**
+ * Implements hook_flag_flag().
+ *
+ * Reindex the node flagged.
+ *
+ * @see search_api_entity_update()
+ */
+function c4m_search_nodes_flag_flag($flag, $entity_id, $account, $flagging) {
+  if ($flag->entity_type != 'node') {
+    return;
+  }
+  // Same logic as in search_api_entity_update().
+  $node = node_load($entity_id);
+  search_api_entity_update($node, 'node');
+}
+
+/**
+ * Implements hook_flag_unflag().
+ */
+function c4m_search_nodes_flag_unflag($flag, $entity_id, $account, $flagging) {
+  // We can call the hook_flag_flag implementation as they have the same
+  // signature and both should just reindex the node.
+  c4m_search_nodes_flag_flag($flag, $entity_id, $account, $flagging);
+}

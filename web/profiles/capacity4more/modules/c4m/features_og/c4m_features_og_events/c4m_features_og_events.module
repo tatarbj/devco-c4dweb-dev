@@ -1,0 +1,256 @@
+<?php
+
+/**
+ * @file
+ * Code for the Group Events feature.
+ */
+
+define('C4M_FEATURES_OG_EVENTS_SORT_BY_START_DATE', "Sort by Start Date");
+
+include_once 'c4m_features_og_events.features.inc';
+
+/**
+ * Implements hook_c4m_og_feature_info().
+ */
+function c4m_features_og_events_c4m_og_feature_info() {
+  return array(
+    'c4m_features_og_events' => array(
+      'name' => t('Events'),
+      'description' => t('Events overview.'),
+      'machine_name' => 'c4m_features_og_events',
+      'weight' => 4,
+      'default' => TRUE,
+      'group_types' => array('group', 'project'),
+      'content_types' => array('event'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function c4m_features_og_events_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_search_api_sorts_get_default_sort_alter().
+ *
+ * Courtesy of https://www.drupal.org/node/1894502
+ *
+ * Unfortunately search_api_sorts module provides one sort block and not a
+ * block per view, so we need to alter some stuff. Here the default sort.
+ */
+function c4m_features_og_events_search_api_sorts_default_sort_alter(&$default_sort, $search_sorts, $keys) {
+  // Change default sort into 'Sort by Start Date' for events overviews.
+  if (FALSE === strpos(current_path(), 'calendar', 0)) {
+    return;
+  }
+  foreach ($search_sorts as $search_sort) {
+    if (C4M_FEATURES_OG_EVENTS_SORT_BY_START_DATE === $search_sort->name) {
+      // Sort past events on date descending.
+      if (0 === strpos(current_path(), 'calendar/past', 0)) {
+        $search_sort->default_order = 'desc';
+      }
+      $default_sort = $search_sort;
+      break;
+    }
+  }
+}
+
+/**
+ * Implements hook_search_api_sorts_alter().
+ *
+ * See Class c4m_views_handler_area_search_api_sorts.
+ *
+ * Unfortunately search_api_sorts module provides one sort block and not a
+ * block per view, so we need to alter some stuff. Here we remove superfluous
+ * sorts and give ours a new name.
+ */
+function c4m_features_og_events_search_api_sorts_alter(&$block, $view) {
+  $views_global = array(
+    'c4m_overview_events',
+    'c4m_overview_events_landing',
+  );
+
+  $views_group = array(
+    'c4m_overview_og_events',
+    'c4m_overview_og_events_landing',
+  );
+
+  if (!in_array($view->name, array_merge($views_global, $views_group))) {
+    // Remove 'Start date' sort if this is not an events overview.
+    foreach ($block['content']['#items'] as $key => $item) {
+      if (C4M_FEATURES_OG_EVENTS_SORT_BY_START_DATE === $item['#name']) {
+        unset($block['content']['#items'][$key]);
+        break;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function c4m_features_og_events_block_info() {
+  $blocks['event_views_links'] = array(
+    'info' => t('Links to event views'),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function c4m_features_og_events_block_view($delta = '') {
+  module_load_include('inc', 'c4m_features_og_events', 'includes/c4m_features_og_events.block');
+  $callback = '_c4m_features_og_events_block_' . $delta;
+  if (!function_exists($callback)) {
+    return NULL;
+  }
+
+  return $callback();
+}
+
+/**
+ * Get rendered events for loggedin user.
+ *
+ * @return string
+ *   HTML of rendered upcoming events, FALSE if there's no events.
+ */
+function c4m_features_og_events_upcoming_events_loggedin() {
+  global $user;
+  // Get content filter.
+  $get_query = drupal_get_query_parameters();
+  $filter = !empty($get_query['filter'])
+    ? $get_query['filter']
+    : '';
+  $range = 3;
+
+  $user_wrapper = entity_metadata_wrapper('user', $user->uid);
+
+  // Initiate $interests and $groups.
+  $interests = $groups = array();
+
+  // Gets the user's interests / groups / projects, according to the filter.
+  switch ($filter) {
+    case 'interests':
+      $interests = $user_wrapper->c4m_vocab_topic->raw();
+      break;
+
+    case 'groups':
+      $groups = c4m_og_get_user_group_ids_by_bundle('group');
+      break;
+
+    case 'projects':
+      // When filtering by projects the block should not be displayed.
+      return array('', FALSE);
+  }
+
+  $events = c4m_features_og_events_upcoming_events_get_events($range, $interests, $groups);
+
+  return $events;
+}
+
+/**
+ * Get rendered events for anonymous user.
+ *
+ * @return string
+ *   HTML of rendered upcoming events, FALSE if there's no events.
+ */
+function c4m_features_og_events_upcoming_events_anonymous() {
+  $range = 3;
+  return c4m_features_og_events_upcoming_events_get_events($range);
+}
+
+/**
+ * Get all upcoming events (excluding projects events).
+ *
+ * @param int $range
+ *   Count of events should be taken.
+ * @param mixed $topics
+ *   Optionally list of topics user is interested in.
+ * @param mixed $groups
+ *   Optionally list of groups / projects events belong to.
+ *
+ * @return bool|string
+ *   HTML of rendered upcoming events, FALSE if there's no events.
+ */
+function c4m_features_og_events_upcoming_events_get_events($range, $topics = array(), $groups = array()) {
+  // Show all events starting from midnight onwards.
+  $tomorrow = new DateTime('midnight tomorrow');
+  $date = $tomorrow->format('Y-m-d H:i:s');
+  $events = '';
+
+  $query = new EntityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'event')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition('c4m_datetime_end', 'value', $date, '>=');
+
+  if (!empty($groups)) {
+    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $groups, 'IN');
+  }
+
+  if (!empty($topics)) {
+    $query->fieldCondition('c4m_vocab_topic', 'tid', $topics, 'IN');
+  }
+
+  // Filter out all projects events.
+  $all_projects_ids = _c4m_content_get_all_node_ids_by_type('project');
+  if ($all_projects_ids) {
+    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $all_projects_ids, 'NOT IN');
+  }
+
+  $result = $query
+    ->fieldOrderBy('c4m_datetime_end', 'value', 'ASC')
+    // Try to get at least one more in order to check if we need to display the
+    // "See more" button.
+    ->range(0, $range + 1)
+    ->execute();
+
+  if (empty($result['node'])) {
+    return FALSE;
+  }
+
+  // If we did get one more result then we should display the button.
+  $display_see_more = count($result['node']) > $range;
+
+  $nodes = node_load_multiple(array_keys($result['node']));
+
+  // Render events.
+  foreach (array_values($nodes) as $index => $event) {
+    if ($index >= $range) {
+      // We shouldn't display more events than the requested range.
+      continue;
+    }
+
+    $node = node_view($event, 'block_list');
+    $events .= drupal_render($node);
+  }
+
+  return array($events, $display_see_more);
+}
+
+/**
+ * Gets the number of events per group via it's original view.
+ *
+ * @param string $type
+ *   The type of events (upcoming / past).
+ *
+ * @return int
+ *   The number of events.
+ */
+function _c4m_features_og_events_count_via_views($type) {
+  // Mapping by the original name of the display.
+  $mapped_views = array(
+    'upcoming' => 'page',
+    'past' => 'page_1',
+  );
+
+  return _c4m_helper_entity_total_count_via_views('c4m_overview_og_events', $mapped_views[$type]);
+}

@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the Regions & Countries vocabulary feature.
+ */
+
+include_once 'c4m_vocab_geo.features.inc';
