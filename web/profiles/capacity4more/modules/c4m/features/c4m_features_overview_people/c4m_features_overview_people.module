@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Code for the People overview feature.
+ */
+
+include_once 'c4m_features_overview_people.features.inc';
+
+/**
+ * Implements hook_c4m_search_page_info().
+ */
+function c4m_features_overview_people_c4m_search_page_info() {
+  return array(
+    'search_api_views_c4m_overview_people' => array(
+      'name' => t('People'),
+      'description' => t('Search people.'),
+      'machine_name' => 'search_api_views_c4m_overview_people',
+      'path' => 'people',
+      'weight' => 5,
+      'default' => FALSE,
+      'type' => 'global',
+    ),
+  );
+}

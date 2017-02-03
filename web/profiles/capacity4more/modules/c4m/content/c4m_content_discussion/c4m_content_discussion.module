@@ -1,0 +1,234 @@
+<?php
+
+/**
+ * @file
+ * Code for the Discussion content type feature.
+ */
+
+include_once 'c4m_content_discussion.features.inc';
+
+/**
+ * Implements hook_c4m_og_vocab_info_content().
+ */
+function c4m_content_discussion_c4m_og_vocab_info_content() {
+  return array(
+    'discussion' => array(
+      'entity_type' => 'node',
+      'bundle' => 'discussion',
+      'vocabularies' => array(
+        'c4m_vocab_category',
+        'c4m_vocab_tag',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_entity_type_label_alter().
+ */
+function c4m_content_discussion_entity_type_label_alter(&$variables) {
+  if (empty($variables['entity']->type) ||
+    'discussion' !== $variables['entity']->type
+  ) {
+    return;
+  }
+  $variables['label'] .= ' ' . ('posted by');
+}
+
+/**
+ * Retrieve icon class for a discussion type.
+ *
+ * @param string $label
+ *   Original text label.
+ *
+ * @return string
+ *   Icon class.
+ */
+function c4m_content_discussion_icon_class($label) {
+  $class = '';
+
+  switch ($label) {
+    case t('Question'):
+      $class = 'fa-question-circle';
+      break;
+
+    case t('Idea'):
+      $class = 'fa-lightbulb-o';
+      break;
+
+    case t('Information'):
+      $class = 'fa-info-circle';
+      break;
+
+    case t('Debate'):
+      $class = 'fa-comments';
+      break;
+  }
+
+  return $class;
+}
+
+/**
+ * Implements hook_c4m_content_statistics_info().
+ */
+function c4m_content_discussion_c4m_content_statistics_info() {
+  return array(
+    'global' => array(
+      'c4m_discussions' => array(
+        'type' => 'discussion',
+        'entity_type' => 'node',
+        'bundles' => array('discussion'),
+        'singular' => 'Post',
+        'plural' => 'Posts',
+        'state' => 1,
+        'skip_access_check' => TRUE,
+        'aggregate' => array(
+          'type' => 'posts',
+        ),
+        'weight' => 1,
+        'attributes' => array(
+          'class' => array('posts'),
+        ),
+        'link' => array(
+          'path' => 'search',
+        ),
+      ),
+    ),
+    'group' => array(
+      'c4m_og_discussions' => array(
+        'type' => 'discussion',
+        'entity_type' => 'node',
+        'bundles' => array('discussion'),
+        'singular' => 'Discussion',
+        'plural' => 'Discussions',
+        'state' => 1,
+        'aggregate' => array(),
+        'weight' => 1,
+        'feature_name' => 'c4m_features_og_discussions',
+        'attributes' => array(
+          'class' => array('og-discussions'),
+        ),
+        'link' => array(
+          'path' => 'discussions',
+        ),
+      ),
+    ),
+    'topic' => array(
+      'c4m_topic_discussions' => array(
+        'type' => 'discussion',
+        'entity_type' => 'node',
+        'bundles' => array('discussion'),
+        'singular' => 'Discussion',
+        'plural' => 'Discussions',
+        'state' => 1,
+        'aggregate' => array(),
+        'weight' => 4,
+        'attributes' => array(
+          'class' => array('topic-discussions'),
+        ),
+        'link' => array(
+          'path' => 'search',
+          'options' => array(
+            'query' => array(
+              'f' => array(
+                'c4m_vocab_topic:@TOPIC_ID',
+                'type:discussion',
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_c4m_helper_entity_metrics_info().
+ */
+function c4m_content_discussion_c4m_helper_entity_metrics_info() {
+  return array(
+    'c4m_og_discussions' => array(
+      'type'      => 'discussion',
+      'context'   => 'group',
+      'callback'  => 'c4m_og_group_node_metric',
+      'arguments' => array(array('discussion')),
+      'weight'    => 0,
+    ),
+    'c4m_user_discussions' => array(
+      'type' => 'discussions',
+      'context'   => 'user',
+      'callback'  => 'c4m_user_get_node_metric',
+      'arguments' => array(array('discussion')),
+    ),
+  );
+}
+
+/**
+ * Implements hook_c4m_content_share_fields_info().
+ */
+function c4m_content_discussion_c4m_content_share_fields_info() {
+  return array(
+    'discussion' => array(
+      'type',
+      'c4m_discussion_type',
+    ),
+  );
+}
+
+/**
+ * Implements hook_c4m_helper_entity_label_info().
+ */
+function c4m_content_discussion_c4m_helper_entity_label_info() {
+  return array(
+    'discussion' => array(
+      'article' => t('a'),
+      'singular' => t('discussion'),
+      'plural' => t('discussions'),
+      'insert action' => t('started a new discussion'),
+      'update action' => t('updated the discussion'),
+      'icon' => 'fa-comments',
+    ),
+    'discussion-info' => array(
+      'article' => '',
+      'singular' => t('information'),
+      'plural' => t('informations'),
+      'insert action' => t('posted Information'),
+      'update action' => t('updated the Information'),
+      'icon' => 'fa-info-circle',
+    ),
+    'discussion-debate' => array(
+      'article' => t('a'),
+      'singular' => t('debate'),
+      'plural' => t('debates'),
+      'insert action' => t('started a Debate'),
+      'update action' => t('updated the Debate'),
+      'icon' => 'fa-comments',
+    ),
+    'discussion-question' => array(
+      'article' => t('a'),
+      'singular' => t('question'),
+      'plural' => t('question'),
+      'insert action' => t('asked a Question'),
+      'update action' => t('updated the Question'),
+      'icon' => 'fa-question-circle',
+    ),
+    'discussion-idea' => array(
+      'article' => t('an'),
+      'singular' => t('idea'),
+      'plural' => t('ideas'),
+      'insert action' => t('posted an Idea'),
+      'update action' => t('updated the Idea'),
+      'icon' => 'fa-lightbulb-o',
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add author information to the edit discussion form.
+ */
+function c4m_content_discussion_form_discussion_node_form_alter(array &$form, array $form_state) {
+  c4m_content_create_group_content_access();
+  c4m_og_add_content_author_options_to_power_users($form);
+}
