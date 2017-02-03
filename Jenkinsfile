@@ -31,8 +31,8 @@ node('master') {
         ])
 	sh 'find web/ -type f -name .DS_Store -delete'
         sh 'find web/ -type f -name .gitignore -delete'
-	sh 'rm web/install.php web/update.php'
-        sh 'rsync -rpKzl --verbose --delete-after --ignore-errors --force --exclude="sites/default/files" --exclude="sites/default/settings.php" --exclude="sites/default/settings.local.php" --exclude="sites/all/modules/fpfis" --exclude=".git" --exclude=".gitignore" web/ deploy/'
+	sh 'rm web/install.php web/update.php web/.editorconfig'
+        sh 'rsync -rpKzl --delete-after --ignore-errors --force --exclude="sites/default/files" --exclude="sites/default/settings.php" --exclude="sites/default/settings.local.php" --exclude="sites/all/modules/fpfis" --exclude=".git" --exclude=".gitignore" web/ deploy/'
 	dir('deploy') {
             sh 'git checkout master'
             sh 'git add . -A'
