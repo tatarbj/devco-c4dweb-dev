@@ -29,15 +29,13 @@ node('master') {
             [ url:  'git@' + env.DEPLOY_SERVER + ':' + env.PROJECT + '/' + env.BRANCH_NAME + '.git']
           ]
         ])
-        sh 'rsync -rpKzl --verbose --delete-after --ignore-errors --force --exclude="sites/default/files" --exclude="sites/default/settings.php" --exclude="sites/default/settings.local.php" --exclude="sites/all/modules/fpfis" --exclude="*.git*" web/ deploy/'
+        sh 'rsync -rpKzl --verbose --delete-after --ignore-errors --force --exclude="sites/default/files" --exclude="sites/default/settings.php" --exclude="sites/default/settings.local.php" --exclude="sites/all/modules/fpfis" --exclude=".git" --exclude=".gitignore" web/ deploy/'
 	dir('deploy') {
             sh 'git checkout master'
             sh 'git add . -A'
             sh 'git commit -m"Updated ' + env.PROJECT + '@' + env.BRANCH_NAME + ' (jenkins #' + env.BUILD_ID + ')  at $(date +%Y%m%d%H%M)"'
             sh 'drush vset maintenance_mode 1'
             sh 'git push'
-        }
-        dir('deploy') {
 	    sh 'drush updb -y'
             sh 'drush fra -y'
             sh 'drush vset maintenance_mode 0'
