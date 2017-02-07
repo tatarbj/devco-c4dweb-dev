@@ -1,0 +1,1263 @@
+Index: ../css/kapablo.concat.css
+===================================================================
+--- ../css/kapablo.concat.css
++++ ../css/kapablo.concat.css
+@@ -386,18 +386,14 @@
+   }
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_scaffolding\.scss}line{font-family:\0000311}}
+ * {
+-  -webkit-box-sizing: border-box;
+-  -moz-box-sizing: border-box;
+   box-sizing: border-box;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_scaffolding\.scss}line{font-family:\0000314}}
+ *:before,
+ *:after {
+-  -webkit-box-sizing: border-box;
+-  -moz-box-sizing: border-box;
+   box-sizing: border-box;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_scaffolding\.scss}line{font-family:\0000322}}
+@@ -469,10 +465,8 @@
+   line-height: 1.42857;
+   background-color: #FFFFFF;
+   border: 1px solid #ddd;
+   border-radius: 4px;
+-  -webkit-transition: all 0.2s ease-in-out;
+-  -o-transition: all 0.2s ease-in-out;
+   transition: all 0.2s ease-in-out;
+   display: inline-block;
+   max-width: 100%;
+   height: auto;
+@@ -2463,10 +2457,8 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_forms\.scss}line{font-family:\0000347}}
+ input[type="search"] {
+-  -webkit-box-sizing: border-box;
+-  -moz-box-sizing: border-box;
+   box-sizing: border-box;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_forms\.scss}line{font-family:\0000352}}
+@@ -2523,19 +2515,15 @@
+   background-color: #fff;
+   background-image: none;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+-  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+-  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000357}}
+ .form-control:focus {
+   border-color: #66afe9;
+   outline: 0;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_vendor-prefixes\.scss}line{font-family:\00003103}}
+ .form-control::-moz-placeholder {
+@@ -2913,15 +2901,13 @@
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000321}}
+ .has-success .form-control {
+   border-color: #3c763d;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000324}}
+ .has-success .form-control:focus {
+   border-color: #2b542c;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000331}}
+ .has-success .input-group-addon {
+@@ -2945,15 +2931,13 @@
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000321}}
+ .has-warning .form-control {
+   border-color: #8a6d3b;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000324}}
+ .has-warning .form-control:focus {
+   border-color: #66512c;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000331}}
+ .has-warning .input-group-addon {
+@@ -2977,15 +2961,13 @@
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000321}}
+ .has-error .form-control {
+   border-color: #a94442;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000324}}
+ .has-error .form-control:focus {
+   border-color: #843534;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_forms\.scss}line{font-family:\0000331}}
+ .has-error .input-group-addon {
+@@ -3148,9 +3130,10 @@
+   margin-bottom: 0;
+   font-weight: normal;
+   text-align: center;
+   vertical-align: middle;
++  -ms-touch-action: manipulation;
++      touch-action: manipulation;
+-  touch-action: manipulation;
+   cursor: pointer;
+   background-image: none;
+   border: 1px solid transparent;
+   white-space: nowrap;
+@@ -3176,17 +3159,15 @@
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000339}}
+ .btn:active, .button.browse:active, .btn.active, .active.button.browse {
+   outline: 0;
+   background-image: none;
+-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000346}}
+ .btn.disabled, .disabled.button.browse, .btn[disabled], [disabled].button.browse, fieldset[disabled] .btn, fieldset[disabled] .button.browse {
+   cursor: not-allowed;
+   opacity: 0.65;
+   filter: alpha(opacity=65);
+-  -webkit-box-shadow: none;
+   box-shadow: none;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\0000358}}
+@@ -3472,9 +3453,8 @@
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\00003101}}
+ .btn-link, .btn-link:active, .btn-link.active, .btn-link[disabled], fieldset[disabled] .btn-link {
+   background-color: transparent;
+-  -webkit-box-shadow: none;
+   box-shadow: none;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_buttons\.scss}line{font-family:\00003109}}
+ .btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active {
+@@ -3536,10 +3516,8 @@
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_component-animations\.scss}line{font-family:\0000310}}
+ .fade {
+   opacity: 0;
+-  -webkit-transition: opacity 0.15s linear;
+-  -o-transition: opacity 0.15s linear;
+   transition: opacity 0.15s linear;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_component-animations\.scss}line{font-family:\0000313}}
+ .fade.in {
+@@ -3569,13 +3547,10 @@
+ .collapsing {
+   position: relative;
+   height: 0;
+   overflow: hidden;
+-  -webkit-transition-property: height, visibility;
+   transition-property: height, visibility;
+-  -webkit-transition-duration: 0.35s;
+   transition-duration: 0.35s;
+-  -webkit-transition-timing-function: ease;
+   transition-timing-function: ease;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_dropdowns\.scss}line{font-family:\000037}}
+@@ -3619,9 +3594,8 @@
+   background-color: #fff;
+   border: 1px solid #ccc;
+   border: 1px solid rgba(0, 0, 0, 0.15);
+   border-radius: 4px;
+-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+   background-clip: padding-box;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_dropdowns\.scss}line{font-family:\0000354}}
+@@ -3877,14 +3851,12 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_button-groups\.scss}line{font-family:\00003116}}
+ .btn-group.open .dropdown-toggle {
+-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_button-groups\.scss}line{font-family:\00003120}}
+ .btn-group.open .dropdown-toggle.btn-link {
+-  -webkit-box-shadow: none;
+   box-shadow: none;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_button-groups\.scss}line{font-family:\00003127}}
+@@ -4634,9 +4606,8 @@
+   margin-right: -18px;
+   padding: 10px 18px;
+   border-top: 1px solid transparent;
+   border-bottom: 1px solid transparent;
+-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
+   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
+   margin-top: 8px;
+   margin-bottom: 8px;
+ }
+@@ -4719,9 +4690,8 @@
+     margin-left: 0;
+     margin-right: 0;
+     padding-top: 0;
+     padding-bottom: 0;
+-    -webkit-box-shadow: none;
+     box-shadow: none;
+   }
+ }
+ 
+@@ -5166,10 +5136,8 @@
+   line-height: 1.42857;
+   background-color: #FFFFFF;
+   border: 1px solid #ddd;
+   border-radius: 4px;
+-  -webkit-transition: border 0.2s ease-in-out;
+-  -o-transition: border 0.2s ease-in-out;
+   transition: border 0.2s ease-in-out;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_thumbnails\.scss}line{font-family:\0000317}}
+ .thumbnail > img,
+@@ -5315,9 +5283,8 @@
+   height: 20px;
+   margin-bottom: 20px;
+   background-color: #f5f5f5;
+   border-radius: 4px;
+-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_progress-bars\.scss}line{font-family:\0000336}}
+@@ -5329,29 +5296,23 @@
+   line-height: 20px;
+   color: #fff;
+   text-align: center;
+   background-color: #6E969F;
+-  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+-  -webkit-transition: width 0.6s ease;
+-  -o-transition: width 0.6s ease;
+   transition: width 0.6s ease;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_progress-bars\.scss}line{font-family:\0000354}}
+ .progress-striped .progress-bar,
+ .progress-bar-striped {
+-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+   background-size: 40px 40px;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_progress-bars\.scss}line{font-family:\0000364}}
+ .progress.active .progress-bar,
+ .progress-bar.active {
+   -webkit-animation: progress-bar-stripes 2s linear infinite;
+-  -o-animation: progress-bar-stripes 2s linear infinite;
+   animation: progress-bar-stripes 2s linear infinite;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_progress-bars\.scss}line{font-family:\0000373}}
+@@ -5359,10 +5320,8 @@
+   background-color: #B0C35A;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_progress-bar\.scss}line{font-family:\000037}}
+ .progress-striped .progress-bar-success {
+-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_progress-bars\.scss}line{font-family:\0000377}}
+@@ -5370,10 +5329,8 @@
+   background-color: #FFBB6D;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_progress-bar\.scss}line{font-family:\000037}}
+ .progress-striped .progress-bar-info {
+-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_progress-bars\.scss}line{font-family:\0000381}}
+@@ -5381,10 +5338,8 @@
+   background-color: #EE6A32;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_progress-bar\.scss}line{font-family:\000037}}
+ .progress-striped .progress-bar-warning {
+-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_progress-bars\.scss}line{font-family:\0000385}}
+@@ -5392,10 +5347,8 @@
+   background-color: #D0021B;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/mixins\/_progress-bar\.scss}line{font-family:\000037}}
+ .progress-striped .progress-bar-danger {
+-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_media\.scss}line{font-family:\000031}}
+@@ -5477,9 +5430,8 @@
+   margin-bottom: 20px;
+   background-color: #f5f5f5;
+   border: 1px solid #e3e3e3;
+   border-radius: 4px;
+-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_wells\.scss}line{font-family:\0000315}}
+ .well blockquote {
+@@ -5549,20 +5501,16 @@
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_modals\.scss}line{font-family:\0000332}}
+ .modal.fade .modal-dialog {
+   -webkit-transform: translate(0, -25%);
+   -ms-transform: translate(0, -25%);
+-  -o-transform: translate(0, -25%);
+   transform: translate(0, -25%);
++  transition: -webkit-transform 0.3s ease-out;
+-  -webkit-transition: -webkit-transform 0.3s ease-out;
+-  -moz-transition: -moz-transform 0.3s ease-out;
+-  -o-transition: -o-transform 0.3s ease-out;
+   transition: transform 0.3s ease-out;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_modals\.scss}line{font-family:\0000336}}
+ .modal.in .modal-dialog {
+   -webkit-transform: translate(0, 0);
+   -ms-transform: translate(0, 0);
+-  -o-transform: translate(0, 0);
+   transform: translate(0, 0);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_modals\.scss}line{font-family:\0000338}}
+@@ -5584,9 +5532,8 @@
+   background-color: #fff;
+   border: 1px solid #999;
+   border: 1px solid rgba(0, 0, 0, 0.2);
+   border-radius: 6px;
+-  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+   box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+   background-clip: padding-box;
+   outline: 0;
+ }
+@@ -5690,9 +5637,8 @@
+   }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_modals\.scss}line{font-family:\00003140}}
+   .modal-content {
+-    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+   }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_modals\.scss}line{font-family:\00003145}}
+@@ -5869,9 +5815,8 @@
+   background-clip: padding-box;
+   border: 1px solid #ccc;
+   border: 1px solid rgba(0, 0, 0, 0.2);
+   border-radius: 6px;
+-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_popovers\.scss}line{font-family:\0000327}}
+ .popover.top {
+@@ -6009,10 +5954,8 @@
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\0000316}}
+ .carousel-inner > .item {
+   display: none;
+   position: relative;
+-  -webkit-transition: 0.6s ease-in-out left;
+-  -o-transition: 0.6s ease-in-out left;
+   transition: 0.6s ease-in-out left;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\0000322}}
+ .carousel-inner > .item > img,
+@@ -6024,17 +5967,13 @@
+ }
+ @media all and (transform-3d), (-webkit-transform-3d) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\0000316}}
+   .carousel-inner > .item {
++    transition: -webkit-transform 0.6s ease-in-out;
+-    -webkit-transition: -webkit-transform 0.6s ease-in-out;
+-    -moz-transition: -moz-transform 0.6s ease-in-out;
+-    -o-transition: -o-transform 0.6s ease-in-out;
+     transition: transform 0.6s ease-in-out;
+     -webkit-backface-visibility: hidden;
+-    -moz-backface-visibility: hidden;
+     backface-visibility: hidden;
+     -webkit-perspective: 1000px;
+-    -moz-perspective: 1000px;
+     perspective: 1000px;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\0000334}}
+   .carousel-inner > .item.next, .carousel-inner > .item.active.right {
+@@ -6110,20 +6049,16 @@
+   background-color: transparent;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\00003109}}
+ .carousel-control.left {
+-  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+-  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+   background-repeat: repeat-x;
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/node_modules\/bootstrap-sass\/assets\/stylesheets\/bootstrap\/_carousel\.scss}line{font-family:\00003112}}
+ .carousel-control.right {
+   left: auto;
+   right: 0;
+-  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
+-  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
+   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
+   background-repeat: repeat-x;
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1);
+ }
+@@ -6643,9 +6578,11 @@
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/base\/_global\.scss}line{font-family:\0000316}}
+ body {
+   font-size: inherit;
++  -webkit-hyphens: auto;
++      -ms-hyphens: auto;
++          hyphens: auto;
+-  hyphens: auto;
+   overflow-wrap: break-word;
+ }
+ 
+ @media (min-width: 992px) {
+@@ -7120,9 +7057,8 @@
+   overflow-wrap: break-word;
+   word-wrap: break-word;
+   -webkit-hyphens: auto;
+   -ms-hyphens: auto;
+-  -moz-hyphens: auto;
+   hyphens: auto;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/base\/_admin\.scss}line{font-family:\000033}}
+@@ -7178,9 +7114,11 @@
+   top: 20px;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/base\/_mixins\.scss}line{font-family:\00003132}}
+ .activity-stream .activities .c4m-og-power-user-actions-block i {
++  -webkit-transform: rotate(0deg);
++      -ms-transform: rotate(0deg);
++          transform: rotate(0deg);
+-  transform: rotate(0deg);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_activity_stream\.scss}line{font-family:\0000314}}
+ .activity-stream .activities .row {
+   margin: 0;
+@@ -7228,9 +7166,11 @@
+   float: right;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/base\/_mixins\.scss}line{font-family:\00003132}}
+ .pane-og-dashboard .flag-c4m-og-content-highlight i {
++  -webkit-transform: rotate(0deg);
++      -ms-transform: rotate(0deg);
++          transform: rotate(0deg);
+-  transform: rotate(0deg);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_activity_stream\.scss}line{font-family:\0000365}}
+ .view-mode-activity_global .row, .view-mode-activity_group .row {
+@@ -7350,14 +7290,12 @@
+   height: 10px;
+   border-right: 2px solid #347C98;
+   border-bottom: 2px solid #347C98;
+   -webkit-transform-origin: center center;
+-  -moz-transform-origin: center center;
+   -ms-transform-origin: center center;
+   transform-origin: center center;
+   -webkit-transform: rotate(45deg);
+   -ms-transform: rotate(45deg);
+-  -o-transform: rotate(45deg);
+   transform: rotate(45deg);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_activity_stream\.scss}line{font-family:\00003153}}
+@@ -7460,9 +7398,13 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_buttons\.scss}line{font-family:\000035}}
+ .video-preview-cta {
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+-  align-items: center;
+   display: flex;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_buttons\.scss}line{font-family:\0000310}}
+@@ -7568,39 +7510,51 @@
+   display: inline-block;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_carousel\.scss}line{font-family:\0000339}}
+ .pane-content .owl-carousel .item-header {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-justify-content: space-between;
++      -ms-flex-pack: justify;
++          justify-content: space-between;
+-  justify-content: space-between;
+   margin: 12px 0px;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_carousel\.scss}line{font-family:\0000344}}
+ .pane-content .owl-carousel .item-header h2, .pane-content .owl-carousel .item-header .view-mode-group_dashboard .control-label, .view-mode-group_dashboard .pane-content .owl-carousel .item-header .control-label {
++  -webkit-flex: 1 1 auto;
++      -ms-flex: 1 1 auto;
++          flex: 1 1 auto;
+-  flex: 1 1 auto;
+   margin: 0 12px 0 0;
+   text-align: right;
+ }
+ @media (min-width: 860px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_carousel\.scss}line{font-family:\0000344}}
+   .pane-content .owl-carousel .item-header h2, .pane-content .owl-carousel .item-header .view-mode-group_dashboard .control-label, .view-mode-group_dashboard .pane-content .owl-carousel .item-header .control-label {
+     text-align: left;
++    -webkit-order: 1;
++        -ms-flex-order: 1;
++            order: 1;
+-    order: 1;
+     padding: 0;
+   }
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_carousel\.scss}line{font-family:\0000362}}
+ .pane-content .owl-carousel .item-header .item-date {
+   color: #4A4A4A;
+   font-size: 0.85rem;
++  -webkit-flex: 0 1 auto;
++      -ms-flex: 0 1 auto;
++          flex: 0 1 auto;
+-  flex: 0 1 auto;
+   margin: 0 0 0 12px;
+   text-align: left;
+ }
+ @media (min-width: 860px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_carousel\.scss}line{font-family:\0000362}}
+   .pane-content .owl-carousel .item-header .item-date {
+     text-align: right;
++    -webkit-order: 2;
++        -ms-flex-order: 2;
++            order: 2;
+-    order: 2;
+     padding: 0;
+   }
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_carousel\.scss}line{font-family:\0000378}}
+@@ -7846,16 +7800,24 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_events\.scss}line{font-family:\000036}}
+ .event-groups {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-justify-content: space-between;
++      -ms-flex-pack: justify;
++          justify-content: space-between;
+-  justify-content: space-between;
+   margin-top: 20px;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_events\.scss}line{font-family:\0000311}}
+ .event-groups .label, .event-groups .field-name-c4m-og-status .field-item, .field-name-c4m-og-status .event-groups .field-item, .event-groups .field-name-c4m-project-stage .field-item, .field-name-c4m-project-stage .event-groups .field-item {
++  -webkit-align-self: center;
++      -ms-flex-item-align: center;
++          align-self: center;
++  -webkit-flex: 0 0 auto;
++      -ms-flex: 0 0 auto;
++          flex: 0 0 auto;
+-  align-self: center;
+-  flex: 0 0 auto;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_events\.scss}line{font-family:\0000317}}
+ .view-mode-block_list.node-event .field-name-c4m-field-og-group .field-item {
+@@ -8029,9 +7991,8 @@
+ .group-navigation nav {
+   background: #6E969F;
+   margin: 20px -18px 20px;
+   padding: 0 18px;
+-  -webkit-box-shadow: inset 0 8px 8px -8px #696868, inset 0 -8px 8px -8px #696868;
+   box-shadow: inset 0 8px 8px -8px #696868, inset 0 -8px 8px -8px #696868;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\0000358}}
+ .group-navigation nav .og-menu-link.calendar {
+@@ -8118,23 +8079,39 @@
+     overflow: hidden;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003128}}
+   .group-navigation nav ul {
++    display: -webkit-flex;
++    display: -ms-flexbox;
+     display: flex;
+     width: 100%;
++    -webkit-flex-wrap: wrap;
++        -ms-flex-wrap: wrap;
++            flex-wrap: wrap;
++    -webkit-align-items: center;
++        -ms-flex-align: center;
++            align-items: center;
++    -webkit-align-content: center;
++        -ms-flex-line-pack: center;
++            align-content: center;
++    -webkit-justify-content: space-between;
++        -ms-flex-pack: justify;
++            justify-content: space-between;
+-    flex-wrap: wrap;
+-    align-items: center;
+-    align-content: center;
+-    justify-content: space-between;
+     padding: 16px 0;
++    -webkit-flex-direction: row;
++        -ms-flex-direction: row;
++            flex-direction: row;
+-    flex-direction: row;
+     margin-right: -1px;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003141}}
+   .group-navigation nav li {
+     display: inline-block;
++    -webkit-flex-grow: 1;
++        -ms-flex-positive: 1;
++            flex-grow: 1;
++    -webkit-flex-basis: auto;
++        -ms-flex-preferred-size: auto;
++            flex-basis: auto;
+-    flex-grow: 1;
+-    flex-basis: auto;
+     margin: .25em 0;
+     padding: 0 0.25em;
+     text-align: center;
+     width: auto;
+@@ -8258,9 +8235,10 @@
+   left: initial;
+   float: right;
+   margin: 0 18px 18px 0;
+   padding: 0;
++  -ms-transform: translate(0, 0);
++      transform: translate(0, 0);
+-  transform: translate(0, 0);
+   -webkit-transform: translate(0, 0);
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003254}}
+ .og-context .header-actions--navigation .icon-bar {
+@@ -8327,9 +8305,8 @@
+   border-top: 2px solid #FFFFFF;
+   border-left: 2px solid #FFFFFF;
+   -webkit-transform: rotate(-45deg);
+   -ms-transform: rotate(-45deg);
+-  -o-transform: rotate(-45deg);
+   transform: rotate(-45deg);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003309}}
+@@ -8463,14 +8440,20 @@
+   margin-top: 25px;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003404}}
+ .og-context .pane-c4m-content-group .group-details .field-name-c4m-content-group-statistics ul.statistics-list {
++  -webkit-flex-wrap: wrap;
++      -ms-flex-wrap: wrap;
++          flex-wrap: wrap;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+-  flex-wrap: wrap;
+   display: flex;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003407}}
+ .og-context .pane-c4m-content-group .group-details .field-name-c4m-content-group-statistics ul.statistics-list li {
++  -webkit-flex: 1 0 120px;
++      -ms-flex: 1 0 120px;
++          flex: 1 0 120px;
+-  flex: 1 0 120px;
+   border: none;
+   margin-bottom: 15px;
+   padding: 0;
+   text-align: left;
+@@ -8521,9 +8504,11 @@
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003453}}
+ .og-context .pane-c4m-content-group .group-details .field-name-c4m-content-group-statistics ul.statistics-list,
+ .node-project.view-mode-group_dashboard .field-name-c4m-content-group-statistics ul.statistics-list {
++  -webkit-flex-wrap: wrap;
++      -ms-flex-wrap: wrap;
++          flex-wrap: wrap;
+-  flex-wrap: wrap;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003456}}
+ .og-context .pane-c4m-content-group .group-details .field-name-c4m-content-group-statistics ul.statistics-list li,
+ .node-project.view-mode-group_dashboard .field-name-c4m-content-group-statistics ul.statistics-list li {
+@@ -8803,17 +8788,21 @@
+   display: none;
+   margin-top: 0;
+   padding: 15px;
+   position: absolute;
++  -webkit-transform: translateX(0) translateY(30px);
++      -ms-transform: translateX(0) translateY(30px);
++          transform: translateX(0) translateY(30px);
+-  transform: translateX(0) translateY(30px);
+   top: 31px;
+   width: 300px;
+   z-index: 1;
+ }
+ @media (min-width: 860px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003689}}
+   .restricted-extra-wrapper {
++    -webkit-transform: translateX(-105%) translateY(0);
++        -ms-transform: translateX(-105%) translateY(0);
++            transform: translateX(-105%) translateY(0);
+-    transform: translateX(-105%) translateY(0);
+   }
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_groups\.scss}line{font-family:\00003708}}
+@@ -9130,15 +9119,23 @@
+     background: none;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_features\.scss}line{font-family:\0000323}}
+   .row.features .row {
++    display: -webkit-flex;
++    display: -ms-flexbox;
+     display: flex;
++    -webkit-flex-direction: row;
++        -ms-flex-direction: row;
++            flex-direction: row;
+-    flex-direction: row;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_features\.scss}line{font-family:\0000328}}
+   .row.features .row .col-sm-4 {
++    display: -webkit-flex;
++    display: -ms-flexbox;
+     display: flex;
++    -webkit-flex: 1 1 auto;
++        -ms-flex: 1 1 auto;
++            flex: 1 1 auto;
+-    flex: 1 1 auto;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_features\.scss}line{font-family:\0000332}}
+   .row.features .row .col-sm-4 > a {
+     font-size: 0.85rem;
+@@ -9785,11 +9782,17 @@
+   min-height: auto;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_forms\.scss}line{font-family:\00003146}}
+ .node-form .cfm-file-upload-wrapper {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-flex-direction: column;
++      -ms-flex-direction: column;
++          flex-direction: column;
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
+-  flex-direction: column;
+-  align-items: center;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_forms\.scss}line{font-family:\00003151}}
+ .node-form .cfm-file-upload-wrapper .file-upload-js-error {
+   color: #A94442;
+@@ -9808,12 +9811,20 @@
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_forms\.scss}line{font-family:\00003167}}
+ .node-form .cfm-file-upload {
+   height: 100px;
+   width: 100%;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-flex-direction: column;
++      -ms-flex-direction: column;
++          flex-direction: column;
++  -webkit-justify-content: center;
++      -ms-flex-pack: center;
++          justify-content: center;
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
+-  flex-direction: column;
+-  justify-content: center;
+-  align-items: center;
+   font-family: Arial;
+   color: white;
+   border-radius: 90px;
+   background-color: #53757d;
+@@ -9830,10 +9841,14 @@
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_forms\.scss}line{font-family:\00003188}}
+ .node-form .cfm-file-upload .droppable-message {
+   line-height: normal;
+   min-height: initial;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-flex-direction: column;
++      -ms-flex-direction: column;
++          flex-direction: column;
+-  flex-direction: column;
+   padding-top: 15px;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_forms\.scss}line{font-family:\00003197}}
+ .node-form .cfm-file-upload__title {
+@@ -9899,18 +9914,30 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_header\.scss}line{font-family:\000031}}
+ #top-menu {
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+-  align-items: center;
+   display: flex;
+   height: 50px;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_header\.scss}line{font-family:\000036}}
+ #top-menu .region-top-menu {
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+-  align-items: center;
+   display: flex;
++  -webkit-flex-direction: row;
++      -ms-flex-direction: row;
++          flex-direction: row;
++  -webkit-justify-content: flex-end;
++      -ms-flex-pack: end;
++          justify-content: flex-end;
+-  flex-direction: row;
+-  justify-content: flex-end;
+   width: 100%;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_header\.scss}line{font-family:\0000313}}
+ #top-menu .region-top-menu .block {
+@@ -10174,12 +10201,20 @@
+   .navigation--primary .navbar-collapse ul.menu {
+     list-style: none;
+     margin: 0;
+     padding: 0;
++    display: -webkit-flex;
++    display: -ms-flexbox;
+     display: flex;
++    -webkit-flex-direction: row;
++        -ms-flex-direction: row;
++            flex-direction: row;
++    -webkit-flex-wrap: wrap;
++        -ms-flex-wrap: wrap;
++            flex-wrap: wrap;
++    -webkit-justify-content: space-between;
++        -ms-flex-pack: justify;
++            justify-content: space-between;
+-    flex-direction: row;
+-    flex-wrap: wrap;
+-    justify-content: space-between;
+     margin: 0 -1px 0 0;
+     width: 100%;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/base\/_mixins\.scss}line{font-family:\0000332}}
+@@ -10200,10 +10235,14 @@
+     padding-right: 0;
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/base\/_mixins\.scss}line{font-family:\0000359}}
+   .navigation--primary .navbar-collapse ul.menu li {
++    -webkit-flex-grow: 1;
++        -ms-flex-positive: 1;
++            flex-grow: 1;
++    -webkit-flex-basis: auto;
++        -ms-flex-preferred-size: auto;
++            flex-basis: auto;
+-    flex-grow: 1;
+-    flex-basis: auto;
+     margin: 0.25em 0;
+     padding: 0 1em;
+     text-align: center;
+   }
+@@ -10320,9 +10359,10 @@
+ .header-actions--navigation {
+   position: absolute;
+   top: 50%;
+   left: 50%;
++  -ms-transform: translate(-50%, -50%);
++      transform: translate(-50%, -50%);
+-  transform: translate(-50%, -50%);
+   -webkit-transform: translate(-50%, -50%);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_header\.scss}line{font-family:\00003346}}
+@@ -10579,17 +10619,19 @@
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_homepage\.scss}line{font-family:\0000371}}
+ .pane-featured-block .col-sm-4 > a .field-item img {
+   position: relative;
+   left: 50%;
++  -ms-transform: translate(-50%, 0);
++      transform: translate(-50%, 0);
+-  transform: translate(-50%, 0);
+   -webkit-transform: translate(-50%, 0);
+   width: 100%;
+ }
+ @media (min-width: 860px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_homepage\.scss}line{font-family:\0000371}}
+   .pane-featured-block .col-sm-4 > a .field-item img {
+     left: 0;
++    -ms-transform: translate(0, 0);
++        transform: translate(0, 0);
+-    transform: translate(0, 0);
+     -webkit-transform: translate(0, 0);
+   }
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_homepage\.scss}line{font-family:\0000383}}
+@@ -10688,18 +10730,20 @@
+   height: 20px;
+   background: url("../images/icons/i-play.png") no-repeat center center;
+   background-size: 90%;
+   font-size: 2rem;
++  -ms-transform: translate(-50%, -50%);
++      transform: translate(-50%, -50%);
+-  transform: translate(-50%, -50%);
+   -webkit-transform: translate(-50%, -50%);
+ }
+ @media (min-width: 860px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_homepage\.scss}line{font-family:\00003156}}
+   #block-c4m-features-homepage-intro-video .button-wrapper .justifier .btn .i-play, #block-c4m-features-homepage-intro-video .button-wrapper .justifier .button.browse .i-play {
+     left: 2%;
+     width: 32px;
+     height: 100%;
++    -ms-transform: translate(0, -50%);
++        transform: translate(0, -50%);
+-    transform: translate(0, -50%);
+     -webkit-transform: translate(0, -50%);
+   }
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_homepage\.scss}line{font-family:\00003176}}
+@@ -10791,9 +10835,11 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_icons\.scss}line{font-family:\0000311}}
+ .flag-action .fa-thumb-tack {
++  -webkit-transform: rotate(45deg);
++      -ms-transform: rotate(45deg);
++          transform: rotate(45deg);
+-  transform: rotate(45deg);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_icons\.scss}line{font-family:\0000315}}
+ .node-icon {
+@@ -11174,16 +11220,18 @@
+   position: relative;
+   left: 0;
+   z-index: 99;
+   height: 100%;
++  -webkit-perspective: 1000px;
++          perspective: 1000px;
+-  perspective: 1000px;
+   transition: transform 0.5s;
+   -webkit-transition: -webkit-transform 0.5s;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_navigation\.scss}line{font-family:\0000316}}
+ .modal-open .container--push {
+   z-index: auto;
++  -webkit-perspective: none;
++          perspective: none;
+-  perspective: none;
+ }
+ 
+ @media (max-width: 860px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_navigation\.scss}line{font-family:\0000322}}
+@@ -11225,9 +11273,8 @@
+   overflow-y: scroll;
+   background: #F1F6F9;
+   transition: all 0.5s;
+   -webkit-transition: all 0.5s;
+-  -webkit-box-shadow: inset 20px -1px 48px -27px rgba(0, 0, 0, 0.75);
+   box-shadow: inset 20px -1px 48px -27px rgba(0, 0, 0, 0.75);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_navigation\.scss}line{font-family:\0000373}}
+@@ -11322,9 +11369,8 @@
+ .offCanvasNavigation--visible .offCanvasNavigation::after {
+   width: 0;
+   height: 0;
+   opacity: 0;
+-  -webkit-transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
+   transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_navigation\.scss}line{font-family:\00003172}}
+@@ -11343,10 +11389,9 @@
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_navigation\.scss}line{font-family:\00003185}}
+ .offCanvasNavigation--visible.animation--push .offCanvasNavigation.animation--push {
+   visibility: visible;
++  transition: -webkit-transform 0.5s;
+-  -webkit-transition: transform 0.5s;
+-  -o-transition: transform 0.5s;
+   transition: transform 0.5s;
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_navigation\.scss}line{font-family:\00003191}}
+@@ -11369,9 +11414,9 @@
+     overflow-y: auto;
+     background: #FFFFFF;
+     box-shadow: -8px 0 8px -8px #696868;
+     transition: transform 0.5s;
++    -webkit-transition: -webkit-transform 0.5s;
+-    -webkit-transition: transform 0.5s;
+     transform: translate3d(100%, 0, 0);
+     -webkit-transform: translate3d(100%, 0, 0);
+   }
+ }
+@@ -11389,9 +11434,9 @@
+     height: 100%;
+     overflow-y: auto;
+     box-shadow: 8px 0 8px -8px #696868;
+     transition: transform 0.5s;
++    -webkit-transition: -webkit-transform 0.5s;
+-    -webkit-transition: transform 0.5s;
+     transform: translate3d(-100%, 0, 0);
+     -webkit-transform: translate3d(-100%, 0, 0);
+   }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_navigation\.scss}line{font-family:\00003244}}
+@@ -11566,10 +11611,14 @@
+   text-overflow: ellipsis;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\0000316}}
+ .pane-quick-form .btn-group-quickpost-info {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-flex-wrap: wrap;
++      -ms-flex-wrap: wrap;
++          flex-wrap: wrap;
+-  flex-wrap: wrap;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\0000320}}
+ .pane-quick-form .btn-group-quickpost-info .form-group {
+   margin-right: 10px;
+@@ -11647,17 +11696,27 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\0000392}}
+ .actions-row {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
+   margin-top: 15px;
++  -webkit-justify-content: space-between;
++      -ms-flex-pack: justify;
++          justify-content: space-between;
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
+-  justify-content: space-between;
+-  align-items: center;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\0000398}}
+ .actions-row .actions-row-group {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
+-  align-items: center;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\00003103}}
+ .actions-row .actions-row-group input,
+ .actions-row .actions-row-group label {
+@@ -11680,15 +11739,21 @@
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\00003123}}
+ .btn-group-discussion_type {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-flex-direction: column;
++      -ms-flex-direction: column;
++          flex-direction: column;
+-  flex-direction: column;
+ }
+ @media (min-width: 992px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\00003123}}
+   .btn-group-discussion_type {
++    -webkit-flex-direction: row;
++        -ms-flex-direction: row;
++            flex-direction: row;
+-    flex-direction: row;
+   }
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_quickpost\.scss}line{font-family:\00003131}}
+ .btn-group-discussion_type .discussion_type {
+@@ -12305,28 +12370,48 @@
+ ul.statistics-list {
+   list-style: none;
+   margin: 0;
+   padding: 0;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-flex-direction: row;
++      -ms-flex-direction: row;
++          flex-direction: row;
++  -webkit-flex-wrap: wrap;
++      -ms-flex-wrap: wrap;
++          flex-wrap: wrap;
++  -webkit-justify-content: space-between;
++      -ms-flex-pack: justify;
++          justify-content: space-between;
++  -webkit-align-items: baseline;
++      -ms-flex-align: baseline;
++          align-items: baseline;
+-  flex-direction: row;
+-  flex-wrap: wrap;
+-  justify-content: space-between;
+-  align-items: baseline;
+ }
+ @media (min-width: 992px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_statistics\.scss}line{font-family:\000031}}
+   ul.statistics-list {
++    display: -webkit-flex;
++    display: -ms-flexbox;
+     display: flex;
+     width: 100%;
+     table-layout: fixed;
++    -webkit-flex-wrap: nowrap;
++        -ms-flex-wrap: nowrap;
++            flex-wrap: nowrap;
++    -webkit-align-content: unset;
++        -ms-flex-line-pack: unset;
++            align-content: unset;
+-    flex-wrap: nowrap;
+-    align-content: unset;
+   }
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_statistics\.scss}line{font-family:\0000321}}
+ ul.statistics-list li {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-align-items: baseline;
++      -ms-flex-align: baseline;
++          align-items: baseline;
+-  align-items: baseline;
+   width: calc(100% / 2);
+   padding: 20px 40px;
+   color: #515151;
+   text-align: center;
+@@ -12376,10 +12461,14 @@
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_statistics\.scss}line{font-family:\0000365}}
+ ul.statistics-list li a {
+   margin-top: 10px;
+   color: #515151;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
++  -webkit-align-items: baseline;
++      -ms-flex-align: baseline;
++          align-items: baseline;
+-  align-items: baseline;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_statistics\.scss}line{font-family:\0000371}}
+ ul.statistics-list li a:hover, ul.statistics-list li a:active, ul.statistics-list li a:focus {
+   color: #347C98;
+@@ -12393,8 +12482,10 @@
+ }
+ @media (min-width: 860px) {
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_statistics\.scss}line{font-family:\0000321}}
+   ul.statistics-list li {
++    display: -webkit-flex;
++    display: -ms-flexbox;
+     display: flex;
+     padding: 0;
+     text-align: left;
+   }
+@@ -12513,9 +12604,10 @@
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   color: #FFFFFF;
++  -ms-transform: translate(-50%, -50%);
++      transform: translate(-50%, -50%);
+-  transform: translate(-50%, -50%);
+   -webkit-transform: translate(-50%, -50%);
+ }
+ 
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_trigger\.scss}line{font-family:\0000368}}
+@@ -12598,8 +12690,10 @@
+   padding: 5px 0;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_users\.scss}line{font-family:\0000353}}
+ #user-bar .userbar-userprofile {
++  display: -webkit-inline-flex;
++  display: -ms-inline-flexbox;
+   display: inline-flex;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_users\.scss}line{font-family:\0000356}}
+ #user-bar .userbar-userprofile:not(:first-child) {
+@@ -12648,9 +12742,13 @@
+   text-decoration: none;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_users\.scss}line{font-family:\00003104}}
+ #user-bar .fullname-picture-wrapper .fullname-picture {
++  -webkit-align-items: center;
++      -ms-flex-align: center;
++          align-items: center;
++  display: -webkit-flex;
++  display: -ms-flexbox;
+-  align-items: center;
+   display: flex;
+   height: 30px;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_users\.scss}line{font-family:\00003109}}
+@@ -12741,8 +12839,10 @@
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_users\.scss}line{font-family:\00003191}}
+ #user-bar .user-groups .content,
+ #user-bar .user-projects .content {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
+   color: #FFFFFF;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/components\/_users\.scss}line{font-family:\00003196}}
+@@ -13550,8 +13650,10 @@
+   display: block;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/states\/_group_dashboard\.scss}line{font-family:\000038}}
+ .view-mode-group_dashboard .related-block {
++  display: -webkit-flex;
++  display: -ms-flexbox;
+   display: flex;
+ }
+ @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/webdev\/www\/amplexor\/capacity4more\.acc\/project\/profiles\/capacity4more\/themes\/c4m\/kapablo\/build\/src\/stylesheets\/states\/_group_dashboard\.scss}line{font-family:\0000311}}
+ .view-mode-group_dashboard .related-block img {
+@@ -13898,5 +14000,5 @@
+     page-break-inside: avoid;
+   }
+ }
+ 
++/*# sourceMappingURL=kapablo.concat.css.map */
+\ No newline at end of file
+-/*# sourceMappingURL=kapablo.concat.css.map */
