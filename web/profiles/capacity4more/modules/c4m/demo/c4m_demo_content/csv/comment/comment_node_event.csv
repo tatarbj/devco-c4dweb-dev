@@ -1,6 +1,0 @@
-ID,Parent,Status,NID,UID,Body
-ce_1,,1,event_3,user_4,"We can't make it this year guys, enjoy the festival!"
-ce_1_1,ce_1,1,event_3,user_4,"Sorry to hear that"
-ce_1_2,ce_1,1,event_3,user_1,"That's sad news"
-ce_2,,1,event_4,user_4,"Can't wait to see these giraffes"
-ce_3,,1,event_5,user_1,"Knowing","When you know too much, it's hard not to lie."
