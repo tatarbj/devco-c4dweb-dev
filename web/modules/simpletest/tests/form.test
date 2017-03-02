@@ -628,6 +628,8 @@ class FormAlterTestCase extends DrupalWebTestCase {
  * Test form validation handlers.
  */
 class FormValidationTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
   public static function getInfo() {
     return array(
       'name' => 'Form validation handlers',
@@ -748,6 +750,7 @@ class FormValidationTestCase extends DrupalWebTestCase {
  * Test form element labels, required markers and associated output.
  */
 class FormsElementsLabelsTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -835,6 +838,7 @@ class FormsElementsLabelsTestCase extends DrupalWebTestCase {
  * Test the tableselect form element for expected behavior.
  */
 class FormsElementsTableSelectFunctionalTest extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -1060,6 +1064,7 @@ class FormsElementsTableSelectFunctionalTest extends DrupalWebTestCase {
  * Test the vertical_tabs form element for expected behavior.
  */
 class FormsElementsVerticalTabsFunctionalTest extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -1096,6 +1101,7 @@ class FormsElementsVerticalTabsFunctionalTest extends DrupalWebTestCase {
  * values aren't lost due to a wrong form rebuild.
  */
 class FormsFormStorageTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -1106,7 +1112,7 @@ class FormsFormStorageTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('form_test');
+    parent::setUp('form_test', 'dblog');
 
     $this->web_user = $this->drupalCreateUser(array('access content'));
     $this->drupalLogin($this->web_user);
@@ -1416,6 +1422,8 @@ class FormsFormStoragePageCacheTestCase extends DrupalWebTestCase {
  * Test wrapper form callbacks.
  */
 class FormsFormWrapperTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
   public static function getInfo() {
     return array(
       'name' => 'Form wrapper callback',
@@ -1442,6 +1450,8 @@ class FormsFormWrapperTestCase extends DrupalWebTestCase {
  * Test $form_state clearance.
  */
 class FormStateValuesCleanTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
   public static function getInfo() {
     return array(
       'name' => 'Form state values clearance',
@@ -1490,6 +1500,8 @@ class FormStateValuesCleanTestCase extends DrupalWebTestCase {
  * Tests $form_state clearance with form elements having buttons.
  */
 class FormStateValuesCleanAdvancedTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
   /**
    * An image file path for uploading.
    */
@@ -1504,7 +1516,7 @@ class FormStateValuesCleanAdvancedTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('form_test');
+    parent::setUp('form_test', 'file');
   }
 
   /**
@@ -1537,6 +1549,7 @@ class FormStateValuesCleanAdvancedTestCase extends DrupalWebTestCase {
  * @todo Add tests for other aspects of form rebuilding.
  */
 class FormsRebuildTestCase extends DrupalWebTestCase {
+
   public static function getInfo() {
     return array(
       'name' => 'Form rebuilding',
@@ -1604,7 +1617,7 @@ class FormsRebuildTestCase extends DrupalWebTestCase {
     // submission and verify it worked by ensuring the updated page has two text
     // field items in the field for which we just added an item.
     $this->drupalGet('node/add/page');
-    $this->drupalPostAJAX(NULL, array(), array('field_ajax_test_add_more' => t('Add another item')), 'system/ajax', array(), array(), 'page-node-form');
+    $this->drupalPostAJAX(NULL, array(), array('field_ajax_test_add_more' => t('Add another item')), NULL, array(), array(), 'page-node-form');
     $this->assert(count($this->xpath('//div[contains(@class, "field-name-field-ajax-test")]//input[@type="text"]')) == 2, 'AJAX submission succeeded.');
 
     // Submit the form with the non-Ajax "Save" button, leaving the title field
@@ -1629,6 +1642,7 @@ class FormsRebuildTestCase extends DrupalWebTestCase {
  * Tests form redirection.
  */
 class FormsRedirectTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -1704,6 +1718,7 @@ class FormsRedirectTestCase extends DrupalWebTestCase {
  * Test the programmatic form submission behavior.
  */
 class FormsProgrammaticTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -1814,6 +1829,7 @@ class FormsProgrammaticTestCase extends DrupalWebTestCase {
  * Test that FAPI correctly determines $form_state['triggering_element'].
  */
 class FormsTriggeringElementTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -1912,6 +1928,8 @@ class FormsTriggeringElementTestCase extends DrupalWebTestCase {
  * Tests rebuilding of arbitrary forms by altering them.
  */
 class FormsArbitraryRebuildTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
+
   public static function getInfo() {
     return array(
       'name' => 'Rebuild arbitrary forms',
@@ -1978,6 +1996,7 @@ class FormsArbitraryRebuildTestCase extends DrupalWebTestCase {
  * Tests form API file inclusion.
  */
 class FormsFileInclusionTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
@@ -1995,7 +2014,7 @@ class FormsFileInclusionTestCase extends DrupalWebTestCase {
    * Tests loading an include specified in hook_menu().
    */
   function testLoadMenuInclude() {
-    $this->drupalPostAJAX('form-test/load-include-menu', array(), array('op' => t('Save')), 'system/ajax', array(), array(), 'form-test-load-include-menu');
+    $this->drupalPostAJAX('form-test/load-include-menu', array(), array('op' => t('Save')), NULL, array(), array(), 'form-test-load-include-menu');
     $this->assertText('Submit callback called.');
   }
 
@@ -2093,6 +2112,7 @@ class FormCheckboxTestCase extends DrupalWebTestCase {
  * Tests uniqueness of generated HTML IDs.
  */
 class HTMLIdTestCase extends DrupalWebTestCase {
+  protected $profile = 'testing';
 
   public static function getInfo() {
     return array(
