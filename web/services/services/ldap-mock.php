@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code to support the LDAP mock service.
@@ -54,8 +55,7 @@ function services_ldap_mock_get_data_by_email($email) {
  * @return bool
  *     Is forced invalid.
  */
-function services_ldap_mock_email_is_valid($email)
-{
+function services_ldap_mock_email_is_valid($email) {
   $pattern = services_config_get('ldap_mock_invalid');
   return (bool) !preg_match($pattern, $email);
 }
@@ -69,8 +69,7 @@ function services_ldap_mock_email_is_valid($email)
  * @return bool
  *     Is valid domain.
  */
-function services_ldap_mock_domain_is_valid($domain)
-{
+function services_ldap_mock_domain_is_valid($domain) {
   $domains = services_config_get('ldap_mock_domains');
   return in_array($domain, $domains);
 }
@@ -126,7 +125,7 @@ function services_ldap_get_random_mock_data($field) {
 function services_ldap_get_random_mock_email_parts($email) {
   $split = explode('@', $email);
   if (count($split) !== 2) {
-    return false;
+    return FALSE;
   }
 
   return array(
@@ -146,8 +145,7 @@ function services_ldap_get_random_mock_email_parts($email) {
  *     - first name
  *     - last name
  */
-function services_ldap_get_random_mock_data_name($userid)
-{
+function services_ldap_get_random_mock_data_name($userid) {
   $parts = explode('.', $userid, 2);
 
   $firstname = array_shift($parts);

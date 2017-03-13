@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * XML response when successfull.

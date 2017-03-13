@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code to support loading templates.
@@ -18,7 +19,7 @@
  * @throws Exception
  *   If the template file does not exists.
  */
-function services_template_render($template, $data = array()) {
+function services_template_render($template, array $data = array()) {
   $template_file = SERVICES_PATH_TEMPLATES . '/' . trim($template, '/');
 
   // Check if template exists.

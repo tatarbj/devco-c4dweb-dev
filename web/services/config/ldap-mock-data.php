@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Mock data for the LDAP service.

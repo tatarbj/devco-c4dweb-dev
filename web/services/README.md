@@ -14,7 +14,7 @@ user related data from the LDAP based on the email address.
 
 The request should be like:
 ```
-http://capacity4dev.ec.europa.eu/services/ldap.php?apikey=<APIKEY>&email=<EMAILADDRESS>
+http://europa.eu/capacity4dev/services/ldap.php?apikey=<API>&email=<EMAIL>
 ```
 
 It will return data in the following format:
@@ -59,7 +59,7 @@ There is an option to access the LDAP service in mock mode:
 
 Add `mock` as an extra get parameter to the request URL:
 ```
-http://capacity4dev.ec.europa.eu/services/ldap.php?mock&apikey=<APIKEY>&email=<EMAILADDRESS>
+http://europa.eu/capacity4dev/services/ldap.php?mock&apikey=<API>&email=<EMAIL>
 ```
 
 ### Configuration

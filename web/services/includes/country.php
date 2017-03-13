@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Country ISO-2 code list.
@@ -10,7 +11,7 @@
  * @param string $code
  *   The code to do the lookup for.
  *
- * @param string
+ * @return string
  *   The found country name.
  */
 function services_country_name_by_code($code) {
@@ -27,7 +28,7 @@ function services_country_name_by_code($code) {
 /**
  * The array of country codes.
  *
- * Source : @link http://data.okfn.org/data/core/language-codes
+ * Source : @link http://data.okfn.org/data/core/language-codes.
  *
  * @return array
  *   Country code list.

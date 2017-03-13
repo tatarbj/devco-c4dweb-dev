@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Shared code for all services.
@@ -36,7 +37,6 @@ function services_api_key_check() {
 /**
  * Send a http response code.
  */
-function services_http_response_code($code = NULL)
-{
+function services_http_response_code($code = NULL) {
   header('X-PHP-Response-Code: ' . $code, TRUE, $code);
 }

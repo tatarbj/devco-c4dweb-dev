@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Code to support loading config variables.
@@ -8,6 +9,7 @@
  * Load the config array.
  *
  * @return array
+ *   Config array.
  */
 function services_config_load() {
   static $config;

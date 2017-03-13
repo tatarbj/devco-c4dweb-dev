@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Services configuration.
@@ -32,8 +33,6 @@ $config['ldap_attributes'] = array(
   'sn',
   'departmentNumber',
 );
-
-
 
 /**
  * Mock Allowed email domains.

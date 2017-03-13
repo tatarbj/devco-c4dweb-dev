@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * LDAP service code.
@@ -7,7 +8,11 @@
 /**
  * Render a ldap service response.
  *
- * @param $content
+ * @param mixed $content
+ *   Content to return with the proper header.
+ *
+ * @return mixed
+ *   $content with the proper header attached.
  */
 function services_ldap_render($content) {
   header('Content-type: text/xml');
@@ -32,7 +37,7 @@ function services_ldap_render_error($error) {
  * @param array $data
  *   The data to return.
  */
-function services_ldap_render_result($data) {
+function services_ldap_render_result(array $data) {
   $content = services_template_render('ldap/response.xml.php', $data);
   services_ldap_render($content);
 }
@@ -181,7 +186,7 @@ function service_ldap_get_user_from_search_result($result) {
  * @return mixed
  *   The data as found in the result.
  */
-function services_ldap_extract_user_data($user, $field) {
+function services_ldap_extract_user_data(array $user, $field) {
   if (!isset($user[$field][0])) {
     return NULL;
   }

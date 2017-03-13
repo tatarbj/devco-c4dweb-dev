@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Proxy service to query the EC LDAP.
@@ -17,7 +18,6 @@ try {
 catch (Exception $e) {
   services_http_response_code(401);
   services_ldap_render_error($e->getMessage());
-  die();
 }
 
 // Get the email address from the request.
@@ -27,7 +27,6 @@ try {
 catch (Exception $e) {
   services_http_response_code(400);
   services_ldap_render_error($e->getMessage());
-  die();
 }
 
 // Query the LDAP service.
