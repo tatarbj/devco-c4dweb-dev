@@ -33,11 +33,15 @@ node('master') {
             sh 'git checkout master'
             sh 'git add . -A'
             sh 'git commit -m"Updated ' + env.PROJECT + '@' + env.BRANCH_NAME + ' (jenkins #' + env.BUILD_ID + ')  at $(date +%Y%m%d%H%M)"'
+
             sh 'drush vset maintenance_mode 1'
+
             sh 'git push'
+
             sh 'drush fra -y'
 	    sh 'drush updb -y'
             sh 'drush vset maintenance_mode 0'
+
             deleteDir()
         }
       }
