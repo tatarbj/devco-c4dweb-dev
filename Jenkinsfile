@@ -36,6 +36,8 @@ node('master') {
 
             sh 'drush vset maintenance_mode 1'
 
+            sh 'drush sql-dump|gzip > /srv/cd/cap4dev/db_' + env.PROJECT + '_' + env.BRANCH_NAME + '_.sql.gz'
+
             sh 'git push'
 
             sh 'drush fra -y'
