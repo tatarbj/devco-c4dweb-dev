@@ -1,6 +1,6 @@
 /**
  * c4m-app
- * @version v0.0.1 - 2016-10-24
+ * @version v0.0.1 - 2017-05-05
  * @link 
  * @author  <>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -632,7 +632,7 @@ angular.module('c4mApp')
 
     // Hide quickpost title field placeholder on focus.
     $scope.titlePlaceholder = true;
-    $scope.titlePlaceholderText = 'Start a discussion, share an idea...';
+    $scope.titlePlaceholderText = 'Share information or an idea, start debate or ask a question here...';
 
     $scope = QuickPostService.setDefaults($scope);
 
@@ -677,6 +677,9 @@ angular.module('c4mApp')
       });
 
       $scope.data['add_to_library'] = 1;
+
+      // Uncheck notification checkbox.
+      $scope.data.notification = false;
 
       // Default location is empty.
       $scope.data.location = {};
@@ -797,8 +800,10 @@ angular.module('c4mApp')
      *  The name of the field.
      */
     $scope.updateType = function (type, field) {
-      // Update type field.
-      $scope.data[field] = $scope.data[field] == type ? '' : type;
+      // Update type field, unless its's already set to input value.
+      if ($scope.data[field] != type) {
+        $scope.data[field] = type;
+      }
     };
 
     // Toggle the visibility of the popovers.
@@ -940,7 +945,7 @@ angular.module('c4mApp')
      * @param type
      *  The type of the submission.
      */
-    var checkForm  = function (submitData, resource, resourceFields, type) {
+    var checkForm = function (submitData, resource, resourceFields, type) {
       // Check for required fields.
       var errors = Request.checkRequired(submitData, resource, resourceFields);
 
@@ -954,11 +959,10 @@ angular.module('c4mApp')
           this[field] = value;
         }, $scope.errors);
         // Scroll up upon discovering an error.
-        // The last error is the point of reference to scroll.
-        var errorName = Object.keys(errors)[Object.keys(errors).length - 1];
-        // In the body input we point to the parent div because of textAngular.
-        var errorInput = errorName == 'body' ? angular.element('#' + errorName + '-wrapper').offset() : angular.element('#' + errorName).offset();
-        angular.element('html, body').animate({scrollTop:errorInput.top}, '500', 'swing');
+        var quickPost = angular.element('#quick-post-form').offset();
+        // Admins has the admin menu, so we take some extra pixels.
+        var extraOffset = 50;
+        angular.element('html, body').animate({scrollTop:quickPost.top - extraOffset}, '500', 'swing');
         return false;
       }
 
@@ -1006,6 +1010,9 @@ angular.module('c4mApp')
      *  The file.
      */
     $scope.onFileSelect = function ($files) {
+      // Reset the image error message.
+      $scope.serverSide.data.imageError = false;
+
       // $files: an array of files selected, each file has name, size, and type.
       for (var i = 0; i < $files.length; i++) {
         var file = $files[i];
@@ -1013,6 +1020,9 @@ angular.module('c4mApp')
           $scope.data.document = data.data.data[0].id;
           $scope.data.fileName = data.data.data[0].label;
           $scope.serverSide.file = data;
+        },
+        function (errors) {
+          $scope.serverSide.data.imageError = errors;
         });
       }
     };
@@ -1061,7 +1071,41 @@ angular.module('c4mApp')
       $scope.resetEntityForm();
       // Closes quick-post form.
       $scope.selectedResource = '';
-    }
+    };
+
+    /**
+     * Uploading quick post document file.
+     *
+     * @param $files
+     *  The file.
+     * @param fieldName
+     *  Name of the current field.
+     */
+    $scope.onQuickPostFileSelect = function ($files, fieldName) {
+
+      $scope.setFieldName(fieldName);
+      // $files: an array of files selected, each file has name, size, and type.
+      for (var i = 0; i < $files.length; i++) {
+        var file = $files[i];
+        FileUpload.upload(file).then(function (data) {
+          var fileId = data.data.data[0].id;
+          $scope.data.fileName = data.data.data[0].label;
+          $scope.serverSide.file = data;
+          var openPath = DrupalSettings.getData('purl');
+          Drupal.overlay.open(openPath + '/overlay-file/' + fileId + '/quick' + '?render=overlay');
+        });
+      }
+    };
+
+    /**
+     * Set the name of the current field.
+     *
+     * @param fieldName
+     */
+    $scope.setFieldName = function (fieldName) {
+      $scope.fieldName = fieldName;
+    };
+
   });
 
 angular.module('c4mApp')
@@ -1091,7 +1135,7 @@ angular.module('c4mApp')
      */
     $scope.createDocument = function (event, fileId, data, addToLibrary) {
       // Preventing the form from redirecting to the "action" url.
-      // We nee the url in the action because of the "overlay" module.
+      // We need the url in the action because of the "overlay" module.
       event.preventDefault();
       DrupalSettings.getFieldSchema('documents')
         .then(function (data) {
@@ -1110,17 +1154,12 @@ angular.module('c4mApp')
             if (angular.isObject(allowedValues) && Object.keys(allowedValues).length) {
               submitData[field] = {};
             }
-
-            var textFields = ['label', 'body', 'tags', 'organiser' , 'datetime'];
-            angular.forEach(textFields, function (field) {
-              if (!field) {
-                submitData[field] = field == 'tags' ? [] : '';
-              }
-            });
           });
+
           submitData.document = fileId;
           submitData.group = DrupalSettings.getData('groupID');
           submitData.add_to_library = addToLibrary ? 1 : 0;
+          submitData.label = $scope.data.label;
 
           EntityResource.createEntity(submitData, 'documents', resourceFields)
             .success(function (data, status) {
@@ -1159,6 +1198,86 @@ angular.module('c4mApp')
     };
   });
 
+angular.module('c4mApp')
+  .controller('DocumentQuickPostCtrl', function ($scope, DrupalSettings, EntityResource, Request) {
+
+    $scope.data = DrupalSettings.getData('vocabularies');
+
+    $scope.data.relatedDocuments = [];
+
+    $scope.model = {};
+
+    $scope.fieldName = 'c4m-related-document';
+    $scope.formId = 'quick-post-form';
+
+    /**
+     * Create document node.
+     *
+     * @param event
+     *  The submit event.
+     * @param fileId
+     *  Id of the attached file.
+     * @param data
+     *  The submitted data.
+     * @param addToLibrary
+     *  Open or not full form of adding document.
+     */
+    $scope.createDocument = function (event, fileId, data, addToLibrary) {
+      // Preventing the form from redirecting to the "action" url.
+      // We need the url in the action because of the "overlay" module.
+      event.preventDefault();
+      DrupalSettings.getFieldSchema('documents')
+        .then(function (data) {
+          $scope.fieldSchema = data.c4m.field_schema;
+          $scope.data.entity = data.c4m.data.entity;
+
+          var resourceFields = $scope.fieldSchema.resources['documents'];
+          var submitData = Request.cleanFields(data, resourceFields);
+
+          angular.forEach(resourceFields, function (data, field) {
+            // Don't change the group field or resource object.
+            if (field == 'resources' || field == 'group' || field == "tags") {
+              return;
+            }
+            var allowedValues = field == "categories" ? data.form_element.allowed_values.categories : data.form_element.allowed_values;
+            if (angular.isObject(allowedValues) && Object.keys(allowedValues).length) {
+              submitData[field] = {};
+            }
+          });
+
+          submitData.document = fileId;
+          submitData.group = DrupalSettings.getData('groupID');
+          submitData.add_to_library = addToLibrary ? 1 : 0;
+          submitData.label = $scope.data.label;
+
+          EntityResource.createEntity(submitData, 'documents', resourceFields)
+            .success(function (data, status) {
+              var nid = data.data[0].id;
+              var item = '(' + nid + ')';
+
+              jQuery('#edit-' + $scope.fieldName + '-und', parent.window.document).val(item);
+              jQuery('#input-' + $scope.fieldName, parent.window.document).val(nid).trigger('click');
+
+              if (!addToLibrary) {
+                // Save document and go to the parent page.
+                parent.Drupal.overlay.close();
+              }
+              else {
+                // Save document and go to its edit page to add more data.
+                parent.Drupal.overlay.open(DrupalSettings.getData('purl') + '/overlay-node/' + nid + '/edit' + '?render=overlay');
+              }
+            });
+        });
+    };
+
+    /**
+     * Close the overlay.
+     */
+    $scope.closeOverlay = function () {
+      parent.Drupal.overlay.close();
+    };
+  });
+
 'use strict';
 
 /**
@@ -1173,7 +1292,7 @@ angular.module('c4mApp')
 angular.module('c4mApp')
   .directive('bundleSelect', function ($window, DrupalSettings) {
     return {
-      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/libraries/bower_components/c4m-app/dist/directives/bundle-select/bundle-select.html',
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/directives/bundle-select/bundle-select.html',
       restrict: 'E',
       scope: {
         items: '=',
@@ -1204,7 +1323,7 @@ angular.module('c4mApp')
 angular.module('c4mApp')
   .directive('calendar', function ($window, DrupalSettings) {
     return {
-      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/libraries/bower_components/c4m-app/dist/directives/calendar/calendar.html',
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/directives/calendar/calendar.html',
       restrict: 'E',
       scope: true
     };
@@ -1222,9 +1341,9 @@ angular.module('c4mApp')
  * @description A list of related to the discussion documents.
  */
 angular.module('c4mApp')
-  .directive('relatedDocuments', function (DrupalSettings, $window, EntityResource) {
+  .directive('relatedDocuments', function (DrupalSettings, $window, EntityResource, $sce) {
     return {
-      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/libraries/bower_components/c4m-app/dist/directives/documents/documents.html',
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/directives/documents/documents.html',
       restrict: 'E',
       scope: {
         relatedDocuments: '=',
@@ -1245,7 +1364,6 @@ angular.module('c4mApp')
         scope.updateDocumentsData = function (relatedDocuments) {
           var documents = {};
           angular.forEach(relatedDocuments, function (value, key) {
-
             // Get all field values of the document.
             EntityResource.getEntityData('documents', value).success(function (data, status) {
               documents[key] = data.data[0];
@@ -1253,11 +1371,13 @@ angular.module('c4mApp')
               documents[key].document.filesize = $window.filesize(documents[key].document.filesize);
             });
           });
+
           return documents;
         };
 
         // Get the click event form the overlay and update related documents.
         element.parents('#' + scope.formId).find('#input-' + scope.fieldName).on('click', function (event) {
+
           var val = jQuery(this).val();
           scope.$apply(function (scope) {
             var ids = val.split(',');
@@ -1301,6 +1421,84 @@ angular.module('c4mApp')
 'use strict';
 
 /**
+ * Provides a list of related to the discussion documents.
+ *
+ * @ngdoc directive
+ *
+ * @name c4mApp.directive:relatedDocuments
+ *
+ * @description A list of related to the discussion documents.
+ */
+angular.module('c4mApp')
+  .directive('relatedQuickPostDocuments', function (DrupalSettings, $window, EntityResource) {
+    return {
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/directives/documents/documents.html',
+      restrict: 'E',
+      scope: {
+        relatedDocuments: '=',
+        formId: '=',
+        fieldName: '='
+      },
+      link: function postLink(scope, element) {
+
+        scope.fieldName = 'c4m-related-document';
+        scope.formId = 'quick-post-form';
+
+        /**
+         * Create array of related document objects.
+         *
+         * @param relatedDocuments
+         *  List of related documents ids
+         *
+         * @returns {{}}
+         *  Returns array of related document information objects
+         */
+        scope.updateDocumentsData = function (relatedDocuments) {
+          var documents = {};
+          angular.forEach(relatedDocuments, function (value, key) {
+            // Get all field values of the document.
+            EntityResource.getEntityData('documents', value).success(function (data, status) {
+              documents[key] = data.data[0];
+              // Format file size.
+              documents[key].document.filesize = $window.filesize(documents[key].document.filesize);
+            });
+          });
+          return documents;
+        };
+
+        // Get the click event form the overlay and update related documents.
+        element.parents('#' + scope.formId).find('#input-' + scope.fieldName).on('click', function (event) {
+          var val = jQuery(this).val();
+          scope.$apply(function (scope) {
+            var ids = val.split(',');
+            scope.relatedDocuments = ids;
+            scope.data = scope.updateDocumentsData(scope.relatedDocuments);
+          });
+        });
+
+        scope.data = scope.updateDocumentsData(scope.relatedDocuments);
+
+        // Updating data when added or removed item from the related documents.
+        scope.$watch('relatedDocuments', function (newValue, oldValue) {
+          if (newValue !== oldValue) {
+            scope.data = scope.updateDocumentsData(newValue);
+          }
+        }, true);
+
+        // Removing document from related documents.
+        scope.removeDocument = function () {
+          scope.relatedDocuments = [];
+          // Make sure the element is empty so we can select the same file
+          // again.
+          angular.element('#' + scope.fieldName).val('');
+        };
+      }
+    };
+  });
+
+'use strict';
+
+/**
  * Provides a list of filterable taxonomy terms.
  *
  * @ngdoc directive
@@ -1312,7 +1510,7 @@ angular.module('c4mApp')
 angular.module('c4mApp')
   .directive('groupCategories', function ($window, DrupalSettings, $timeout, $filter) {
     return {
-      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/libraries/bower_components/c4m-app/dist/directives/group-categories/group-categories.html',
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/directives/group-categories/group-categories.html',
       restrict: 'E',
       scope: {
         items: '=items',
@@ -1401,7 +1599,7 @@ angular.module('c4mApp')
 angular.module('c4mApp')
   .directive('listTerms', function ($window, DrupalSettings, $timeout, $filter) {
     return {
-      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/libraries/bower_components/c4m-app/dist/directives/list-terms/list-terms.html',
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/directives/list-terms/list-terms.html',
       restrict: 'E',
       scope: {
         items: '=items',
@@ -1488,7 +1686,7 @@ angular.module('c4mApp')
 angular.module('c4mApp')
   .directive('location', function ($window, DrupalSettings) {
     return {
-      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/libraries/bower_components/c4m-app/dist/directives/location/location.html',
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/dist/directives/location/location.html',
       restrict: 'E',
       scope: {
         data: '='
@@ -1510,7 +1708,7 @@ angular.module('c4mApp')
 angular.module('c4mApp')
   .directive('types', function ($window, DrupalSettings) {
     return {
-      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/libraries/bower_components/c4m-app/dist/directives/types/types.html',
+      templateUrl: DrupalSettings.getBasePath() + 'profiles/capacity4more/modules/c4m/restful/c4m_restful_quick_post/components/c4m-app/dist/directives/types/types.html',
       restrict: 'E',
       scope: {
         fieldSchema: '=',
@@ -1650,6 +1848,31 @@ angular.module('c4mApp')
       return bytes.toFixed(+ precision) + ' ' + units[ unit ];
     };
   });
+
+/**
+ * Provides the orderObjectBy.
+ *
+ * @ngdoc filter
+ *
+ * @name c4mApp.filter:orderObjectBy
+ *
+ * @description Filter objects according to one of it's fields.
+ */
+angular.module('c4mApp')
+  .filter('orderObjectBy',[ function () {
+    return function (items, field) {
+      var sorted = [];
+      angular.forEach(items, function (item) {
+        sorted.push(item);
+      });
+
+      sorted.sort(function (a, b) {
+        return (a[field] > b[field] ? 1 : -1);
+      });
+
+      return sorted;
+    }
+  }]);
 
 'use strict';
 
@@ -2283,7 +2506,7 @@ angular.module('c4mApp')
       angular.forEach(submitData, function (values, field) {
         // Get the IDs of the selected references.
         // Prepare data to send to RESTful.
-        if (Request.resourceFields[field] && field != 'tags') {
+        if (Request.resourceFields[field] && field != 'tags' && field != 'notification') {
           var fieldType = Request.resourceFields[field].data.type;
           if (values && (fieldType == "entityreference" || fieldType == "taxonomy_term_reference")) {
             submitData[field] = [];
@@ -2317,6 +2540,12 @@ angular.module('c4mApp')
       var categories = submitData.categories;
       delete(submitData.categories);
       delete(submitData.tags);
+
+      // Make sure 'categories' is defined.
+      if (!categories) {
+        categories = [];
+      }
+
       submitData.categories = categories.concat(tags);
 
       return jQuery.param(submitData);
@@ -2340,13 +2569,33 @@ angular.module('c4mApp')
       var errorData = angular.copy(data);
 
       angular.forEach(errorData, function (values, field) {
-        if (field == "tags") {
+        if (field == "tags" || field == 'notification') {
           return;
         }
         // Check that title has the right length.
         if (field == 'label' && values.length < 3) {
           this[field] = 1;
         }
+
+        if (field == 'topic') {
+          // Assume topics are always empty.
+          var empty = true;
+          // Check all terms whether any of them is checked by the user.
+          angular.forEach(values, function (termIsChecked, tid) {
+            // If we already found out topics are not empty we should skip.
+            if (!empty) {
+              return;
+            }
+
+            // When term is checked it will change the empty to be NOT empty.
+            empty = !termIsChecked;
+          });
+
+          if (empty) {
+            this[field] = 1;
+          }
+        }
+
         // Check required fields for validations, except for datetime field because we checked it earlier.
         var fieldRequired = resourceFields[field].data.required;
         if (fieldRequired && (!values) && field != "datetime") {
@@ -2376,8 +2625,13 @@ angular.module('c4mApp')
       angular.forEach(cleanData, function (values, field) {
 
         // Keep only the status field.
-        if (!resourceFields[field] && field != "tags") {
+        if (!resourceFields[field] && field != "tags" && field != 'notification') {
           delete this[field];
+        }
+
+        // If there're related documents, add them.
+        if (field == 'relatedDocuments') {
+          this['related_document'] = values;
         }
       }, cleanData);
 
