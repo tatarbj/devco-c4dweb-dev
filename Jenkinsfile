@@ -35,9 +35,7 @@ node('master') {
             sh 'git commit -m"Updated ' + env.PROJECT + '@' + env.BRANCH_NAME + ' (jenkins #' + env.BUILD_ID + ')  at $(date +%Y%m%d%H%M)"'
 
             sh 'drush vset maintenance_mode 1'
-
             sh 'drush sql-dump|gzip > /srv/cd/cap4dev/db_' + env.PROJECT + '_' + env.BRANCH_NAME + '.sql.gz'
-
             sh 'git push'
 
             sh 'drush fra -y'
