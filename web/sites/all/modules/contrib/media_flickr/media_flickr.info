@@ -7,12 +7,13 @@ dependencies[] = media_internet
 
 files[] = includes/MediaFlickrStreamWrapper.inc
 files[] = includes/MediaInternetFlickrHandler.inc
+files[] = media_flickr.test
 
 configure = admin/config/media/media_flickr
 
-; Information added by Drupal.org packaging script on 2015-05-28
-version = "7.x-2.0-alpha3+18-dev"
+; Information added by Drupal.org packaging script on 2017-06-21
+version = "7.x-2.0-alpha4+10-dev"
 core = "7.x"
 project = "media_flickr"
-datestamp = "1432796884"
+datestamp = "1498005245"
 
