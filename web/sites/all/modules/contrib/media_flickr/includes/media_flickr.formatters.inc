@@ -2,6 +2,7 @@
 
 /**
  * @file
+ * File formatters for Flickr images.
  */
 
 /**
@@ -34,6 +35,10 @@ function media_flickr_file_formatter_info() {
 
 /**
  * Implements hook_file_formatter_FORMATTER_view().
+ *
+ * @param $file
+ * @param $display
+ * @param $langcode
  */
 function media_flickr_file_formatter_video_view($file, $display, $langcode) {
   $scheme = file_uri_scheme($file->uri);
@@ -52,6 +57,10 @@ function media_flickr_file_formatter_video_view($file, $display, $langcode) {
 
 /**
  * Implements hook_file_formatter_FORMATTER_settings().
+ *
+ * @param $form
+ * @param $form_state
+ * @param $settings
  */
 function media_flickr_file_formatter_video_settings($form, &$form_state, $settings) {
   $element = array();
@@ -75,6 +84,10 @@ function media_flickr_file_formatter_video_settings($form, &$form_state, $settin
 
 /**
  * Implements hook_file_formatter_FORMATTER_view().
+ *
+ * @param $file
+ * @param $display
+ * @param $langcode
  */
 function media_flickr_file_formatter_image_view($file, $display, $langcode) {
   $scheme = file_uri_scheme($file->uri);
@@ -112,6 +125,10 @@ function media_flickr_file_formatter_image_view($file, $display, $langcode) {
 
 /**
  * Implements hook_file_formatter_FORMATTER_settings().
+ *
+ * @param $form
+ * @param $form_state
+ * @param $settings
  */
 function media_flickr_file_formatter_image_settings($form, &$form_state, $settings) {
   $element = array();
@@ -182,4 +199,3 @@ function media_flickr_file_default_displays() {
 
   return $default_displays;
 }
-
