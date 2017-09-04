@@ -16,6 +16,8 @@ pipeline:
       - sha1
       - sha256
       - sha512
-    secrets: [ github_api_token ]
+    secrets:
+      - source: github_api_token 
+        target: api_key
     when:
       event: tag
