@@ -16,7 +16,7 @@ pipeline:
     image: fpfis/mysql56
     commands:
       - mysqladmin -h mysql create database
-      - mysql -h mysql < dump.sql
+      - mysql database -h mysql < dump.sql
 
   setup-test-drupal:
     image: fpfis/php56-dev
