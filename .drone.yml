@@ -1,3 +1,7 @@
+service:
+  mysql:
+    image: fpfis/mysql56
+
 pipeline:
 
   get-sanitzed-dump:
@@ -8,4 +12,7 @@ pipeline:
     when:
       branch: [ production, acceptance, test ]
 
-
+  import-dump:
+    image: fpfis/mysql56
+    commands:
+      - mysql -h mysql < dump.sql
