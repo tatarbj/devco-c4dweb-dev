@@ -15,4 +15,16 @@ pipeline:
   import-dump:
     image: fpfis/mysql56
     commands:
+      - mysqladmin -h mysql create database
       - mysql -h mysql < dump.sql
+
+  setup-test-drupal:
+    image: fpfis/php56-dev
+    commands:
+      - cp settings.docker.php web/sites/default/settings.local.php
+
+  test-drush:
+    image: fpfis/php56-dev
+    commands:
+      - drush -r web status
+      - drush -r web cc all
