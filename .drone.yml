@@ -2,4 +2,4 @@ pipeline:
   create-package:
     image: fpfis/php56
     commands:
-      - tar cz webroot > package.tar.gz
+      - tar cz web > package.tar.gz
