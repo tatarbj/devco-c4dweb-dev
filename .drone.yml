@@ -1,23 +1,11 @@
 pipeline:
 
-  create-package:
-    image: fpfis/php56
-    commands:
-      - tar cz web > ${DRONE_REPO_NAME}-${DRONE_TAG}.tar.gz
+  get-sanitzed-dump:
+    image: fpfis/drone-plugin-asda
+    target: dump.sql
+    website: ${DRONE_REPO_NAME%%-reference}
+    secrets: [ asda_url ]
     when:
-      event: tag
+      branch: [ production, acceptance, test ]
 
-  github_release:
-    image: plugins/github-release
-    files:
-      - ${DRONE_REPO_NAME}-${DRONE_TAG}.tar.gz
-    checksum:
-      - md5
-      - sha1
-      - sha256
-      - sha512
-    secrets:
-      - source: github_api_token 
-        target: GITHUB_RELEASE_API_KEY 
-    when:
-      event: tag
+
