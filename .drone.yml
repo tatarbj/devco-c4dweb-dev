@@ -88,7 +88,7 @@ pipeline:
       event: deployment
       environment: [ test ]
 
-  test-upgrade-test:
+  site-upgrade:
     image: fpfis/php71-dev
     commands:
       - drush -r website updb -y || drush -r website rr || drush -r website cc all || drush -r website rr
