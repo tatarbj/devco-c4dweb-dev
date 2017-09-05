@@ -6,7 +6,7 @@ pipeline:
   fix-drupal:
     image: fpfis/php56-dev
     commands:
-      - patch -i assets/drupal_get_path_alias-fix.patch -d web -p1
+      - patch -i ../assets/drupal_get_path_alias-fix.patch -d web -p1
 
   get-sanitzed-dump:
     image: fpfis/drone-plugin-asda
