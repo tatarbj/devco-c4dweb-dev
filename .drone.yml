@@ -32,7 +32,7 @@ pipeline:
       event: push
 
   test-upgrade-test:
-    image: fpfis/php71-dev
+    image: fpfis/php71-dev:latest
     commands:
       - drush -r web updb -y || drush -r web rr || drush -r web cc all || drush -r web rr
       - drush -r web updb -y
