@@ -3,8 +3,10 @@ services:
     image: fpfis/mysql56
 
 pipeline:
+  # Testing :
+
   fix-drupal:
-    image: fpfis/php56-dev
+    image: fpfis/php71-dev
     commands:
       - patch -i ../assets/drupal_get_path_alias-fix.patch -d web -p1
 
@@ -13,26 +15,87 @@ pipeline:
     target: dump.sql
     website: ${DRONE_REPO_NAME%%-reference}
     secrets: [ asda_url ]
-    when:
-      branch: [ production, acceptance, test ]
 
   import-dump:
     image: fpfis/mysql56
     commands:
       - mysqladmin -h mysql create database
       - mysql database -h mysql < dump.sql
+    when:
+      event: push
 
   setup-test-drupal:
-    image: fpfis/php56-dev
+    image: fpfis/php71-dev
     commands:
       - cp assets/settings.docker.php web/sites/default/settings.local.php
+    when:
+      event: push
 
 
-  test-drush:
-    image: fpfis/php56-dev
+  test-upgrade-test:
+    image: fpfis/php71-dev
     commands:
-      - drush -r web updb -y || drush -r web rr
+      - drush -r web updb -y || drush -r web rr || drush -r web cc all || drush -r web rr
       - drush -r web updb -y
       - drush -r web fra -y
       - drush -r web status
       - drush -r web cc all
+    when:
+      even: push
+
+  create-deploy-test:
+    image: fpfis/drone-plugin-github-deploy
+    state: create
+    deploy_environment: test
+    secrets: [ github_api_token ]
+    automerge: false
+    when:
+      event: push
+      branch: test
+
+  # End testing
+
+  # Begin deployment
+  backup-deployed-environment:
+    image: fpfis/php71-dev
+    commands:
+      - ./bin/drush -r website sql-dump > /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
+      - gzip /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
+    when:
+      event: deployment
+      environment: [ test ]
+    volumes:
+      - /backups:/backups
+
+# Push to deploy server and sync platform/sites/default folder from live environment
+  deploy-test:
+    image: fpfis/drone-plugin-git-deploy
+    source: web
+    target_folder: website
+    secrets:
+      - source: target_repo_test
+        target: target_repo
+      - source: deploy_key_test
+        target: deploy_key
+    clean: false
+    message: Deployed ${DRONE_COMMIT_SHA} from ${DRONE_REPO_ORG}/${DRONE_REPO_NAME}@${DRONE_BRANCH}
+    excludes:
+      - settings.php
+      - settings.local.php
+      - files
+      - sites/all/modules/fpfis
+    when:
+      event: deployment
+      environment: [ test ]
+
+  test-upgrade-test:
+    image: fpfis/php71-dev
+    commands:
+      - drush -r website updb -y || drush -r website rr || drush -r website cc all || drush -r website rr
+      - drush -r website updb -y
+      - drush -r website fra -y
+      - drush -r website status
+      - drush -r website cc all
+    when:
+      event: deployment
+      environment: [ test ]
