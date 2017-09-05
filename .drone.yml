@@ -104,7 +104,7 @@ pipeline:
       environment: [ test ]
 
   site-upgrade:
-    image: fpfis/php71-dev
+    image: fpfis/php71-dev:latest
     commands:
       - drush -r website updb -y || drush -r website rr || drush -r website cc all || drush -r website rr
       - drush -r website updb -y
