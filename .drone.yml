@@ -31,8 +31,7 @@ pipeline:
   test-drush:
     image: fpfis/php56-dev
     commands:
-      - drush -r web updb -y
-      - drush -r web rr
+      - drush -r web updb -y || drush -r web rr
       - drush -r web updb -y
       - drush -r web fra -y
       - drush -r web status
