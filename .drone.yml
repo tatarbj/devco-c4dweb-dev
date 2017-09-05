@@ -59,7 +59,7 @@ pipeline:
   backup-deployed-environment:
     image: fpfis/php71-dev
     commands:
-      - ./bin/drush -r website sql-dump > /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
+      - drush -r website sql-dump > /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
       - gzip /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
     when:
       event: deployment
