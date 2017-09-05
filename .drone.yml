@@ -31,7 +31,6 @@ pipeline:
     when:
       event: push
 
-
   test-upgrade-test:
     image: fpfis/php71-dev
     commands:
@@ -42,6 +41,22 @@ pipeline:
       - drush -r web cc all
     when:
       event: push
+
+  slack-notify-deploy:
+    image: plugins/slack
+    secrets: [ slack_webhook ]
+    channel: ci
+    username: fpfisbot
+    icon_url: https://avatars0.githubusercontent.com/u/23079543?v=3&s=400
+    when:
+      event: push
+      status: [ success, failure ]
+    template: >
+      {{#success build.status}}
+        {{repo.name}}@{{build.branch}} <{{build.link}}|passed> the upgrade test.
+      {{else}}
+        {{repo.name}}@{{build.branch}} <{{build.link}}|failed> the upgrade test.
+      {{/success}}
 
   create-deploy-test:
     image: fpfis/drone-plugin-github-deploy
@@ -99,3 +114,21 @@ pipeline:
     when:
       event: deployment
       environment: [ test ]
+
+
+  slack-notify-deploy:
+    image: plugins/slack
+    secrets: [ slack_webhook ]
+    channel: ci
+    username: fpfisbot
+    icon_url: https://avatars0.githubusercontent.com/u/23079543?v=3&s=400
+    when:
+      event: deployment
+      environment: [ acceptance, production ]
+      status: [ success, failure ]
+    template: >
+      {{#success build.status}}
+        {{repo.name}}@{{build.branch}} <{{build.link}}|deployed> in ${DRONE_DEPLOY_TO}.
+      {{else}}
+        {{repo.name}}@{{build.branch}} <{{build.link}}|failed> to deploy in ${DRONE_DEPLOY_TO}.
+      {{/success}}
