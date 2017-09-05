@@ -3,6 +3,10 @@ services:
     image: fpfis/mysql56
 
 pipeline:
+  fix-drupal:
+    image: fpfis/php56-dev
+    commands:
+      - patch -i assets/drupal_get_path_alias-fix.patch -d web -p1
 
   get-sanitzed-dump:
     image: fpfis/drone-plugin-asda
@@ -21,11 +25,13 @@ pipeline:
   setup-test-drupal:
     image: fpfis/php56-dev
     commands:
-      - cp settings.docker.php web/sites/default/settings.local.php
+      - cp assets/settings.docker.php web/sites/default/settings.local.php
+
 
   test-drush:
     image: fpfis/php56-dev
     commands:
+      - drush -r web rr
       - drush -r web fra -y
       - drush -r web updb -y
       - drush -r web status
