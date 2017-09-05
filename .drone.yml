@@ -41,7 +41,7 @@ pipeline:
       - drush -r web status
       - drush -r web cc all
     when:
-      even: push
+      event: push
 
   create-deploy-test:
     image: fpfis/drone-plugin-github-deploy
