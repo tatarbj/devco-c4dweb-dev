@@ -3,7 +3,6 @@ services:
     image: fpfis/mysql56
 
 pipeline:
-  # Testing :
 
   fix-drupal:
     image: fpfis/php71-dev
