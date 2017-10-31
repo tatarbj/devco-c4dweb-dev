@@ -1663,7 +1663,7 @@ function form_set_error($name = NULL, $message = '', $limit_validation_errors = 
     $sections = $limit_validation_errors;
   }
 
-  if (isset($name) && !isset($form[$name])) {
+  if (isset($name)) {
     $record = TRUE;
     if (isset($sections)) {
       // #limit_validation_errors is an array of "sections" within which user
@@ -1689,7 +1689,7 @@ function form_set_error($name = NULL, $message = '', $limit_validation_errors = 
       }
     }
     if ($record) {
-      $form[$name] = $message;
+      $form[$name][] = $message;
       if ($message) {
         drupal_set_message($message, 'error');
       }
