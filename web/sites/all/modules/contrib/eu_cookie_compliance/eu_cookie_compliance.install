@@ -106,3 +106,10 @@ function eu_cookie_compliance_update_7001(&$sandbox) {
   cache_clear_all('variables', 'cache');
 }
 
+/**
+ * Delete the menu item that was added due to a missing menu item type in 1.15.
+ */
+function eu_cookie_compliance_update_7002(&$sandbox) {
+  db_query('delete from {menu_links} where link_path = \'eu-cookie-compliance-check\'');
+}
+

@@ -25,6 +25,7 @@ function eu_cookie_compliance_menu() {
     $items['eu-cookie-compliance-check'] = array(
       'title' => 'Check if visit is in EU',
       'page callback' => 'eu_cookie_compliance_json',
+      'type' => MENU_CALLBACK,
       'access arguments' => array('display EU Cookie Compliance popup'),
     );
   }
@@ -46,7 +47,7 @@ function eu_cookie_compliance_page_alter(&$page) {
  */
 function eu_cookie_compliance_page_build(&$page) {
   $popup_settings = eu_cookie_compliance_get_settings();
-  global $theme;
+  global $theme, $user;
 
   // Check Add/Remove domains
   $domain_allow = TRUE;
@@ -73,6 +74,7 @@ function eu_cookie_compliance_page_build(&$page) {
     if ($path != $_GET['q']) {
       $path_match = $path_match || drupal_match_path($_GET['q'], $popup_settings['exclude_paths']);
     }
+    drupal_alter('eu_cookie_compliance_path_match', $path_match, $path, $popup_settings['exclude_paths']);
   }
 
   // Check exclude admin pages.
@@ -86,7 +88,12 @@ function eu_cookie_compliance_page_build(&$page) {
     $geoip_match = eu_cookie_compliance_user_in_eu();
   }
 
-  if (!empty($popup_settings['popup_enabled']) && user_access('display EU Cookie Compliance popup') && $geoip_match && $domain_allow && !$path_match && !$admin_page_match) {
+  $uid1_match = TRUE;
+  if ($user->uid == 1 && isset($popup_settings['exclude_uid_1']) && $popup_settings['exclude_uid_1']) {
+    $uid1_match = FALSE;
+  }
+
+  if (!empty($popup_settings['popup_enabled']) && user_access('display EU Cookie Compliance popup') && $geoip_match && $domain_allow && !$path_match && !$admin_page_match && $uid1_match) {
     global $language;
     // Array storage for caching full client data.
     if (module_exists('domain')) {
@@ -124,6 +131,10 @@ function eu_cookie_compliance_page_build(&$page) {
           $data['css'] .= '#sliding-popup .popup-content #popup-text h1, #sliding-popup .popup-content #popup-text h2, #sliding-popup .popup-content #popup-text h3, #sliding-popup .popup-content #popup-text p {color:#' . check_plain($popup_settings['popup_text_hex']) . ' !important;}';
         }
       }
+      if (!empty($popup_settings['popup_position']) && $popup_settings['popup_position'] && !empty($popup_settings['fixed_top_position']) && $popup_settings['fixed_top_position']) {
+        $data['css'] .= '#sliding-popup.sliding-popup-top { position: fixed; }';
+      }
+
       $popup_text_info = str_replace(array("\r", "\n"), '', $popup_settings['popup_info']['value']);
       $popup_text_agreed = str_replace(array("\r", "\n"), '', $popup_settings['popup_agreed']['value']);
       $html_info = theme('eu_cookie_compliance_popup_info', array('message' => check_markup($popup_text_info, $popup_settings['popup_info']['format'], FALSE), 'agree_button' => $popup_settings['popup_agree_button_message'], 'disagree_button' => $popup_settings['popup_disagree_button_message']));
@@ -135,7 +146,7 @@ function eu_cookie_compliance_page_build(&$page) {
         $html_agreed = preg_replace('/<!--(.|\s)*?-->/', '', $html_agreed);
       }
       $clicking_confirmation = (isset($popup_settings['popup_clicking_confirmation'])) ? $popup_settings['popup_clicking_confirmation'] : TRUE;
-      $scrolling_confirmation = (isset($popup_settings['popup_scrolling_confirmation']))? $popup_settings['popup_scrolling_confirmation'] : TRUE ;
+      $scrolling_confirmation = (isset($popup_settings['popup_scrolling_confirmation']))? $popup_settings['popup_scrolling_confirmation'] : FALSE;
       $data['variables'] = array(
         'popup_enabled' => $popup_settings['popup_enabled'],
         'popup_agreed_enabled' => $popup_settings['popup_agreed_enabled'],
@@ -152,6 +163,8 @@ function eu_cookie_compliance_page_build(&$page) {
         'popup_link_new_window' => isset($popup_settings['popup_link_new_window']) ? $popup_settings['popup_link_new_window'] : 1,
         'popup_position' => empty($popup_settings['popup_position']) ? NULL : $popup_settings['popup_position'],
         'popup_language' => $language->language,
+        'better_support_for_screen_readers' => isset($popup_settings['better_support_for_screen_readers']) ? $popup_settings['better_support_for_screen_readers'] : 0,
+        'reload_page' => isset($popup_settings['reload_page']) ? $popup_settings['reload_page'] : 0,
         'domain' => variable_get('eu_cookie_compliance_domain', ''),
         'popup_eu_only_js' => isset($popup_settings['eu_only_js']) ? $popup_settings['eu_only_js'] : 0,
         'cookie_lifetime' => variable_get('eu_cookie_compliance_cookie_lifetime', 100),

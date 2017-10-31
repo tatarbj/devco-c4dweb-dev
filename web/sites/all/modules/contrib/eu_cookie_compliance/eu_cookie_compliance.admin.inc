@@ -52,7 +52,7 @@ function eu_cookie_compliance_admin_form($form, $form_state) {
   $form['popup_message']['eu_cookie_compliance']['popup_clicking_confirmation'] = array(
     '#type' => 'checkbox',
     '#title' => t('Consent by clicking'),
-    '#description' => t('By default by clicking any link on the website the visitor accepts the cookie policy. Uncheck this box if you do not require this functionality. You may want to edit the pop-up message below accordingly.'),
+    '#description' => t('By default by clicking any link or button on the website the visitor accepts the cookie policy. Uncheck this box if you do not require this functionality. You may want to edit the pop-up message below accordingly.'),
     '#default_value' => isset($popup_settings['popup_clicking_confirmation']) ? $popup_settings['popup_clicking_confirmation'] : 1,
   );
 
@@ -102,7 +102,7 @@ function eu_cookie_compliance_admin_form($form, $form_state) {
     '#type' => 'checkbox',
     '#title' => t('Clicking hides “Thank you” message'),
     '#default_value' => isset($popup_settings['popup_hide_agreed']) ? $popup_settings['popup_hide_agreed'] : 0,
-    '#description' => t('Clicking a link hides the thank you message automatically.'),
+    '#description' => t('Clicking a link or button hides the thank you message automatically.'),
   );
 
   $form['thank_you']['eu_cookie_compliance']['popup_agreed'] = array(
@@ -239,18 +239,25 @@ function eu_cookie_compliance_admin_form($form, $form_state) {
     '#description' => t('By default the pop-up appears at the bottom of the website. Tick this box if you want it to appear at the top.'),
   );
 
+  $form['advanced']['eu_cookie_compliance']['fixed_top_position'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('If the banner is at the top, don’t scroll the banner with the page'),
+    '#default_value' => isset($popup_settings['fixed_top_position']) ? $popup_settings['fixed_top_position'] : 0,
+    '#description' => t('Use position:fixed for the banner when displayed at the top.'),
+  );
+
   if (module_exists('geoip') || module_exists('smart_ip') || extension_loaded('geoip')) {
     $form['advanced']['eu_cookie_compliance']['eu_only'] = array(
       '#type' => 'checkbox',
       '#title' => t('Only display popup in EU countries'),
       '#default_value' => isset($popup_settings['eu_only']) ? $popup_settings['eu_only'] : 0,
-      '#description' => 'Using the <a href="http://drupal.org/project/geoip">geoip</a> module or the <a href="http://drupal.org/project/smart_ip">smart_ip</a> module or the <a href="http://www.php.net/manual/fr/function.geoip-country-code-by-name.php">geoip_country_code_by_name()</a> PHP function.',
+      '#description' => 'You can limit the number of countries for which the banner is displayed by checking this option. If you want to provide a list of countries other than current EU states, you may place an array in <code>$conf[\'eu_cookie_compliance_eu_countries\']</code> in your <code>settings.php</code> file. Using the <a href="http://drupal.org/project/geoip">geoip</a> module or the <a href="http://drupal.org/project/smart_ip">smart_ip</a> module or the <a href="http://www.php.net/manual/fr/function.geoip-country-code-by-name.php">geoip_country_code_by_name()</a> PHP function.',
     );
     $form['advanced']['eu_cookie_compliance']['eu_only_js'] = array(
       '#type' => 'checkbox',
       '#title' => t('JavaScript-based (for Varnish): Only display popup in EU countries'),
       '#default_value' => isset($popup_settings['eu_only_js']) ? $popup_settings['eu_only_js'] : 0,
-      '#description' => 'Using the <a href="http://drupal.org/project/geoip">geoip</a> module or the <a href="http://drupal.org/project/smart_ip">smart_ip</a> module or the <a href="http://www.php.net/manual/fr/function.geoip-country-code-by-name.php">geoip_country_code_by_name()</a> PHP function.',
+      '#description' => 'You can limit the number of countries for which the banner is displayed by checking this option. If you want to provide a list of countries other than current EU states, you may place an array in <code>$conf[\'eu_cookie_compliance_eu_countries\']</code> in your <code>settings.php</code> file. Using the <a href="http://drupal.org/project/geoip">geoip</a> module or the <a href="http://drupal.org/project/smart_ip">smart_ip</a> module or the <a href="http://www.php.net/manual/fr/function.geoip-country-code-by-name.php">geoip_country_code_by_name()</a> PHP function.',
     );
   }
 
@@ -267,6 +274,13 @@ function eu_cookie_compliance_admin_form($form, $form_state) {
     '#type' => 'checkbox',
     '#title' => t('Do not show popup after user clicks on "Disagree" button.'),
     '#default_value' => isset($popup_settings['disagree_do_not_show_popup']) ? $popup_settings['disagree_do_not_show_popup'] : 0,
+    '#description' => t('Enabling this will make it possible to record the fact that the user disagrees without the user having to see the privacy policy.'),
+  );
+
+  $form['advanced']['eu_cookie_compliance']['reload_page'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Reload page after user clicks on “Agree” button.'),
+    '#default_value' => isset($popup_settings['reload_page']) ? $popup_settings['reload_page'] : 0,
   );
 
   $form['advanced']['eu_cookie_compliance']['popup_scrolling_confirmation'] = array(
@@ -313,7 +327,7 @@ function eu_cookie_compliance_admin_form($form, $form_state) {
     '#type' => 'textarea',
     '#title' => t('Exclude paths'),
     '#default_value' => isset($popup_settings['exclude_paths']) ? $popup_settings['exclude_paths'] : '',
-    '#description' => t('Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.', array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
+    '#description' => t('Specify pages by using their paths. Enter one path per line. The ‘*’ character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.', array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
 
   $form['advanced']['eu_cookie_compliance']['exclude_admin_pages'] = array(
@@ -322,12 +336,25 @@ function eu_cookie_compliance_admin_form($form, $form_state) {
     '#default_value' => isset($popup_settings['exclude_admin_pages']) ? $popup_settings['exclude_admin_pages'] : '',
   );
 
+  $form['advanced']['eu_cookie_compliance']['exclude_uid_1'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Don’t show the banner for UID 1.'),
+    '#default_value' => isset($popup_settings['exclude_uid_1']) ? $popup_settings['exclude_uid_1'] : 0,
+  );
+
   $form['advanced']['eu_cookie_compliance']['script_scope'] = array(
     '#type' => 'select',
     '#title' => t('Script scope'),
     '#options' => array('header' => 'Header (Scripts variable)', 'footer' => 'Footer (Page bottom variable)'),
     '#default_value' => isset($popup_settings['script_scope']) ? $popup_settings['script_scope'] : 'footer',
     '#description' => t('If you want to use the hasAgreed() function from other scripts, you may want to change this to header.'),
+  );
+
+  $form['advanced']['eu_cookie_compliance']['better_support_for_screen_readers'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Let screen readers see the banner before other links on the page.'),
+    '#default_value' => isset($popup_settings['better_support_for_screen_readers']) ? $popup_settings['better_support_for_screen_readers'] : 0,
+    '#description' => t('Enable this if you want to place the banner as the first HTML element on the page. This will make it possible for screen readers to close the banner without tabbing through all links on the page.'),
   );
 
   $form['#attached']['js'][] = drupal_get_path('module', 'eu_cookie_compliance'). '/js/eu_cookie_compliance.admin.js';
