@@ -1905,15 +1905,6 @@ function form_test_two_instances() {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
- */
-function form_test_form_page_node_form_alter(&$form, &$form_state) {
-  // @todo: AJAXMultiFormTestCase depends on $form_state['cache'] being true.
-  // See https://www.drupal.org/node/2821852.
-  $form_state['cache'] = TRUE;
-}
-
-/**
  * Menu callback for testing custom form includes.
  */
 function form_test_load_include_custom($form, &$form_state) {

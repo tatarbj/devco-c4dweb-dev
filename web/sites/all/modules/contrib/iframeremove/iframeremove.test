@@ -1,0 +1,102 @@
+<?php
+
+class IframeremoveUnitTestCase extends DrupalUnitTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Testing core filter logic',
+      'description' => 'Test core logic in filtering iframe HTML',
+      'group' => 'Iframe Remove Filter',
+    );
+  }
+
+  private static function normalizeHTML($html) {
+    $html = preg_replace(['(\s+)u', '(^\s|\s$)u'], [' ', ''], $html);
+    $doc = new DOMDocument('1.0', 'utf-8');
+    $doc->preserveWhiteSpace = false;
+    $doc->formatOutput = true;
+    $doc->loadHTML($html,
+      LIBXML_COMPACT|LIBXML_NOBLANKS|LIBXML_HTML_NOIMPLIED|LIBXML_HTML_NODEFDTD);
+    return $doc->saveHTML();
+  }
+
+  public function testIframeremoveIframe() {
+
+    $tests = array(
+      array(
+        'input' => '
+          <div>
+            <iframe src="https://www.facebook.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+          </div>
+        ',
+        'whitelist' => array(
+        ),
+        'output' => '<div> </div>',
+      ),
+      array(
+        'input' => '
+          <div>
+            <iframe src="https://www.facebook.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+          </div>
+        ',
+        'whitelist' => array(
+          'www.google.com'
+        ),
+        'output' => '
+          <div>
+            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+          </div>
+        ',
+      ),
+      array(
+        'input' => '
+          <div>
+            <iframe src="https://www.facebook.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+          </div>
+        ',
+        'whitelist' => array(
+          'www.facebook.com'
+        ),
+        'output' => '
+          <div>
+            <iframe src="https://www.facebook.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+          </div>
+        ',
+      ),
+      array(
+        'input' => '
+          <div>
+            <iframe src="https://www.facebook.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+            <iframe src="https://dummy.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+          </div>
+        ',
+        'whitelist' => array(
+          '*.google.com'
+        ),
+        'output' => '
+          <div>
+            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+            <iframe src="https://dummy.google.com/maps/d/u/0/embed?mid=some-id" width="640" height="480"></iframe>
+          </div>
+        ',
+      ),
+    );
+
+    foreach ($tests as $test) {
+      $output = _iframeremove_iframe($test['input'],
+        _iframeremove_map_regex($test['whitelist']));
+      $got = $this->normalizeHTML($output);
+      $expected = $this->normalizeHTML($test['output']);
+      $this->assertEqual($expected, $got, sprintf("expected \n\"<pre>%s</pre>\",<br/>\n got \n\"<pre>%s</pre>\"",
+        check_plain($expected),
+        check_plain($got)),
+        '_iframeremove_iframe');
+    }
+
+  }
+
+}

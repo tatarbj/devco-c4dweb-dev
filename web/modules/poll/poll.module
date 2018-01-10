@@ -366,7 +366,7 @@ function poll_form($node, &$form_state) {
 function poll_more_choices_submit($form, &$form_state) {
   // If this is a Ajax POST, add 1, otherwise add 5 more choices to the form.
   if ($form_state['values']['poll_more']) {
-    $n = isset($_POST['ajax_page_state']) ? 1 : 5;
+    $n = $_GET['q'] == 'system/ajax' ? 1 : 5;
     $form_state['choice_count'] = count($form_state['values']['choice']) + $n;
   }
   // Renumber the choices. This invalidates the corresponding key/value

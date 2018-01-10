@@ -384,16 +384,7 @@ function ajax_get_form() {
 function ajax_form_callback() {
   list($form, $form_state, $form_id, $form_build_id, $commands) = ajax_get_form();
   drupal_process_form($form['#form_id'], $form, $form_state);
-  ajax_form_return_commands($form, $form_state, $commands);
-}
 
-/**
- * Return a set of AJAX commands for updating a form.
- *
- * @see ajax_form_callback()
- * @see drupal_get_form()
- */
-function ajax_form_return_commands($form, $form_state, $commands = array()) {
   // We need to return the part of the form (or some other content) that needs
   // to be re-rendered so the browser can update the page with changed content.
   // Since this is the generic menu callback used by many Ajax elements, it is
@@ -651,10 +642,7 @@ function ajax_footer() {
  */
 function ajax_process_form($element, &$form_state) {
   $element = ajax_pre_render_element($element);
-  // Custom callback paths set in $element['#ajax']['path'] are assumed to
-  // require form caching. Using $element['#ajax']['callback'] on the other hand
-  // does not require the form to be cached, and is the preferred method.
-  if (!empty($element['#ajax_processed']) && !isset($element['#ajax']['callback'])) {
+  if (!empty($element['#ajax_processed'])) {
     $form_state['cache'] = TRUE;
   }
   return $element;
@@ -752,7 +740,7 @@ function ajax_pre_render_element($element) {
 
     // Assign default settings.
     $settings += array(
-      'path' => $_GET['q'],
+      'path' => 'system/ajax',
       'options' => array(),
     );
 

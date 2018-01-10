@@ -9,8 +9,8 @@ files[] = search_api_sorts.entity.inc
 files[] = search_api_sorts.test
 
 ; Information added by Drupal.org packaging script on 2017-02-14
-version = "7.x-1.6+8-dev"
+version = "7.x-1.7"
 core = "7.x"
 project = "search_api_sorts"
-datestamp = "1487094799"
+datestamp = "1487095386"
 
