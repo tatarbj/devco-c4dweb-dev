@@ -1,11 +1,11 @@
 name = EU Cookie Compliance
-description = This module aims at making the web site compliant with the new EU cookie regulation
+description = This module aims at making the web site compliant with the EU cookie regulation.
 core = 7.x
 configure = admin/config/system/eu-cookie-compliance
 
-; Information added by Drupal.org packaging script on 2016-11-15
-version = "7.x-1.x-dev"
+; Information added by Drupal.org packaging script on 2017-08-07
+version = "7.x-1.17+1-dev"
 core = "7.x"
 project = "eu_cookie_compliance"
-datestamp = "1479218400"
+datestamp = "1502144346"
 

@@ -1,6 +1,6 @@
 /**
  * c4m-app
- * @version v0.0.1 - 2017-05-15
+ * @version v0.0.1 - 2018-01-11
  * @link 
  * @author  <>
  * @license MIT License, http://www.opensource.org/licenses/MIT
