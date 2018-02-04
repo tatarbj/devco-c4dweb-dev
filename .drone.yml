@@ -83,9 +83,9 @@ pipeline:
     source: web
     target_folder: website
     secrets:
-      - source: target_repo_test
+      - source: target_repo_acceptance
         target: target_repo
-      - source: deploy_key_test
+      - source: deploy_key_acceptance
         target: deploy_key
     clean: false
     message: Deployed ${DRONE_COMMIT_SHA} from ${DRONE_REPO_ORG}/${DRONE_REPO_NAME}@${DRONE_BRANCH}
