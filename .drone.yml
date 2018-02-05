@@ -2,7 +2,7 @@ services:
   mysql:
     image: fpfis/mysql56
 
-#pipeline:
+pipeline:
 #  fix-drupal:
 #    image: fpfis/php71-dev
 #    commands:
