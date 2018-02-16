@@ -7,6 +7,9 @@ $plugin = array(
   'class' => 'RestfulFormatterHalJson',
   'curie' => array(
     'name' => 'hal',
-    'href' => url('docs/rels', array('absolute' => TRUE)) . '/{rel}',
   ),
 );
+
+if (!drupal_is_cli()) {
+  $plugin['curie']['href'] = url('docs/rels', array('absolute' => TRUE)) . '/{rel}';
+}
