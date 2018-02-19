@@ -3,9 +3,9 @@ services:
     image: fpfis/mysql56
 
 pipeline:
-  fix-drupal:
-    image: fpfis/php71-dev
-    commands:
+ # fix-drupal:
+ #   image: fpfis/php71-dev
+ #   commands:
 #       - patch -i ../assets/drupal_get_path_alias-fix.patch -d web -p1
 
   get-sanitzed-dump:
