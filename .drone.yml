@@ -7,7 +7,7 @@ pipeline:
  #   image: fpfis/php71-dev
  #   commands:
 #       - patch -i ../assets/drupal_get_path_alias-fix.patch -d web -p1
-
+#
   get-sanitzed-dump:
     image: fpfis/drone-plugin-asda
     target: dump.sql
