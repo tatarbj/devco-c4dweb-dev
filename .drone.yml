@@ -122,6 +122,7 @@ pipeline:
   site-upgrade:
     image: fpfis/php71-dev:latest
     commands:
+      - drush -r website upwd 1 --password="$${UID1_ACCEPTANCE}"
       - wget https://github.com/ec-europa/platform-deploy/archive/fpfis-conf/2.4.tar.gz -O -|tar --strip 1 -xzvC website
       - rm -f website/sites/sites.php
       - drush -r website cc all
