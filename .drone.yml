@@ -76,6 +76,8 @@ pipeline:
     image: fpfis/php71-dev
     commands:
       - echo ${DRONE_COMMIT_SHA} > web/.commit
+      #Force to delete .gitignore files from repo 
+      - find -name .gitignore -exec rm {} \;
       
 # Push to deploy server and sync platform/sites/default folder from live environment
   deploy-test:
