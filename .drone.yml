@@ -96,6 +96,27 @@ pipeline:
       environment: [ acceptance ]
    #   branch: [test, test/*, feature/*]
 
+# Push to production server :
+  deploy-production:
+    image: fpfis/drone-plugin-git-deploy
+    source: web
+    target_folder: website
+    secrets:
+      - source: target_repo_production
+        target: target_repo
+      - source: deploy_key_production
+        target: deploy_key
+    clean: false
+    message: Deployed ${DRONE_COMMIT_SHA} from ${DRONE_REPO_ORG}/${DRONE_REPO_NAME}@${DRONE_BRANCH}
+    excludes:
+      - settings.php
+      - settings.local.php
+      - files
+      - sites/all/modules/fpfis
+    when:
+      event: deployment
+      environment: [ production ]
+
   backup-deployed-environment:
     image: fpfis/php71-dev
     commands:
@@ -103,7 +124,7 @@ pipeline:
       - gzip /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
     when:
       event: deployment
-      environment: [ acceptance ]
+      environment: [ acceptance,production ]
     volumes:
       - /backups:/backups
       
@@ -116,7 +137,7 @@ pipeline:
       - drush -r website vset maintenance_mode 1
     when:
       event: deployment
-      environment: acceptance
+      environment: [ acceptance, production]
   site-upgrade:
     image: fpfis/php71-dev:latest
     commands:
@@ -133,7 +154,7 @@ pipeline:
       - drush -r website vset maintenance_mode 0
     when:
       event: deployment
-      environment: [ acceptance ]
+      environment: [ acceptance, production ]
     #  branch: [test, test/*, feature/*]
 
 
