@@ -56,7 +56,7 @@ pipeline:
   create-deploy-test:
     image: fpfis/drone-plugin-github-deploy
     state: create
-    deploy_environment: acceptance
+    deploy_environment: [ acceptance, production ]
     secrets: [ github_api_token ]
     automerge: false
     when:
