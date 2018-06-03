@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: fpfis/mysql56
+    image: percona/percona-server:5.6
 
 pipeline:
   get-sanitzed-dump:
@@ -10,7 +10,7 @@ pipeline:
     secrets: [ asda_url ]
 
   import-dump:
-    image: fpfis/mysql56
+    image: percona/percona-server:5.6
     commands:
       - mysqladmin -h mysql create database
       - mysql database -h mysql < dump.sql
