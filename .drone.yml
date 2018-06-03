@@ -1,6 +1,8 @@
 services:
   mysql:
     image: percona/percona-server:5.6
+    ports:
+    - 3306
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD
       
