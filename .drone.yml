@@ -69,6 +69,15 @@ pipeline:
       event: push
       branch: [feature/php7_acceptance]
 
+  create-deploy-production:
+    image: fpfis/drone-plugin-github-deploy
+    state: create
+    deploy_environment: [ production ]
+    secrets: [ github_api_token ]
+    automerge: false
+    when:
+      event: push
+      branch: [feature/php7_acceptance]
   # End testing
 
   # Begin deployment
