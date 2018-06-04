@@ -59,15 +59,15 @@ pipeline:
         {{repo.name}}@{{build.branch}} <{{build.link}}|failed> the upgrade test.
       {{/success}}
 
-  create-deploy-test:
-    image: fpfis/drone-plugin-github-deploy
-    state: create
-    deploy_environment: [ acceptance ]
-    secrets: [ github_api_token ]
-    automerge: false
-    when:
-      event: push
-      branch: [feature/php7_acceptance]
+ # create-deploy-test:
+ #   image: fpfis/drone-plugin-github-deploy
+#    state: create
+#    deploy_environment: [ acceptance ]
+#    secrets: [ github_api_token ]
+#    automerge: false
+#    when:
+#      event: push
+#      branch: [feature/php7_acceptance]
 
   create-deploy-production:
     image: fpfis/drone-plugin-github-deploy
