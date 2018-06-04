@@ -4,7 +4,7 @@ services:
     ports:
     - 3306
     environment:
-      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       
 
 pipeline:
@@ -17,8 +17,9 @@ pipeline:
   import-dump:
     image: percona/percona-server:5.6
     commands:
-      - mysqladmin -h mysql -u root -pmy-secret-pw create database
-      - mysql database -h mysql -u root -pmy-secret-pw < dump.sql
+      - sleep 15
+      - mysqladmin -h mysql -u root create database
+      - mysql database -h mysql -u root < dump.sql
     when:
       event: push
 
