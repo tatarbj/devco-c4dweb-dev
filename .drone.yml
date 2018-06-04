@@ -139,7 +139,7 @@ pipeline:
       - gzip /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
     when:
       event: deployment
-      environment: [ acceptance,production ]
+      environment: [ acceptance ]
     volumes:
       - /backups:/backups
       
