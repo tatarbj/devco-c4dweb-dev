@@ -152,7 +152,7 @@ pipeline:
       - drush -r website vset maintenance_mode 1
     when:
       event: deployment
-      environment: [ acceptance, production]
+      environment: [ acceptance]
   site-upgrade:
     image: fpfis/php71-dev:latest
     commands:
