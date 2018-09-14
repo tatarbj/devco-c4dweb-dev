@@ -2,6 +2,7 @@ The following patches have been applied to this project:
 - https://drupal.org/files/911354-drupal-profile-85.patch
 - https://www.drupal.org/files/issues/book_unpublished_patch_760102-10.patch
 - https://www.drupal.org/files/issues/cannot_create_references_tofrom_string_offsets_nor_overloaded_objects-2313517-32.patch
+- machine-name-validate-custom-message.patch
 - https://www.drupal.org/files/issues/drupal-drupal_tempnam-985384-11.patch
 - menu_access_check_node_access_first.patch
 - https://www.drupal.org/files/order-weighted-terms-941266-35-D7.patch
