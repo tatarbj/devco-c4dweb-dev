@@ -59,16 +59,6 @@ pipeline:
         {{repo.name}}@{{build.branch}} <{{build.link}}|failed> the upgrade test.
       {{/success}}
 
- # create-deploy-test:
- #   image: fpfis/drone-plugin-github-deploy
-#    state: create
-#    deploy_environment: [ acceptance ]
-#    secrets: [ github_api_token ]
-#    automerge: false
-#    when:
-#      event: push
-#      branch: [feature/php7_acceptance]
-
   create-deploy-production:
     image: fpfis/drone-plugin-github-deploy
     state: create
@@ -77,7 +67,7 @@ pipeline:
     automerge: false
     when:
       event: push
-      branch: [feature/php7_acceptance]
+      branch: [feature/php7_production]
   # End testing
 
   # Begin deployment
@@ -86,31 +76,7 @@ pipeline:
     image: fpfis/php71-dev
     commands:
       - echo ${DRONE_COMMIT_SHA} > web/.commit
-      #Force to delete .gitignore files from repo 
-  #    - find -name .gitignore -exec rm {} \;
-      
-# Push to deploy server and sync platform/sites/default folder from live environment
-  deploy-test:
-    image: fpfis/drone-plugin-git-deploy
-    source: web
-    target_folder: website
-    secrets:
-      - source: target_repo_acceptance
-        target: target_repo
-      - source: deploy_key_acceptance
-        target: deploy_key
-    clean: false
-    message: Deployed ${DRONE_COMMIT_SHA} from ${DRONE_REPO_ORG}/${DRONE_REPO_NAME}@${DRONE_BRANCH}
-    excludes:
-      - settings.php
-      - settings.local.php
-      - files
-      - sites/all/modules/fpfis
-    when:
-      event: deployment
-      environment: [ acceptance ]
-   #   branch: [test, test/*, feature/*]
-
+     
 # Push to production server :
   deploy-production:
     image: fpfis/drone-plugin-git-deploy
@@ -139,20 +105,17 @@ pipeline:
       - gzip /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
     when:
       event: deployment
-      environment: [ acceptance ]
+      environment: [ production ]
     volumes:
       - /backups:/backups
       
   align-website-environment:
     image: fpfis/php71-dev
     commands:
-      - drush -r website sql-drop --yes
-      - drush -r website sqlc < dump.sql
-      - drush -r website upwd 1 --password="$${UID1_ACCEPTANCE}"
       - drush -r website vset maintenance_mode 1
     when:
       event: deployment
-      environment: [ acceptance]
+      environment: [ production ]
   site-upgrade:
     image: fpfis/php71-dev:latest
     commands:
@@ -163,13 +126,13 @@ pipeline:
       - drush -r website cc all
       - drush -r website fra -y --force
       - drush -r website updb -y
-      - drush -r website en reroute_email -y
+#      - drush -r website en reroute_email -y
       - drush -r website status
       - drush -r website cc all
       - drush -r website vset maintenance_mode 0
     when:
       event: deployment
-      environment: [ acceptance, production ]
+      environment: [ production ]
     #  branch: [test, test/*, feature/*]
 
 
