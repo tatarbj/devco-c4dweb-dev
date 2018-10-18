@@ -142,7 +142,7 @@ pipeline:
       - drush -r website vset maintenance_mode 0
     when:
       event: deployment
-      environment: [ acceptance, production ]
+      environment: [ acceptance ]
     #  branch: [test, test/*, feature/*]
 
 
