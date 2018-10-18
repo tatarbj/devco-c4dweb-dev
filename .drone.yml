@@ -59,26 +59,17 @@ pipeline:
         {{repo.name}}@{{build.branch}} <{{build.link}}|failed> the upgrade test.
       {{/success}}
 
- # create-deploy-test:
- #   image: fpfis/drone-plugin-github-deploy
-#    state: create
-#    deploy_environment: [ acceptance ]
-#    secrets: [ github_api_token ]
-#    automerge: false
-#    when:
-#      event: push
-#      branch: [feature/php7_acceptance]
-
-  create-deploy-production:
+  create-deploy-test:
     image: fpfis/drone-plugin-github-deploy
     state: create
-    deploy_environment: [ production ]
+    deploy_environment: [ acceptance ]
     secrets: [ github_api_token ]
     automerge: false
     when:
       event: push
       branch: [feature/php7_acceptance]
-  # End testing
+
+ 
 
   # Begin deployment
  
@@ -109,28 +100,10 @@ pipeline:
     when:
       event: deployment
       environment: [ acceptance ]
-   #   branch: [test, test/*, feature/*]
+      branch: [test, test/*, feature/*]
 
 # Push to production server :
-  deploy-production:
-    image: fpfis/drone-plugin-git-deploy
-    source: web
-    target_folder: website
-    secrets:
-      - source: target_repo_production
-        target: target_repo
-      - source: deploy_key_production
-        target: deploy_key
-    clean: false
-    message: Deployed ${DRONE_COMMIT_SHA} from ${DRONE_REPO_ORG}/${DRONE_REPO_NAME}@${DRONE_BRANCH}
-    excludes:
-      - settings.php
-      - settings.local.php
-      - files
-      - sites/all/modules/fpfis
-    when:
-      event: deployment
-      environment: [ production ]
+
 
   backup-deployed-environment:
     image: fpfis/php71-dev
