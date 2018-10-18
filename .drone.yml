@@ -108,7 +108,7 @@ pipeline:
   backup-deployed-environment:
     image: fpfis/php71-dev
     commands:
-      - drush -r website sql-dump > /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
+      - drush -r web sql-dump > /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
       - gzip /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
     when:
       event: deployment
@@ -119,10 +119,10 @@ pipeline:
   align-website-environment:
     image: fpfis/php71-dev
     commands:
-      - drush -r website sql-drop --yes
-      - drush -r website sqlc < dump.sql
-      - drush -r website upwd 1 --password="$${UID1_ACCEPTANCE}"
-      - drush -r website vset maintenance_mode 1
+      - drush -r web sql-drop --yes
+      - drush -r web sqlc < dump.sql
+      - drush -r web upwd 1 --password="$${UID1_ACCEPTANCE}"
+      - drush -r web vset maintenance_mode 1
     when:
       event: deployment
       environment: [ acceptance]
@@ -131,15 +131,15 @@ pipeline:
     commands:
       - wget https://github.com/ec-europa/platform-deploy/archive/fpfis-conf/2.4.tar.gz -O -|tar --strip 1 -xzvC website
       - rm -f website/sites/sites.php
-      - drush -r website cc all
-      - drush -r website rr --no-cache-clear
-      - drush -r website cc all
-      - drush -r website fra -y --force
-      - drush -r website updb -y
-      - drush -r website en reroute_email -y
-      - drush -r website status
-      - drush -r website cc all
-      - drush -r website vset maintenance_mode 0
+      - drush -r web cc all
+      - drush -r webs rr --no-cache-clear
+      - drush -r web cc all
+      - drush -r web fra -y --force
+      - drush -r web updb -y
+      - drush -r web en reroute_email -y
+      - drush -r web status
+      - drush -r web cc all
+      - drush -r web vset maintenance_mode 0
     when:
       event: deployment
       environment: [ acceptance ]
