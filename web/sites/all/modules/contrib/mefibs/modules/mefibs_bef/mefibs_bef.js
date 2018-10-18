@@ -13,9 +13,15 @@ Drupal.behaviors.MefibsBEFForm = {
         if (!$(this).find('select').length) {
           return;
         }
-        var selected = $(this).find('select').val().toLowerCase().replace(/_/g, '-').replace(/ /g, '-');
-        if (typeof selected == 'undefined') {
+        var selected = $(this).find('select').val();
+        if (typeof selected == 'undefined' || !selected) {
           return;
+        }
+        else if(typeof selected == 'string') {
+          selected.toLowerCase().replace(/_/g, '-').replace(/ /g, '-');
+        }
+        else {
+          selected.toString().toLowerCase().replace(/_/g, '-').replace(/ /g, '-');
         }
         var select_id = $(this).find('select').attr('id').toLowerCase().replace(/_/g, '-').replace(/ /g, '-');
         $(this).find('.form-item').removeClass('selected');
@@ -26,7 +32,7 @@ Drupal.behaviors.MefibsBEFForm = {
     // Support for sliders in mefibs blocks.
     if (settings.mefibs) {
       if (typeof Drupal.settings.better_exposed_filters.slider_options != 'undefined') {
-        var new_sliders = [];        
+        var new_sliders = [];
         $.each(settings.mefibs.forms, function(block_id, mefibs) {
           $.each(settings.better_exposed_filters.slider_options, function(element_id, slider) {
 

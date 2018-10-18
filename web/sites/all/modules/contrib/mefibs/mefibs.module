@@ -114,7 +114,33 @@ function mefibs_views_pre_build(&$view) {
   $view->set_exposed_input($filters);
 
   // And save them in the session for later reference.
-  $_SESSION['mefibs'][$view->name][$view->current_display]['filters'] = $filters;
+  if (!empty($filters)) {
+    // Check if one of the filters should be remembered,
+    // if not, don't save them.
+    $save = FALSE;
+    foreach ($filters as $filter_identifier => $filter_value) {
+      $filter_name = isset($expected_items['filter'][$filter_identifier]) ? $expected_items['filter'][$filter_identifier] : $filter_identifier;
+      if (!empty($view->filter[$filter_name])) {
+        $filter_options = $view->filter[$filter_name]->options;
+        if (empty($filter_options['expose']['remember'])) {
+          continue;
+        }
+
+        // Check if we store exposed value for current user.
+        global $user;
+        $allowed_rids = empty($filter_options['expose']['remember_roles']) ? array() : array_filter($filter_options['expose']['remember_roles']);
+        $intersect_rids = array_intersect_key($allowed_rids, $user->roles);
+        if (empty($intersect_rids)) {
+          continue;
+        }
+        $save = TRUE;
+        break;
+      }
+    }
+    if ($save) {
+      $_SESSION['mefibs'][$view->name][$view->current_display]['filters'] = $filters;
+    }
+  }
 
   $pager = $view->display_handler->get_plugin('pager');
 
@@ -790,6 +816,9 @@ function mefibs_set_element_name_recursive(&$form, $prefix) {
     }
     if (isset($form[$element]['#type']) && in_array($form[$element]['#type'], $valid_element_types)) {
       $form[$element]['#name'] = $prefix . '-' . $form[$element]['#name'];
+      if (!empty($form[$element]['#multiple'])) {
+        $form[$element]['#attributes']['name'] = $form[$element]['#name'] . '[]';
+      }
     }
     if (count(element_children($form[$element]))) {
       mefibs_set_element_name_recursive($form[$element], $prefix);

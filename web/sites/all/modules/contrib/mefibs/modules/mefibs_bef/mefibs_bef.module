@@ -58,7 +58,7 @@ function mefibs_bef_mefibs_elements_alter(&$elements, $context) {
   if ($context['type'] == 'expected_items' && $sort_block) {
     $elements['sort'][] = 'sort_bef_combine';
   }
-  
+
   if ($context['type'] == 'hide_items' && $sort_block) {
     $elements[] = 'sort_bef_combine';
   }
@@ -87,7 +87,7 @@ function mefibs_bef_mefibs_filter_alter(&$filters) {
 
 /**
  * Implements hool_FORM_ID_alter().
- * 
+ *
  * Change position of the block selector for exposed sort items.
  */
 function mefibs_bef_form_views_ui_edit_display_form_alter(&$form, $form_state) {
@@ -100,11 +100,11 @@ function mefibs_bef_form_views_ui_edit_display_form_alter(&$form, $form_state) {
   if (!$view->display_handler->get_option('exposed_block')) {
     return;
   }
-  
+
   $mefibs = $view->display_handler->get_option('mefibs');
 
   $blocks = $view->display_handler->extender['mefibs_blocks']->get_enabled_blocks();
-  
+
   // Move the sort block selector into the appropriate position in the BEF
   // settings.
   $sort_options = &$form['options']['exposed_form_options']['bef']['sort'];
@@ -124,7 +124,7 @@ function mefibs_bef_form_views_ui_edit_display_form_alter(&$form, $form_state) {
     '#multiple' => TRUE,
     '#dependency' => array('edit-exposed-form-options-bef-general-allow-secondary' => array(1),)
   );
-  
+
   $form['buttons']['submit']['#validate'][] = 'mefibs_bef_form_views_ui_edit_display_form_validate';
   $form['buttons']['submit']['#submit'][] = 'mefibs_bef_form_views_ui_edit_display_form_submit';
 }
@@ -148,7 +148,7 @@ function mefibs_bef_form_views_ui_edit_display_form_submit($form, &$form_state) 
   $display_id = $form_state['display_id'];
   $view->set_display($display_id);
   $values = $form_state['values'];
-  
+
   if (isset($values['exposed_form_options']['bef']['general']['secondary_form_block'])) {
     $block_ids = $values['exposed_form_options']['bef']['general']['secondary_form_block'];
     $mefibs = $view->display_handler->get_option('mefibs');
