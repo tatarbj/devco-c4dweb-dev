@@ -102,20 +102,9 @@ pipeline:
       environment: [ acceptance ]
       branch: [test, test/*, feature/*]
 
-# Push to production server :
+# Push to acceptance server :
 
-
-  backup-deployed-environment:
-    image: fpfis/php71-dev
-    commands:
-      - drush -r web sql-dump > /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
-      - gzip /backups/${DRONE_REPO_NAME}-${DRONE_DEPLOY_TO}-before-${DRONE_COMMIT_SHA}.sql
-    when:
-      event: deployment
-      environment: [ acceptance ]
-    volumes:
-      - /backups:/backups
-      
+       
   align-website-environment:
     image: fpfis/php71-dev
     commands:
@@ -154,7 +143,7 @@ pipeline:
     icon_url: https://avatars0.githubusercontent.com/u/23079543?v=3&s=400
     when:
       event: deployment
-      environment: [ acceptance, production,test ]
+      environment: [ acceptance, test ]
       status: [ success, failure ]
     template: >
       {{#success build.status}}
