@@ -78,9 +78,7 @@ pipeline:
     commands:
       - echo ${DRONE_BUILD_NUMBER} > web/.dronebuildnumber
       - echo ${DRONE_COMMIT_SHA} > web/.commit
-      when:  
-        event: [ push ]
-   
+     
          
 # Push to deploy server and sync platform/sites/default folder from live environment
   deploy-test:
