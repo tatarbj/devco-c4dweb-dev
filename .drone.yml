@@ -81,7 +81,7 @@ pipeline:
       when:  
         event: [ push ]
    
-      
+         
 # Push to deploy server and sync platform/sites/default folder from live environment
   deploy-test:
     image: fpfis/drone-plugin-git-deploy
