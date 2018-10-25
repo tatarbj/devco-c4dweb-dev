@@ -83,6 +83,14 @@ pipeline:
      
          
 # Push to deploy server and sync platform/sites/default folder from live environment
+
+  mark-deploy:
+    image: fpfis/php71-dev
+    commands:
+    - echo ${DRONE_BUILD_NUMBER} > web/.dronedeploynumber
+    when:  
+      event: [ deployment ]
+      
   deploy-acceptance:
     image: fpfis/drone-plugin-git-deploy
     source: web
@@ -106,12 +114,6 @@ pipeline:
 
 # Push to acceptance server :
 
-  mark-deploy:
-    image: fpfis/php71-dev
-    commands:
-    - echo ${DRONE_BUILD_NUMBER} > web/.dronedeploynumber
-    when:  
-      event: [ deployment ]
        
   align-website-environment:
     image: fpfis/php71-dev
