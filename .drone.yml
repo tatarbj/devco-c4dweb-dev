@@ -83,7 +83,7 @@ pipeline:
      
          
 # Push to deploy server and sync platform/sites/default folder from live environment
-  deploy-test:
+  deploy-acceptance:
     image: fpfis/drone-plugin-git-deploy
     source: web
     target_folder: website
@@ -102,7 +102,7 @@ pipeline:
     when:
       event: deployment
       environment: [ acceptance ]
-      branch: [test, test/*, feature/*]
+   #   branch: [test, test/*, feature/*]
 
 # Push to acceptance server :
 
