@@ -117,9 +117,9 @@ pipeline:
   align-website-environment:
     image: fpfis/php71-dev
     commands:
-      - drush -r website --debug --verbose status
+      - drush -r website status
       - sleep 600
-      - drush -r website --debug sql-drop --yes
+      - drush -r website sql-drop --yes
       - drush -r website sqlc < dump.sql
       - drush -r website upwd 1 --password="$${UID1_ACCEPTANCE}"
       - drush -r website vset maintenance_mode 1
