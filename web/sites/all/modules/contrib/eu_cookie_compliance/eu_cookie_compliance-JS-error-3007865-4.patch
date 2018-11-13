@@ -1,0 +1,34 @@
+diff --git a/js/eu_cookie_compliance.js b/js/eu_cookie_compliance.js
+index 79c65b3..ce916b6 100755
+--- a/js/eu_cookie_compliance.js
++++ b/js/eu_cookie_compliance.js
+@@ -424,8 +424,10 @@
+
+   // Block cookies when the user hasn't agreed.
+   Drupal.behaviors.eu_cookie_compliance_popup_block_cookies = {
++    initialized: false,
+     attach: function (context, settings) {
+-      $(document).ready(function() {
++      if (!Drupal.behaviors.eu_cookie_compliance_popup_block_cookies.initialized && settings.eu_cookie_compliance) {
++        Drupal.behaviors.eu_cookie_compliance_popup_block_cookies.initialized = true;
+         if ((settings.eu_cookie_compliance.method === 'opt_in' && (Drupal.eu_cookie_compliance.getCurrentStatus() === null || !Drupal.eu_cookie_compliance.hasAgreed()))
+           || (settings.eu_cookie_compliance.method === 'opt_out' && !Drupal.eu_cookie_compliance.hasAgreed() && Drupal.eu_cookie_compliance.getCurrentStatus() !== null)
+         ) {
+@@ -433,7 +435,7 @@
+           var euCookieComplianceWhitelist = settings.eu_cookie_compliance.whitelisted_cookies.split(/\r\n|\n|\r/g);
+
+           // Add the EU Cookie Compliance cookie.
+-          euCookieComplianceWhitelist.push((settings.eu_cookie_compliance.cookie_name === '') ? 'cookie-agreed' : settings.eu_cookie_compliance.cookie_name);
++          euCookieComplianceWhitelist.push((typeof settings.eu_cookie_compliance.cookie_name === 'undefined' || settings.eu_cookie_compliance.cookie_name === '') ? 'cookie-agreed' : settings.eu_cookie_compliance.cookie_name);
+           var euCookieComplianceBlockCookies = setInterval(function () {
+             // Load all cookies from jQuery.
+             var cookies = $.cookie();
+@@ -475,7 +477,7 @@
+             }
+           }, 5000);
+         }
+-      });
++      }
+     }
+   }
+
