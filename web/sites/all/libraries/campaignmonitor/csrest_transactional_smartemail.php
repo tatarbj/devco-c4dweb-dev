@@ -140,8 +140,11 @@ if (!class_exists('CS_REST_Transactional_SmartEmail')) {
          *          )
          *      )
          */
-        function send($message, $add_to_list = true) {
-            $data = array_merge($message, array("AddRecipientsToList" => $add_to_list));
+        function send($message, $consent_to_track, $add_to_list = true) {
+            $data = array_merge($message, array(
+                "AddRecipientsToList" => $add_to_list,
+                "ConsentToTrack" => $consent_to_track
+            ));
             return $this->post_request($this->_smartemail_base_route . '/send.json', $data);
         }
 
@@ -153,7 +156,7 @@ if (!class_exists('CS_REST_Transactional_SmartEmail')) {
          *        "SmartEmailID" => string
          *        "Name" => string
          *        "CreatedAt" => string
-         *        "Status" => stirng
+         *        "Status" => string
          *        "Properties" => array (
          *            "From" =. string
          *            "ReplyTo" => string
