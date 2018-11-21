@@ -1,0 +1,26 @@
+//
+// Color picker
+//
+
+.colorpicker {
+
+  // 2x
+  //
+  &-2x & {
+
+    // Hue & Alpha
+    //
+    &-hue,
+    &-alpha {
+      width: 30px;
+      height: 200px;
+    }
+
+    // Color
+    //
+    &-color,
+    &-color div {
+      height: 30px;
+    }
+  }
+}

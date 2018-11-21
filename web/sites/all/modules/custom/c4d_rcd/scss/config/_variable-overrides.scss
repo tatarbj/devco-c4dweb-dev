@@ -1,0 +1,42 @@
+/**
+ * Default Variables.
+ *
+ * Modify this file to provide default Bootstrap Framework variables. The
+ * Bootstrap Framework will not override any variables defined here because it
+ * uses the `!default` flag which will only set their default if not already
+ * defined here.
+ *
+ * You can copy existing variables directly from the following file:
+ * ./MODULENAME/scss/vendors/bootstrap/_variables.scss
+ */
+
+// Colors
+//
+// Brand colors for use across Bootstrap.
+
+$brand-primary: #0074bd;
+$brand-success: #4d8f46;
+$brand-info:    lighten($brand-primary, 20%);
+$brand-warning: #f69231;
+$brand-danger:  #b73939;
+
+// Iconography
+//
+// Set the proper directory for the Bootstrap Glyphicon font.
+
+$icon-font-path: '../fonts/';
+
+// Components
+//
+// Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
+
+$padding-base-vertical:   5px;
+$padding-base-horizontal: 10px;
+
+$border-radius-base:      2px;
+$border-radius-large:     4px;
+$border-radius-small:     0;
+
+// Close
+
+$close-color: white;

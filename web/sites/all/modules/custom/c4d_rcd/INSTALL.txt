@@ -1,0 +1,20 @@
+
+INSTALLATION NOTICES
+--------------------
+
+Due to a "bug", this module has to be installed AFTER c4d_rcd_data_types and not
+at the same time.
+
+Using drush to enable this module and dependencies breaks the hook_install()
+code, because inexplicably the eck_result_chain_diagram table is not created at
+the time c4d_rcd_install() is run.
+So you should enable c4d_rcd_data_types and c4d_rcd one after the other.
+
+WRONG:
+- drush en c4d_rcd -y
+OR
+- drush en c4d_rcd_data_types c4d_rcd -y
+
+CORRECT:
+1. drush en c4d_rcd_data_types -y
+2. drush en c4d_rcd -y

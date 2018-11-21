@@ -1,0 +1,27 @@
+//
+// Color fill icons for Bootstrap
+//
+
+$color-fill-icon: 'color-fill-icon';
+
+// Color fill
+//
+.#{$color-fill-icon} {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid black;
+  margin: 2px;
+  background-color: white;
+}
+
+// Color fill (Dropdown)
+//
+.dropdown-#{$color-fill-icon} {
+  position: relative;
+  float: left;
+  margin: {
+    left: 0;
+    right: 0;
+  }
+}

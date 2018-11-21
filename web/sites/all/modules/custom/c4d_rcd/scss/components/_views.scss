@@ -1,0 +1,30 @@
+//
+// Views
+//
+
+// Overridden/Extended styles
+//
+.views {
+
+  // Exposed filter
+  //
+  &-exposed-widgets {
+    margin-bottom: 30px;
+
+    // Select boxes
+    //
+    // Remix the default form select sizing classes into new ones for easier
+    // manipulation.
+    //
+    select.form-select {
+      width: 100%;
+      padding: 6px 20px 6px 7px;
+
+      // Starts from Medium devices (Tablets, 768px and up).
+      //
+      @media (min-width: 768px) {
+        width: 400px;
+      }
+    }
+  }
+}

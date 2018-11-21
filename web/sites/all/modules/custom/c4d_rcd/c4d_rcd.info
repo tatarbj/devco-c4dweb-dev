@@ -1,0 +1,6 @@
+name = Capacity4Dev - Results Chain Diagram
+description = "Provides the Results Chain Diagram SVG editor and related features for Capacity4Dev."
+package = Capacity4Dev - Results Chain Diagram
+core = 7.x
+dependencies[] = ctools
+dependencies[] = c4d_rcd_data_types
