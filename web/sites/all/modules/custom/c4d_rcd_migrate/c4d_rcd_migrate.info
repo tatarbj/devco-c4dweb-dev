@@ -1,0 +1,16 @@
+name = Capacity4Dev - Results Chain Diagram - Migration
+description = Migrates content from CodeIgniter to Drupal
+core = 7.x
+package = Capacity4Dev - Results Chain Diagram
+
+dependencies[] = migrate
+dependencies[] = migrate_extras
+
+files[] = migrations/base_migration.inc
+files[] = migrations/diagrams.inc
+files[] = migrations/priority_areas.inc
+files[] = migrations/results.inc
+files[] = migrations/impacts.inc
+files[] = migrations/floats.inc
+files[] = migrations/indicators.inc
+files[] = migrations/links.inc
