@@ -15,7 +15,7 @@ function c4m_wysiwyg_ckeditor_filter_default_formats() {
   $formats['filtered_html'] = array(
     'format' => 'filtered_html',
     'name' => 'Filtered HTML',
-    'cache' => 0,
+    'cache' => 1,
     'status' => 1,
     'weight' => 0,
     'filters' => array(
@@ -160,15 +160,15 @@ iframe[allowfullscreen|allowscriptaccess|frameborder|height|scrolling|src|width]
             4 => 'align-left',
             6 => 'align-left-clear',
             8 => 'align-center',
-            9 => 'caption',
-            10 => 'embeddedContent',
-            12 => 'media-image',
-            14 => 'oembed-provider-*',
-            16 => 'oembed-provider-youtube',
-            18 => 'rtecenter',
-            20 => 'rteleft',
-            22 => 'rteright',
-            24 => 'rtejustify',
+            10 => 'caption',
+            12 => 'embeddedContent',
+            14 => 'media-image',
+            16 => 'oembed-provider-*',
+            18 => 'oembed-provider-youtube',
+            20 => 'rtecenter',
+            22 => 'rteleft',
+            24 => 'rteright',
+            26 => 'rtejustify',
           ),
           'rule_valid_ids' => array(),
           'rule_style_urls' => array(),
@@ -257,11 +257,6 @@ iframe[allowfullscreen|allowscriptaccess|frameborder|height|scrolling|src|width]
         'status' => 1,
         'settings' => array(),
       ),
-      'youtube_prevent_rel' => array(
-        'weight' => -45,
-        'status' => 1,
-        'settings' => array(),
-      ),
       'filter_htmlcorrector' => array(
         'weight' => -44,
         'status' => 1,
@@ -269,6 +264,11 @@ iframe[allowfullscreen|allowscriptaccess|frameborder|height|scrolling|src|width]
       ),
       'filter_autop' => array(
         'weight' => -43,
+        'status' => 1,
+        'settings' => array(),
+      ),
+      'youtube_nocookie' => array(
+        'weight' => 0,
         'status' => 1,
         'settings' => array(),
       ),
@@ -292,7 +292,7 @@ iframe[allowfullscreen|allowscriptaccess|frameborder|height|scrolling|src|width]
   $formats['full_html'] = array(
     'format' => 'full_html',
     'name' => 'Full HTML',
-    'cache' => 0,
+    'cache' => 1,
     'status' => 1,
     'weight' => 1,
     'filters' => array(
@@ -379,13 +379,13 @@ iframe[allowfullscreen|allowscriptaccess|frameborder|height|scrolling|src|width]
         'status' => 1,
         'settings' => array(),
       ),
-      'youtube_prevent_rel' => array(
-        'weight' => -44,
+      'filter_autop' => array(
+        'weight' => -43,
         'status' => 1,
         'settings' => array(),
       ),
-      'filter_autop' => array(
-        'weight' => -43,
+      'youtube_nocookie' => array(
+        'weight' => 0,
         'status' => 1,
         'settings' => array(),
       ),
