@@ -22,7 +22,6 @@ function iframeremove_filter_info() {
     'description' => t('Remove iframes from displaying according to hostnames. This is especially useful for sites that allow full HTML inputs.'),
     'process callback' => '_iframeremove_process_callback',
     'settings callback' => '_iframeremove_settings_callback',
-    'cache' => FALSE,
   );
   return $filters;
 }
@@ -119,7 +118,10 @@ function _iframeremove_array_match($host, $regex_list) {
 */
 function _iframeremove_map_regex($whitelist) {
   return array_map(function ($host) {
-    return '/' . preg_replace('/\\\\\*/', '.*?', preg_quote($host)) . '/';
+    $host = preg_quote($host);
+    $host = preg_replace('/\\\\\*/', '.*?', $host);
+    $host = preg_replace('#/#', '\/', $host);
+    return '/' . $host . '/';
   }, $whitelist);
 }
 

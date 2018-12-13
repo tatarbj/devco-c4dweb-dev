@@ -82,20 +82,22 @@ function c4m_features_og_members_views_default_views() {
       'label' => '',
     ),
   );
-  /* Contextual filter: Indexed User: User ID */
-  $handler->display->display_options['arguments']['uid']['id'] = 'uid';
-  $handler->display->display_options['arguments']['uid']['table'] = 'search_api_index_c4m_search_users';
-  $handler->display->display_options['arguments']['uid']['field'] = 'uid';
-  $handler->display->display_options['arguments']['uid']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['uid']['default_argument_type'] = 'c4m_features_og_members_plugin_argument_default';
-  $handler->display->display_options['arguments']['uid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['uid']['break_phrase'] = 1;
-  $handler->display->display_options['arguments']['uid']['not'] = 0;
+  /* Contextual filter: Indexed User: OG membership type */
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['id'] = 'c4m_og_membership_type';
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['table'] = 'search_api_index_c4m_search_users';
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['field'] = 'c4m_og_membership_type';
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['default_argument_type'] = 'c4m_features_og_members_default_membership_types';
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['default_argument_skip_url'] = TRUE;
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['break_phrase'] = 1;
+  $handler->display->display_options['arguments']['c4m_og_membership_type']['not'] = 0;
   /* Filter criterion: Search form */
   $handler->display->display_options['filters']['search_api_views_fulltext']['id'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_c4m_search_users';
   $handler->display->display_options['filters']['search_api_views_fulltext']['field'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['ui_name'] = 'Search form';
+  $handler->display->display_options['filters']['search_api_views_fulltext']['group'] = 1;
   $handler->display->display_options['filters']['search_api_views_fulltext']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator_id'] = 'search_api_views_fulltext_op';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['label'] = 'Search';
@@ -113,6 +115,7 @@ function c4m_features_og_members_views_default_views() {
   $handler->display->display_options['filters']['c4m_is_deleted']['value'] = array(
     0 => '0',
   );
+  $handler->display->display_options['filters']['c4m_is_deleted']['group'] = 1;
   /* Filter criterion: Indexed User: Is spammer */
   $handler->display->display_options['filters']['c4m_is_spammer']['id'] = 'c4m_is_spammer';
   $handler->display->display_options['filters']['c4m_is_spammer']['table'] = 'search_api_index_c4m_search_users';
@@ -120,6 +123,7 @@ function c4m_features_og_members_views_default_views() {
   $handler->display->display_options['filters']['c4m_is_spammer']['value'] = array(
     0 => '0',
   );
+  $handler->display->display_options['filters']['c4m_is_spammer']['group'] = 1;
   /* Filter criterion: Indexed User: Status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'search_api_index_c4m_search_users';
@@ -127,6 +131,7 @@ function c4m_features_og_members_views_default_views() {
   $handler->display->display_options['filters']['status']['value'] = array(
     1 => '1',
   );
+  $handler->display->display_options['filters']['status']['group'] = 1;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');

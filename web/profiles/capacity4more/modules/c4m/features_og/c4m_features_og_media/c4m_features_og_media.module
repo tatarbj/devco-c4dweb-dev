@@ -30,9 +30,9 @@ function c4m_features_og_media_c4m_og_feature_info() {
  * Implements hook_action_info().
  */
 function c4m_features_og_media_filter_info() {
-  $filters['youtube_prevent_rel'] = array(
-    'title' => t('Make sure related YouTube videos do not play'),
-    'process callback' => 'c4m_features_og_media_youtube_prevent_rel',
+  $filters['youtube_nocookie'] = array(
+    'title' => t('Make sure related YouTube videos are played from the youtube-nocookie.com'),
+    'process callback' => 'c4m_features_og_media_youtube_nocookie',
   );
   return $filters;
 }
@@ -42,9 +42,9 @@ function c4m_features_og_media_filter_info() {
  *
  * Add "rel=0" parameter for YouTube videos.
  */
-function c4m_features_og_media_youtube_prevent_rel($text) {
-  $result = preg_replace('/data-oembed="https:\/\/www\.youtube\.com\/watch\?v=([0-9a-zA-Z_]+)/', 'data-oembed="https://www.youtube.com/watch?v=$1?rel=0', $text);
-  $result = preg_replace('/src="\/\/www\.youtube\.com\/embed\/([0-9a-zA-Z_]+)\?([^"]*)/', 'src="//www.youtube.com/embed/$1?rel=0&amp;$2"', $result);
+function c4m_features_og_media_youtube_nocookie($text) {
+  $result = preg_replace('#data-oembed="https://www\.youtube\.com#', 'data-oembed="https://www.youtube-nocookie.com', $text);
+  $result = preg_replace('#src="(https?:)?//www\.youtube\.com/embed#', 'src="$1//www.youtube-nocookie.com/embed', $result);
   return $result;
 }
 
