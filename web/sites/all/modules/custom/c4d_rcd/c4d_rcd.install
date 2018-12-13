@@ -8,7 +8,7 @@ function c4d_rcd_install() {
   // priority areas.
   // We need to make sure those IDs won't be used, so we set the auto-increment
   // to 101 to avoid conflicts.
-  // First check if the auto-increment is less than 12, otherwise we skip this
+  // First check if the auto-increment is less than 101, otherwise we skip this
   // task.
   //
   // ATTENTION: using drush to enable this module and dependencies breaks this
@@ -16,8 +16,8 @@ function c4d_rcd_install() {
   // created at the time c4d_rcd_install() is run.
   // So you should enable c4d_rcd_data_types and c4d_rcd one after the other.
   $result = db_query("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'eck_result_chain_diagram';")->fetchAssoc();
-  if ($result['AUTO_INCREMENT'] <= 12) {
-    db_query('ALTER TABLE eck_result_chain_diagram AUTO_INCREMENT=101;');
+  if ($result['AUTO_INCREMENT'] <= 101) {
+    db_query('ALTER TABLE eck_result_chain_diagram AUTO_INCREMENT = 101;');
   }
 }
 
