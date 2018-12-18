@@ -9,7 +9,7 @@ class C4DRcdPriorityAreaMigration extends C4DRcdBaseMigration {
     parent::__construct($arguments);
     $this->description = t('Priority Areas');
 
-    $query = Database::getConnection('default', 'legacy')->select('priority_area', 'p')
+    $query = Database::getConnection()->select('legacy_priority_area', 'p')
       ->fields('p', [
         'id',
         'id_prj',

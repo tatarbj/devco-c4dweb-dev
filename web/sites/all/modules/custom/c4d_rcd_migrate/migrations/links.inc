@@ -11,7 +11,7 @@ class C4DRcdLinkMigration extends C4DRcdBaseMigration {
 
     $table_name = 'c4d_rcd_link';
 
-    $query = Database::getConnection('default', 'legacy')->select('link', 'l')
+    $query = Database::getConnection()->select('legacy_link', 'l')
       ->fields('l', [
         'id',
         'id_prj',
@@ -44,7 +44,7 @@ class C4DRcdLinkMigration extends C4DRcdBaseMigration {
 
   public function prepareRow($row) {
     // If we don't have a project, we skip this row.
-    $query = Database::getConnection('default', 'legacy')->select('progetti', 'p')
+    $query = Database::getConnection()->select('legacy_progetti', 'p')
       ->fields('p', [])
       ->condition('id', $row->id_prj);
     $result = $query->execute()->fetch();

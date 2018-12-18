@@ -9,7 +9,7 @@ class C4DRcdIndicatorMigration extends C4DRcdBaseMigration {
     parent::__construct($arguments);
     $this->description = t('Indicators');
 
-    $query = Database::getConnection('default', 'legacy')->select('web_indicators', 'i')
+    $query = Database::getConnection()->select('legacy_web_indicators', 'i')
       ->fields('i', []);
 
     $this->source = new MigrateSourceSQL($query, [], NULL, ['cache_counts' => TRUE]);
@@ -45,7 +45,7 @@ class C4DRcdIndicatorMigration extends C4DRcdBaseMigration {
 
   public function prepareRow($row) {
     // If we don't have a result, we skip this row.
-    $query = Database::getConnection('default', 'legacy')->select('elementi', 'e')
+    $query = Database::getConnection()->select('legacy_elementi', 'e')
       ->fields('e', [])
       ->condition('id', $row->id_result);
     $result = $query->execute()->fetch();

@@ -9,7 +9,7 @@ class C4DRcdImpactMigration extends C4DRcdBaseMigration {
     parent::__construct($arguments);
     $this->description = t('Impacts');
 
-    $query = Database::getConnection('default', 'legacy')->select('elementi', 'e')
+    $query = Database::getConnection()->select('legacy_elementi', 'e')
       ->condition('colonna', 13)
       ->fields('e', []);
 

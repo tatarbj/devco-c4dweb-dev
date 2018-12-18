@@ -9,7 +9,7 @@ class C4DRcdDiagramMigration extends C4DRcdBaseMigration {
     parent::__construct($arguments);
     $this->description = t('Diagrams');
 
-    $query = Database::getConnection('default', 'legacy')->select('progetti', 'p')
+    $query = Database::getConnection()->select('legacy_progetti', 'p')
       ->fields('p', [
         'id',
         'identificativo',

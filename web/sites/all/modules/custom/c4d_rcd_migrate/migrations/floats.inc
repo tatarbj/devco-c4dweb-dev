@@ -9,7 +9,7 @@ class C4DRcdFloatMigration extends C4DRcdBaseMigration {
     parent::__construct($arguments);
     $this->description = t('Float texts');
 
-    $query = Database::getConnection('default', 'legacy')->select('elementi', 'e')
+    $query = Database::getConnection()->select('legacy_elementi', 'e')
       ->condition('colonna', 12)
       ->fields('e', []);
 

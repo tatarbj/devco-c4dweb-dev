@@ -9,7 +9,7 @@ class C4DRcdResultMigration extends C4DRcdBaseMigration {
     parent::__construct($arguments);
     $this->description = t('Results');
 
-    $query = Database::getConnection('default', 'legacy')->select('elementi', 'e')
+    $query = Database::getConnection()->select('legacy_elementi', 'e')
       ->condition('vertical', 0)
       ->condition('colonna', [12, 13], 'NOT IN')
       ->fields('e', []);
