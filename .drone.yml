@@ -158,7 +158,7 @@ pipeline:
       - drush -r website role-add-perm 'administrator' 'manage diagrams'
     when:
       event: [ deployment, push ]
-      environment: [ acceptance ]
+      environment: [ acceptance, test ]
 
 
   slack-notify-deploy:
