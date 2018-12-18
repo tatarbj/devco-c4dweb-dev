@@ -154,7 +154,6 @@ pipeline:
       - drush -r website sqlq "ALTER TABLE eck_result_chain_diagram AUTO_INCREMENT = 101;"
       - drush -r website sqlc < sites/all/modules/custom/c4d_rcd_migrate/assets/h567056_capacity.sql
       - drush -r website mi --group=diagrams --feedback="50 items"
-      - drush -r website ev "variable_set('jquery_update_jquery_version', '1.10');"
       - drush -r website role-add-perm 'administrator' 'manage diagrams'
     when:
       branch: feature/php7_acceptance
