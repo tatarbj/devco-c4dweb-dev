@@ -157,7 +157,7 @@ pipeline:
       - drush -r website ev "variable_set('jquery_update_jquery_version', '1.10');"
       - drush -r website role-add-perm 'administrator' 'manage diagrams'
     when:
-      event: deployment
+      event: [ deployment, push ]
       environment: [ acceptance ]
 
 
