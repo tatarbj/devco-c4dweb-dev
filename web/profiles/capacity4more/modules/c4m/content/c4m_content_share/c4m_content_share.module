@@ -398,6 +398,8 @@ function c4m_content_share_node_grants($account, $op) {
 
       return $grants;
   }
+
+  return NULL;
 }
 
 /**
