@@ -567,6 +567,8 @@ function c4m_content_share_custom_node_access_grants($op, $account = NULL) {
         }
       }
     }
+    // @todo Invoke drupal_alter('node_grants', ..).
+    // It is ok in our case, because no modules in this project implement this hook.
     $grants_by_cid[$cid] = array_merge(
       array('node' => array('all' => array(0))),
       $grants);
