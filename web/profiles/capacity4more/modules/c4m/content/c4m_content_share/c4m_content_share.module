@@ -527,6 +527,10 @@ function c4m_content_share_custom_node_access($op, $node, $account = NULL) {
  * the function signature of `node_access_grants` and prevent our hook to be
  * called.
  *
+ * Static cache implementation as proposed in
+ * https://www.drupal.org/project/drupal/issues/2199001
+ * but with drupal_static_fast pattern.
+ *
  * @param string $op
  *   Operation.
  * @param object $account
@@ -540,13 +544,21 @@ function c4m_content_share_custom_node_access($op, $node, $account = NULL) {
  * @see node_access_grants()
  */
 function c4m_content_share_custom_node_access_grants($op, $account = NULL) {
-  $grants = &drupal_static(__FUNCTION__);
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast)) {
+    $drupal_static_fast['grants'] = &drupal_static(__FUNCTION__, array());
+  }
+  $grants_by_cid = &$drupal_static_fast['grants'];
 
   if (!isset($account)) {
     $account = $GLOBALS['user'];
   }
 
-  if (!isset($grants)) {
+  // Anonymous user has uid == 0.
+  $cid = $account->uid . ':' . $op;
+
+  if (!isset($grants_by_cid[$cid])) {
+    $grants = array();
     foreach (module_implements('node_grants') as $module) {
       if ($module !== 'c4m_content_share') {
         $grant = module_invoke($module, 'node_grants', $op, $account);
@@ -555,9 +567,10 @@ function c4m_content_share_custom_node_access_grants($op, $account = NULL) {
         }
       }
     }
+    $grants_by_cid[$cid] = $grants;
   }
 
-  return array_merge(array('node' => array('all' => array(0))), $grants);
+  return array_merge(array('node' => array('all' => array(0))), $grants_by_cid[$cid]);
 }
 
 /**
