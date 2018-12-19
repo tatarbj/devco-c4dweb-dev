@@ -567,10 +567,12 @@ function c4m_content_share_custom_node_access_grants($op, $account = NULL) {
         }
       }
     }
-    $grants_by_cid[$cid] = $grants;
+    $grants_by_cid[$cid] = array_merge(
+      array('node' => array('all' => array(0))),
+      $grants);
   }
 
-  return array_merge(array('node' => array('all' => array(0))), $grants_by_cid[$cid]);
+  return $grants_by_cid[$cid];
 }
 
 /**
