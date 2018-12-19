@@ -530,10 +530,10 @@ function c4m_content_share_custom_node_access($op, $node, $account = NULL) {
  * @param object $account
  *   Optional user account object to check access for.
  *
- * @return array
- *   A multidimensional associative array in which the keys are the modules,
- *   second level keys are the realms, and the values are arrays of grants
- *   for those realms.
+ * @return int[][][]
+ *   Format: $[$module][$realm][] = $grant_id
+ *   Note that this format is different from the original node_access_grants(),
+ *   which has the format $[$realm][] = $grant_id.
  *
  * @see node_access_grants()
  */
