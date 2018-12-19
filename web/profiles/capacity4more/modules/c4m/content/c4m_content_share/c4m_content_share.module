@@ -355,13 +355,21 @@ function c4m_content_share_node_access_records_alter(&$grants, $node) {
 }
 
 /**
- * Implements hook_node_grants().
+ * Implements hook_node_grants_alter().
+ *
+ * @param int[][] $grants
+ *   Format: $[$realm][] = $grant_id
+ * @param object $account
+ *   The user account object. Anonymous has ->uid === 0.
+ * @param string $op
+ *   One of 'view', 'update', 'delete', 'create'.
  */
-function c4m_content_share_node_grants($account, $op) {
+function c4m_content_share_node_grants_alter(&$grants, $account, $op) {
+
   switch ($op) {
     case 'view':
-      $grants = array();
       $realm = C4M_CONTENT_SHARE_ACCESS_REALM;
+      $known_grants = array_merge(array('all' => array(0)), $grants);
 
       // Retrieve all shares on the platform.
       $query = db_select('node', 'n');
@@ -377,7 +385,7 @@ function c4m_content_share_node_grants($account, $op) {
         // Check node access on the target groups:
         $group = c4m_og_get_group_of_content($node);
 
-        $access = c4m_content_share_custom_node_access('view', $group, $account);
+        $access = c4m_content_share_custom_node_access('view', $group, $account, $known_grants);
 
         if (!$access) {
           // No point in continuing if we already fail here.
@@ -389,17 +397,13 @@ function c4m_content_share_node_grants($account, $op) {
         $original_node = $node_wrapper->c4m_source_entity->value();
 
         // Check access to the original node:
-        $access_source = c4m_content_share_custom_node_access('view', $original_node, $account);
+        $access_source = c4m_content_share_custom_node_access('view', $original_node, $account, $known_grants);
 
         if ($access && $access_source) {
           $grants[$realm][] = $node->nid;
         }
       }
-
-      return $grants;
   }
-
-  return NULL;
 }
 
 /**
@@ -415,13 +419,15 @@ function c4m_content_share_node_grants($account, $op) {
  *   Node object to check access for.
  * @param object $account
  *   Optional user account object to check access for.
+ * @param array $known_grants
+ *   Node grants that were calculated for this user.
  *
  * @return bool
  *   Access indicator.
  *
  * @see node_access()
  */
-function c4m_content_share_custom_node_access($op, $node, $account = NULL) {
+function c4m_content_share_custom_node_access($op, $node, $account = NULL, array $known_grants) {
   $rights = &drupal_static(__FUNCTION__, array());
 
   if (!$node || !in_array($op, array('view', 'update', 'delete', 'create'), TRUE)) {
@@ -489,14 +495,12 @@ function c4m_content_share_custom_node_access($op, $node, $account = NULL) {
       $query->range(0, 1);
 
       $grants = db_or();
-      foreach (c4m_content_share_custom_node_access_grants($op, $account) as $module => $realms) {
-        foreach ($realms as $realm => $gids) {
-          foreach ($gids as $gid) {
-            $grants->condition(db_and()
-              ->condition('gid', $gid)
-              ->condition('realm', $realm)
-            );
-          }
+      foreach ($known_grants as $realm => $gids) {
+        foreach ($gids as $gid) {
+          $grants->condition(db_and()
+            ->condition('gid', $gid)
+            ->condition('realm', $realm)
+          );
         }
       }
       if (count($grants) > 0) {
@@ -517,64 +521,6 @@ function c4m_content_share_custom_node_access($op, $node, $account = NULL) {
   }
 
   return FALSE;
-}
-
-/**
- * Custom version of `node_access_grants()` function to prevent endless loop.
- *
- * We want to retrieve node access for nodes, but exclude our custom
- * `hook_node_grants` in this module (endless loop). Therefore we duplicated
- * the function signature of `node_access_grants` and prevent our hook to be
- * called.
- *
- * Static cache implementation as proposed in
- * https://www.drupal.org/project/drupal/issues/2199001
- * but with drupal_static_fast pattern.
- *
- * @param string $op
- *   Operation.
- * @param object $account
- *   Optional user account object to check access for.
- *
- * @return int[][][]
- *   Format: $[$module][$realm][] = $grant_id
- *   Note that this format is different from the original node_access_grants(),
- *   which has the format $[$realm][] = $grant_id.
- *
- * @see node_access_grants()
- */
-function c4m_content_share_custom_node_access_grants($op, $account = NULL) {
-  static $drupal_static_fast;
-  if (!isset($drupal_static_fast)) {
-    $drupal_static_fast['grants'] = &drupal_static(__FUNCTION__, array());
-  }
-  $grants_by_cid = &$drupal_static_fast['grants'];
-
-  if (!isset($account)) {
-    $account = $GLOBALS['user'];
-  }
-
-  // Anonymous user has uid == 0.
-  $cid = $account->uid . ':' . $op;
-
-  if (!isset($grants_by_cid[$cid])) {
-    $grants = array();
-    foreach (module_implements('node_grants') as $module) {
-      if ($module !== 'c4m_content_share') {
-        $grant = module_invoke($module, 'node_grants', $op, $account);
-        if (!empty($grant)) {
-          $grants[$module] = $grant;
-        }
-      }
-    }
-    // @todo Invoke drupal_alter('node_grants', ..).
-    // It is ok in our case, because no modules in this project implement this hook.
-    $grants_by_cid[$cid] = array_merge(
-      array('node' => array('all' => array(0))),
-      $grants);
-  }
-
-  return $grants_by_cid[$cid];
 }
 
 /**
