@@ -1,0 +1,61 @@
+
+body { font-family : euro_font ; color : #555 ; font-size : 12pt; padding: 0px ; margin: 0px; text-align: center ;}
+
+#contenitore{display:table; width:100%; height:100%; min-width:100%; min-height:100%;}
+#colrow{ display:table-row; height:100%; }
+
+#colsx{ display:table-cell;  float:left; width:70%; height:100%;  border: 1px solid #438fcd; border-left-color: #ddd ;border-bottom-width: 5px; border-top-width: 0px; }
+#coldx{ display:table-cell;  float:right; width:29%; height:100%; border: 1px solid #ddd; border-bottom-width: 5px; border-top-width: 0px; border-left-width: 0px; }
+
+.row {position: relative ; }
+.row_ul {margin-left: 3%;position: relative ; height: 40px; border: 0px solid #ddd; border-bottom-width: 1px;}
+
+.link_home {color : #438fcd ; text-decoration : none ; }
+.link_home:hover {text-decoration : underline ; }
+
+
+.link_settore {color : #438fcd ; text-decoration : none ; }
+.link_settore:hover {text-decoration : underline ; } 
+
+
+#main_container {display: auto; text-align: left; margin: 40px; }
+#header_title {padding-left : 10px; width: 50%; float : left; font-size: 33pt;}
+#header_menu {width: 30%; float :right ; text-align : right ; margin-top : 34px; padding-right: 20px; word-spacing: 25px; font-size : 10pt ; }
+#header_payoff {height: 80px; border: 0px solid #ddd ;  border: 0px solid #ddd ; border-right-width : 1px ;   border-top-width : 1px ; }
+
+#footer_container {margin-top : 60px; position: relative; border : 0px solid #aaa ; border-top-width : 1px ; }
+#footer_container::after { content: " "; clear : both ; }
+
+.col-xs-2 {float : left;  width : 15%; }
+.col-xs-10 {float : right;  width : 84%; }
+
+.row_ul::after { 
+    content: " "; 
+	clear : both ; 
+}
+
+.row::after { 
+    content: " "; 
+	clear : both ; 
+}
+
+.icona_ul {
+	width: 100%; height: 40px;
+}
+.row_ul .col-xs-10 {
+	height: 40px;
+	display: flex;
+    align-items: center;
+}
+
+.link_footer {
+	text-decoration: none ; 
+	color : #438fcd ; 
+}
+
+.menu_title {
+	color : #438fcd ; 
+	font-size : 25pt ; 
+	font-weight : normal ; 
+	margin-bottom : 15px; 
+}

@@ -1,0 +1,167 @@
+
+
+@font-face {
+  font-family: 'EU_BOLD';
+  src: url('../fonts/woff/PFSquareSansPro-Bold.woff') format('woff'), /* Modern browsers */ 
+  url('../fonts/ttf/PFSquareSansPro-Bold.ttf')  format('truetype') ; /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'EU_ITALIC';
+  src: url('../fonts/woff/PFSquareSansPro-Italic.woff') format('woff'), url('../fonts/ttf/PFSquareSansPro-Italic.ttf')  format('truetype') ;
+}
+
+@font-face {
+  font-family: 'EU_LIGHT';
+  src: url('../fonts/woff/PFSquareSansPro-Light.woff') format('woff'), url('../fonts/ttf/PFSquareSansPro-Light.ttf')  format('truetype') ; 
+}
+
+@font-face {
+  font-family: 'EU_MEDIUM';
+  src: url('../fonts/woff/PFSquareSansPro-Medium.woff') format('woff'), url('../fonts/ttf/PFSquareSansPro-Medium.ttf')  format('truetype') ; 
+}
+
+@font-face {
+  font-family: 'EU_REGULAR';
+  src: url('../fonts/woff/PFSquareSansPro-Regular.woff') format('woff'), url('../fonts/ttf/PFSquareSansPro-Regular.ttf')  format('truetype') ; 
+}
+
+@font-face {
+  font-family: 'EU_THIN';
+  src: url('../fonts/woff/PFSquareSansPro-Thin.woff') format('woff'), url('../fonts/ttf/PFSquareSansPro-Thin.ttf')  format('truetype') ; 
+}
+
+@font-face {
+  font-family: 'EU_XBLACK';
+  src: url('../fonts/woff/PFSquareSansPro-XBlack.woff') format('woff'), url('../fonts/ttf/PFSquareSansPro-XBlack.ttf')  format('truetype') ; 
+}
+
+
+body { 
+	color : #555 ; 
+	font : 12pt 'EU_REGULAR'; 
+	margin: 0px; 
+	padding: 10px 0px 10px 0px ; 
+	text-align: left ; 
+}
+
+/* REPARTO HOME */
+.box_master{
+	width:  calc(70px + 4vw) ; 
+	height: calc(90px + 4vw) ;
+	background-repeat : no-repeat ; 
+	background-size: contain ; 
+	transition-property: background-image;
+	transition-duration: .3s;
+	transition-timing-function: linear;
+}
+
+
+.lista_icone , .lista_icone_home { list-style: none; padding: 0px; }
+.lista_icone li , .lista_icone_home li{ float: left ; margin: 15px;}
+.lista_icone:after , .lista_icone_home:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+
+/* Questa è la parte che definisce i singoli box  del menu con l'hover*/
+
+.box_growth { background-image : url('../img/icone_home/SIG01growth.png') ; }
+.box_growth:hover { background-image : url('../img/icone_home/SIG01growth_over.png') ; }
+
+.box_governance { background-image : url('../img/icone_home/SIG02governance.png') ; }
+.box_governance:hover { background-image : url('../img/icone_home/SIG02governance_over.png') ; }
+
+.box_peace { background-image : url('../img/icone_home/SIG03peace.png') ; }
+.box_peace:hover {background-image : url('../img/icone_home/SIG03peace_over.png') ; }
+
+.box_food { background-image : url('../img/icone_home/SIG04food.png') ; }
+.box_food:hover { background-image : url('../img/icone_home/SIG04food_over.png') ; }
+
+.box_energy { background-image : url('../img/icone_home/SIG05energy.png') ; }
+.box_energy:hover {background-image : url('../img/icone_home/SIG05energy_over.png') ; }
+
+.box_budget { background-image : url('../img/icone_home/SIG06budget.png') ; }
+.box_budget:hover {background-image : url('../img/icone_home/SIG06budget_over.png') ; }
+
+.box_education { background-image : url('../img/icone_home/SIG07education.png') ; }
+.box_education:hover {background-image : url('../img/icone_home/SIG07education_over.png') ; }
+
+.box_health { background-image : url('../img/icone_home/SIG08health.png') ; }
+.box_health:hover {background-image : url('../img/icone_home/SIG08health_over.png') ; }
+
+.box_enviroment { background-image : url('../img/icone_home/SIG09enviroment.png') ; }
+.box_enviroment:hover {background-image : url('../img/icone_home/SIG09enviroment_over.png') ; }
+
+.box_transport { background-image : url('../img/icone_home/SIG10transport.png') ; }
+.box_transport:hover {background-image : url('../img/icone_home/SIG10transport_over.png') ; }
+
+.box_employment { background-image : url('../img/icone_home/SIG11employment.png') ; }
+.box_employment:hover {background-image : url('../img/icone_home/SIG11employment_over.png') ; }
+
+.box_trade { background-image : url('../img/icone_home/SIG12trade.png') ; }
+.box_trade:hover {background-image : url('../img/icone_home/SIG12trade_over.png') ; }
+
+.box_gender { background-image : url('../img/icone_home/SIG13gender.png') ; }
+.box_gender:hover {background-image : url('../img/icone_home/SIG13gender_over.png') ; }
+
+
+.link_menu{
+	color : #333 ; 
+	text-decoration : none ; 
+}
+
+.link_menu:hover{
+	color : #4c79b7 ; 
+	text-decoration : none ; 
+}
+
+
+#header_title {padding-left : calc(12px + 0.5vw);  padding-top: 0px;  font-size: 29pt;}
+#header_payoff {padding-left : calc(12px + 0.5vw); font-size: 10pt; }
+#testata_img {
+	width: 100%; height: 12vw; 
+	background: #fff url('../img/testata.jpg')  no-repeat ; 
+	background-size: contain ; 
+}
+
+#scritta_testata {
+	float: left ; 
+	width: 90%;
+	color : #444 ; 
+	padding: 2% 0 0 18% ; 
+	font: 3.5vw  'EU_LIGHT';
+}
+
+.barra_azzurra {
+	width: 100%;
+	height : 2vw;
+	background-color : #85b5d8 ; 
+}
+
+.menu_ul{
+	font-size: calc(9pt + 1.3vw); 
+	line-height: 4vw;
+	list-style-type: none;
+	padding: 0px;
+}
+
+.menu_ul li{ 
+	background-repeat : no-repeat ;
+	background-position : left center  ;
+	background-size : contain ; 
+	padding-left: calc(13px + 4vw); 
+	margin-top: 15px; 
+}
+
+
+@media screen and (min-width: 0px) and (max-width: 767px) {
+	.menu_ul {display: none; }
+	.lista_icone{display: initial ; }
+}
+
+@media screen and (min-width: 767px)  {
+	.menu_ul {display: initial; }
+	.lista_icone{display: none ; }
+}

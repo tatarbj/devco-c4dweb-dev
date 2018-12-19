@@ -1,0 +1,62 @@
+//
+// cTools modals
+//
+
+// Overridden/Extended styles
+//
+div.ctools-modal-content {
+
+  // Modal header
+  //
+  .modal-header {
+    padding: 15px;
+
+    // Close icon
+    //
+    a.close {
+      color: #2385c2;
+    }
+  }
+
+  // Title text within header
+  //
+  .modal-title {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  // Actual modal
+  //
+  .modal-content {
+    width: 100% !important;
+    height: calc(100% - 54px) !important;
+
+    // Form controls
+    //
+    .form-item {
+
+      // Form label
+      //
+      label {
+        float: none;
+        width: auto;
+      }
+
+      // Input fields, Select boxes and Textarea
+      //
+      input.form-text,
+      input.form-file,
+      select.form-select,
+      textarea.form-textarea,
+      input.form-autocomplete {
+        display: block;
+      }
+
+      // Textarea (Resizable)
+      //
+      .resizable-textarea {
+        margin: 0;
+      }
+    }
+  }
+}

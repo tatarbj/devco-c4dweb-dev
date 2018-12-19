@@ -1,0 +1,29 @@
+//
+// @file
+// Capacity4Dev - Results Chain Diagram - Styles definition.
+//
+// The following comment starts with a "!". So it will not be removed during
+// the (SASS) compilation. It is just to alert project contributors that the
+// (CSS) output file can not be modified under any circumstances.
+/*! Compiled SASS file | Do NOT modify from here !*/
+//
+
+// Variables.
+@import
+  'config/variable-overrides',
+  'vendors/bootstrap/variables';
+
+// Components
+//
+@import
+  'components/color-fill-icons',
+  'components/wells',
+  'components/svg',
+  'components/colorpicker',
+  'components/jquery.ui.theme',
+  'components/views',
+  'components/modal',
+  'components/buttons',
+  'components/button-groups',
+  'components/input-groups',
+  'components/close';

@@ -1,0 +1,121 @@
+<?php
+
+/**
+ * @file
+ * Defines custom fields for the Results Chain Diagram SVG related entities.
+ */
+
+//define('C4D_RCD_FIELDS_TIPO_IMPACT', 0);
+define('C4D_RCD_FIELDS_TIPO_OUTPUT', 1);
+define('C4D_RCD_FIELDS_TIPO_OUTCOME', 2);
+
+/**
+ * Implements hook_field_info().
+ */
+function c4d_rcd_fields_field_info() {
+  return [
+    'c4d_rcd_svg_element' => [
+      'label' => t('Results Chain Diagram SVG Element'),
+      'description' => t("This field stores SVG element related properties"),
+      'settings' => [
+        'allowed_values' => [],
+        'allowed_values_function' => '',
+      ],
+      'default_widget' => 'c4d_rcd_svg_element',
+      'default_formatter' => 'c4d_rcd_svg_element_formatter_default',
+      'property_type' => 'c4d_rcd_svg_element',
+      'property_callbacks' => ['c4d_rcd_fields_svg_element_property_info_callback'],
+    ],
+  ];
+}
+
+/**
+ * Callback to alter the property info of c4d_rcd_svg_element fields.
+ *
+ * @see c4d_rcd_fields_field_info().
+ */
+function c4d_rcd_fields_svg_element_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
+  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$field['field_name']];
+
+  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
+  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+  unset($property['query callback']);
+
+  module_load_include('inc', 'c4d_rcd_fields', 'c4d_rcd_fields');
+  $property['property info'] = _c4d_rcd_fields_svg_element_property_info_callback();
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function c4d_rcd_fields_field_widget_info() {
+  return [
+    'c4d_rcd_svg_element' => [
+      'label' => t('SVG element'),
+      'field types' => ['c4d_rcd_svg_element'],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function c4d_rcd_fields_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  module_load_include('inc', 'c4d_rcd_fields', 'c4d_rcd_fields');
+  return _c4d_rcd_fields_field_widget_form($form, $form_state, $field, $instance, $langcode, $items, $delta, $element);
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function c4d_rcd_fields_field_formatter_info() {
+  return [
+    'c4d_rcd_svg_element_formatter_default' => [
+      'label' => t('Default'),
+      'field types' => ['c4d_rcd_svg_element'],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function c4d_rcd_fields_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = [];
+
+  switch ($display['type']) {
+    case 'c4d_rcd_svg_element_formatter_default':
+      foreach ($items as $delta => $item) {
+        $render_items = [];
+        foreach ($item as $key => $value) {
+          $render_items[] = $key . ': ' . field_filter_xss($value);
+        }
+        $list_arguments = [
+          'items' => $render_items,
+          'attributes' => [],
+        ];
+        $element[$delta] = ['#markup' => theme('item_list', $list_arguments)];
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_validate().
+ */
+function c4d_rcd_fields_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  // We don't need to validate anything.
+  return;
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function c4d_rcd_fields_field_is_empty($item, $field) {
+//  $temp = array_keys($field['columns']);
+//  $key = array_shift($temp);
+//  return empty($item[$key]);
+  return FALSE;
+}

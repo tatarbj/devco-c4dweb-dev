@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the Capacity4Dev - Result Chain Diagram - Data types feature.
+ */
+
+include_once 'c4d_rcd_data_types.features.inc';

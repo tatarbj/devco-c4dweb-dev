@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * Implements hook_field_schema().
+ */
+function c4d_rcd_fields_field_schema($field) {
+  $columns = [];
+  $indexes = [];
+
+  switch($field['type']) {
+    case 'c4d_rcd_svg_element':
+      $columns = [
+        'vertical' => [
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ],
+        // The id_txt field doesn't seem to be used.
+//        'id_txt' => [
+//          'type' => 'varchar',
+//          'length' => 50,
+//          'not null' => FALSE,
+//        ],
+        'tipo' => [
+          'type' => 'int',
+          'size' => 'small',
+          'not null' => TRUE,
+        ],
+        'colonna' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'x' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'y' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'width' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'height' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'riga_1' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'riga_2' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'riga_3' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'z_index' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'contatore_z' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'titolo' => [
+          'type' => 'text',
+          'not null' => FALSE,
+        ],
+        'descr' => [
+          'type' => 'text',
+          'not null' => FALSE,
+        ],
+        'hovering' => [
+          'type' => 'text',
+          'not null' => FALSE,
+        ],
+        'http_type' => [
+          'type' => 'varchar',
+          'length' => 100,
+          'not null' => FALSE,
+        ],
+        'color' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => FALSE,
+        ],
+        'ordine' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+      ];
+      $indexes = [
+        'z_index' => ['z_index'],
+        'ordine' => ['ordine'],
+      ];
+      break;
+
+  }
+  return [
+    'columns' => $columns,
+    'indexes' => $indexes,
+  ];
+}
+

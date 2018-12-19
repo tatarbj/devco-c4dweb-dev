@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Code for the Capacity4Dev - Admin feature.
+ */
+
+include_once 'c4d_rcd_admin.features.inc';

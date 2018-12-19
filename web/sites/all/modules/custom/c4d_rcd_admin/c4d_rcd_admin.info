@@ -1,0 +1,11 @@
+name = Capacity4Dev - Results Chain Diagram - Admin
+description = Provides the Results Chain Diagram admin related features for Capacity4Dev.
+core = 7.x
+package = Capacity4Dev - Results Chain Diagram
+dependencies[] = views
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = diagram_management
+features[views_view][] = sectors_management
+features_exclude[dependencies][ctools] = ctools
+project path = sites/all/modules/custom/

@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function c4d_rcd_install() {
+  // The SVG editor relies on specific 'magic' IDs (colonna: 12/13/100) for
+  // priority areas.
+  // We need to make sure those IDs won't be used, so we set the auto-increment
+  // to 101 to avoid conflicts.
+  // First check if the auto-increment is less than 101, otherwise we skip this
+  // task.
+  //
+  // ATTENTION: using drush to enable this module and dependencies breaks this
+  // code, because inexplicably the eck_result_chain_diagram table is not
+  // created at the time c4d_rcd_install() is run.
+  // So you should enable c4d_rcd_data_types and c4d_rcd one after the other.
+  $result = db_query("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'eck_result_chain_diagram';")->fetchAssoc();
+  if ($result['AUTO_INCREMENT'] <= 101) {
+    db_query('ALTER TABLE eck_result_chain_diagram AUTO_INCREMENT = 101;');
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function c4d_rcd_schema() {
+  $schema['c4d_rcd_link'] = [
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'id_prj' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'ele_1' => [
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'ele_2' => [
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'tipo' => [
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+    ],
+    'primary key' => [
+      'id',
+    ],
+  ];
+  return $schema;
+}
+

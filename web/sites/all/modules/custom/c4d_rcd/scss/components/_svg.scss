@@ -1,0 +1,39 @@
+//
+// SVG's
+//
+
+.svg {
+
+  // Select
+  //
+  &_select rect {
+    stroke: #006600;
+    fill: #cc0000;
+  }
+
+  // link
+  //
+  &_link rect {
+    stroke: #333;
+    fill: #ffcc00;
+  }
+}
+
+// Stile testo titolo
+//
+.stile_testo_titolo {
+  font-weight: bold;
+
+  // Stile testo titolo (Vertical)
+  //
+  &_vertical {
+    font-weight: bold;
+    text-align: center; 
+  }
+}
+
+// Action name
+//
+.actionName {
+  font-size: 12pt;
+}

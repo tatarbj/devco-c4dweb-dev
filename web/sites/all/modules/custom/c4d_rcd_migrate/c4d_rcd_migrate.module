@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * Get the configuration for Migrate API
+ *
+ * @return array
+ */
+function c4d_rcd_migrate_migrate_api() {
+  return [
+    'api' => 2,
+    'groups' => [
+      'sectors'   => ['title' => t('Sectors')],
+      'diagrams'   => ['title' => t('Diagrams')],
+    ],
+    'migrations' => [
+      'C4DRcdDiagram' => [
+        'class_name' => 'C4DRcdDiagramMigration',
+        'group_name' => 'diagrams',
+      ],
+      'C4DRcdPriorityArea' => [
+        'class_name' => 'C4DRcdPriorityAreaMigration',
+        'group_name' => 'diagrams',
+        'dependencies' => ['C4DRcdDiagram'],
+      ],
+      'C4DRcdResult' => [
+        'class_name' => 'C4DRcdResultMigration',
+        'group_name' => 'diagrams',
+        'dependencies' => ['C4DRcdDiagram', 'C4DRcdPriorityArea'],
+      ],
+      'C4DRcdImpact' => [
+        'class_name' => 'C4DRcdImpactMigration',
+        'group_name' => 'diagrams',
+        'dependencies' => ['C4DRcdDiagram'],
+      ],
+      'C4DRcdFloat' => [
+        'class_name' => 'C4DRcdFloatMigration',
+        'group_name' => 'diagrams',
+        'dependencies' => ['C4DRcdDiagram'],
+      ],
+      'C4DRcdIndicator' => [
+        'class_name' => 'C4DRcdIndicatorMigration',
+        'group_name' => 'diagrams',
+        'dependencies' => ['C4DRcdResult', 'C4DRcdImpact'],
+      ],
+      'C4DRcdLink' => [
+        'class_name' => 'C4DRcdLinkMigration',
+        'group_name' => 'diagrams',
+        'dependencies' => [
+          'C4DRcdDiagram',
+          'C4DRcdPriorityArea',
+          'C4DRcdResult',
+          'C4DRcdImpact',
+          'C4DRcdFloat',
+        ],
+      ],
+    ],
+  ];
+}

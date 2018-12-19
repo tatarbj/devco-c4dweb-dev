@@ -1,0 +1,36 @@
+//
+// Wells
+//
+
+// Extend styles
+//
+.well {
+
+  // Inner markup
+  //
+  .markup {
+    position: relative;
+    padding: 45px 15px 15px;
+    border-radius: 0 0 4px 4px;
+    margin: 15px 0 0;
+    color: #777;
+    background-color: white;
+    box-shadow: none;
+
+    // Inner markup (After selector)
+    //
+    &::after{
+      content: 'Example';
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      color: #bbb;
+      font: {
+        size: 12px;
+        weight: bold;
+      }
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+}

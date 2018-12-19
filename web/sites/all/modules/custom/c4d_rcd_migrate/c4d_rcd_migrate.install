@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Contains install and update functions for
+ * Capacity4Dev - Results Chain Diagram - Migration.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function c4d_rcd_migrate_uninstall() {
+  // Drop the legacy tables.
+  $tables = [
+    'legacy_amministratori',
+    'legacy_elementi',
+    'legacy_link',
+    'legacy_priority_area',
+    'legacy_progetti',
+    'legacy_web_indicators',
+    'legacy_web_priority',
+    'legacy_web_results',
+    'legacy_web_sectors',
+  ];
+  foreach ($tables as $table) {
+    db_drop_table($table);
+  }
+}

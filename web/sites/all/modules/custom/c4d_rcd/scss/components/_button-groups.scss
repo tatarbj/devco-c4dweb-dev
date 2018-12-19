@@ -1,0 +1,60 @@
+//
+// Button groups
+//
+
+// Overridden/Extended styles
+//
+.btn-group {
+  margin-bottom: 5px;
+
+  // Starts from Medium devices (Tablets, 768px and up).
+  //
+  @media (min-width: 768px) {
+    margin-bottom: 15px;
+  }
+}
+
+// Text button addon
+// 
+.btn-group-addon {
+  padding: $padding-base-vertical $padding-base-horizontal;
+  font-size: $font-size-base;
+  font-weight: normal;
+  line-height: $line-height-base;
+  text-align: center;
+  background-color: $gray-lighter;
+  border: 1px solid $input-border;
+  border-radius: $btn-border-radius-base;
+
+  // Make the addon behave like a button inside groups.
+  //
+  .btn-group > & {
+    position: relative;
+    float: left;
+
+    // Prevent double borders when addons are next to each other.
+    //
+    & + .btn,
+    & + .btn-group {
+      margin-left: -1px;
+    }
+
+    // Manage border radius according to its position.
+    //
+    &:first-child:not(:last-child) {
+      border: {
+        bottom-right-radius: 0;
+        top-right-radius: 0;
+      }
+    }
+    &:last-child:not(:first-child) {
+      border: {
+        bottom-left-radius: 0;
+        top-left-radius: 0;
+      }
+    }
+    &:not(:first-child):not(:last-child) {
+      border-radius: 0;
+    }
+  }
+}

@@ -1,0 +1,5 @@
+name = Capacity4Dev - Results Chain Diagram - Fields
+description = "Provides custom fields for the Results Chain Diagram related entities."
+package = Capacity4Dev - Results Chain Diagram
+core = 7.x
+dependencies[] = field
