@@ -156,7 +156,7 @@ pipeline:
       - drush -r website mi --group=diagrams --feedback="50 items"
       - drush -r website role-add-perm 'administrator' 'manage diagrams'
     when:
-      branch: feature/php7_acceptance
+      event: push
 
 
   slack-notify-deploy:
