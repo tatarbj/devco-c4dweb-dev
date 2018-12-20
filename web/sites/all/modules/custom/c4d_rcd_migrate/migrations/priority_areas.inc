@@ -19,7 +19,7 @@ class C4DRcdPriorityAreaMigration extends C4DRcdBaseMigration {
       ]);
     // Priority areas in elementi table can be identified by colonna column and
     // vertical = 1.
-    $query->innerJoin('elementi', 'e', 'e.colonna = p.id AND vertical = 1');
+    $query->innerJoin('legacy_elementi', 'e', 'e.colonna = p.id AND vertical = 1');
     $query->fields('e', []);
 
     $this->source = new MigrateSourceSQL($query, [], NULL, ['cache_counts' => TRUE]);
