@@ -117,14 +117,15 @@ pipeline:
   align-website-environment:
     image: fpfis/php71-dev
     commands:
-      - drush -r website status
+      - drush -v -r website status
       - drush -r website sql-drop --yes
       - drush -r website sqlc < dump.sql
       - drush -r website upwd 1 --password="$${UID1_ACCEPTANCE}"
       - drush -r website vset maintenance_mode 1
     when:
       event: deployment
-      environment: [ acceptance]
+      environment: [ acceptance ]
+      
   site-upgrade:
     image: fpfis/php71-dev:latest
     commands:
