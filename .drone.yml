@@ -42,12 +42,12 @@ pipeline:
       - drush -r web cc all
     when:
       event: push
-      
-  # Deploy Results Chain Diagrams feature and migrate legacy database contents.
   
-  deploy-and-migrate-results-chain-diagram:
+  # Test Results Chain Diagrams feature and migrate legacy database contents.
+  test-and-migrate-results-chain-diagram:
     image: fpfis/php71-dev
     commands:
+      - drush -r web status
       - drush -r web en c4d_rcd_data_types -y
       - drush -r web en c4d_rcd c4d_rcd_admin c4d_rcd_migrate -y
       - drush -r web sqlq "ALTER TABLE eck_result_chain_diagram AUTO_INCREMENT = 101;"
@@ -55,8 +55,9 @@ pipeline:
       - drush -r web mi --group=diagrams --feedback="50 items"
       - drush -r web role-add-perm 'administrator' 'manage diagrams'
     when:
-      event: push      
-
+      event: push   
+      
+      
   slack-notify-deploy:
     image: plugins/slack
     secrets: [ slack_webhook ]
@@ -126,8 +127,22 @@ pipeline:
       environment: [ acceptance ]
 
 # Push to acceptance server :
-
-       
+ 
+ # Deploy Results Chain Diagrams feature and migrate legacy database contents.
+  deploy-and-migrate-results-chain-diagram:
+    image: fpfis/php71-dev
+    commands:
+      - drush -r website en c4d_rcd_data_types -y
+      - drush -r website en c4d_rcd c4d_rcd_admin c4d_rcd_migrate -y
+      - drush -r website sqlq "ALTER TABLE eck_result_chain_diagram AUTO_INCREMENT = 101;"
+      - drush -r website sqlc < web/sites/all/modules/custom/c4d_rcd_migrate/assets/h567056_capacity.sql
+      - drush -r website mi --group=diagrams --feedback="50 items"
+      - drush -r website role-add-perm 'administrator' 'manage diagrams'
+    when:
+#      event: push   
+      event: deployment
+      environment: [ acceptance ]
+      
   align-website-environment:
     image: fpfis/php71-dev
     commands:
@@ -140,6 +155,7 @@ pipeline:
       event: deployment
       environment: [ acceptance ]
       
+    
   site-upgrade:
     image: fpfis/php71-dev:latest
     commands:
