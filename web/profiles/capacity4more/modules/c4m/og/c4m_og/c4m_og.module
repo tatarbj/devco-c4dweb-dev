@@ -2540,13 +2540,13 @@ function c4m_og_view_node_access($node, $account) {
     if ($node->status == NODE_NOT_PUBLISHED) {
 
       // If-blocks are separated for easier debugging.
-      if (c4m_features_og_members_is_power_user($group)) {
-        // A group power user may view the unpublished node.
+      if ($node->uid == $account->uid) {
+        // The content author may view the unpublished node.
         return NODE_ACCESS_ALLOW;
       }
 
-      if ($node->uid == $account->uid) {
-        // The content author may view the unpublished node.
+      if (c4m_features_og_members_is_power_user($group)) {
+        // A group power user may view the unpublished node.
         return NODE_ACCESS_ALLOW;
       }
 
