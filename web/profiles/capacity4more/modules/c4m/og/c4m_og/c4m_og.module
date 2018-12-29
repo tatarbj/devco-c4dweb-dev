@@ -2539,10 +2539,6 @@ function c4m_og_view_node_access($node, $account) {
     // Group content is saved as draft.
     if ($node->status == NODE_NOT_PUBLISHED) {
 
-      $user_type = _c4m_features_og_members_get_user_type($group, $account);
-      // Not relevant for projects, as they do not have regular members.
-      $allowed_wiki_page = $node->type == 'wiki_page' && $user_type == C4M_USER_TYPE_GM && c4m_content_wiki_page_is_editable_by_members($node);
-
       // If-blocks are separated for easier debugging.
       if (c4m_features_og_members_is_power_user($group)) {
         // A group power user may view the unpublished node.
@@ -2554,7 +2550,11 @@ function c4m_og_view_node_access($node, $account) {
         return NODE_ACCESS_ALLOW;
       }
 
-      if ($allowed_wiki_page) {
+      // Not relevant for projects, as they do not have regular members.
+      if ($node->type == 'wiki_page'
+        && C4M_USER_TYPE_GM == _c4m_features_og_members_get_user_type($group, $account)
+        && c4m_content_wiki_page_is_editable_by_members($node)
+      ) {
         return NODE_ACCESS_ALLOW;
       }
 
