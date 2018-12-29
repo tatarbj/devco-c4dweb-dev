@@ -2543,13 +2543,22 @@ function c4m_og_view_node_access($node, $account) {
       // Not relevant for projects, as they do not have regular members.
       $allowed_wiki_page = $node->type == 'wiki_page' && $user_type == C4M_USER_TYPE_GM && c4m_content_wiki_page_is_editable_by_members($node);
 
-      // Only power user or content author may view the node.
-      if (c4m_features_og_members_is_power_user($group) || $node->uid == $account->uid || $allowed_wiki_page) {
+      // If-blocks are separated for easier debugging.
+      if (c4m_features_og_members_is_power_user($group)) {
+        // A group power user may view the unpublished node.
         return NODE_ACCESS_ALLOW;
       }
-      else {
-        return NODE_ACCESS_DENY;
+
+      if ($node->uid == $account->uid) {
+        // The content author may view the unpublished node.
+        return NODE_ACCESS_ALLOW;
       }
+
+      if ($allowed_wiki_page) {
+        return NODE_ACCESS_ALLOW;
+      }
+
+      return NODE_ACCESS_DENY;
     }
 
     // View access of content is same as view access of group it belongs to.
