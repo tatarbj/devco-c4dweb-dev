@@ -2523,7 +2523,8 @@ function c4m_og_view_node_access($node, $account) {
     // user type, access is allowed.
     return in_array($group_state, $allowed_states[$user_type]) ? NODE_ACCESS_ALLOW : NODE_ACCESS_DENY;
   }
-  elseif (og_is_group_content_type('node', $node->type)) {
+
+  if (og_is_group_content_type('node', $node->type)) {
     // We have a custom access handler for shares in.
     // @seealso c4m_content_share_node_access_records_alter().
     if ($node->type == 'share') {
