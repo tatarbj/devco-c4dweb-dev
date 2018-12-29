@@ -2545,7 +2545,7 @@ function c4m_og_view_node_access($node, $account) {
         return NODE_ACCESS_ALLOW;
       }
 
-      if (c4m_features_og_members_is_power_user($group)) {
+      if (c4m_features_og_members_is_power_user($group, $account)) {
         // A group power user may view the unpublished node.
         return NODE_ACCESS_ALLOW;
       }
