@@ -366,44 +366,64 @@ function c4m_content_share_node_access_records_alter(&$grants, $node) {
  */
 function c4m_content_share_node_grants_alter(&$grants, $account, $op) {
 
-  switch ($op) {
-    case 'view':
-      $realm = C4M_CONTENT_SHARE_ACCESS_REALM;
-      $known_grants = array_merge(array('all' => array(0)), $grants);
+  if ($op === 'view') {
 
-      // Retrieve all shares on the platform.
-      $query = db_select('node', 'n');
-      $query->addField('n', 'nid');
-      $query->condition('n.type', 'share');
+    $known_grants = array_merge(['all' => [0]], $grants);
 
-      $result = $query->execute()->fetchAll();
+    $realm = C4M_CONTENT_SHARE_ACCESS_REALM;
 
-      foreach ($result as $nid) {
-        // Share object.
-        $node = node_load($nid->nid);
-
-        // Check node access on the target groups:
-        $group = c4m_og_get_group_of_content($node);
-
-        $access = c4m_content_share_custom_node_access('view', $group, $account, $known_grants);
-
-        if (!$access) {
-          // No point in continuing if we already fail here.
-          continue;
-        }
-
-        // Original node:
-        $node_wrapper = entity_metadata_wrapper('node', $node);
-        $original_node = $node_wrapper->c4m_source_entity->value();
-
-        // Check access to the original node:
-        $access_source = c4m_content_share_custom_node_access('view', $original_node, $account, $known_grants);
-
-        if ($access && $access_source) {
-          $grants[$realm][] = $node->nid;
-        }
-      }
+    $grants[$realm] = _c4m_content_share_get_nids_with_access(
+      $account,
+      $known_grants);
   }
+}
+
+/**
+ * @param object $account
+ *   The user account object. Anonymous has ->uid === 0.
+ * @param int[][] $known_grants
+ *   Format: $[$realm][] = $grant_id
+ *
+ * @return int[]
+ *   Format: $[] = $nid
+ */
+function _c4m_content_share_get_nids_with_access($account, array $known_grants) {
+
+  // Retrieve all shares on the platform.
+  $query = db_select('node', 'n');
+  $query->addField('n', 'nid');
+  $query->condition('n.type', 'share');
+
+  $result = $query->execute()->fetchAll();
+
+  $nids_with_access = array();
+  foreach ($result as $nid) {
+    // Share object.
+    $node = node_load($nid->nid);
+
+    // Check node access on the target groups:
+    $group = c4m_og_get_group_of_content($node);
+
+    $access = c4m_content_share_custom_node_access('view', $group, $account, $known_grants);
+
+    if (!$access) {
+      // No point in continuing if we already fail here.
+      continue;
+    }
+
+    // Original node:
+    $node_wrapper = entity_metadata_wrapper('node', $node);
+    $original_node = $node_wrapper->c4m_source_entity->value();
+
+    // Check access to the original node:
+    $access_source = c4m_content_share_custom_node_access('view', $original_node, $account, $known_grants);
+
+    if ($access && $access_source) {
+      $nids_with_access[] = $node->nid;
+    }
+  }
+
+  return $nids_with_access;
 }
 
 /**
