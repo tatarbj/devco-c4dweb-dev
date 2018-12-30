@@ -388,6 +388,32 @@ function c4m_content_share_node_grants_alter(&$grants, $account, $op) {
  *   Format: $[] = $nid
  */
 function _c4m_content_share_get_nids_with_access($account, array $known_grants) {
+  static $drupal_static_fast;
+
+  if (NULL === $drupal_static_fast) {
+    $drupal_static_fast['nids_by_cid'] = &drupal_static(__FUNCTION__, array());
+  }
+  $nids_by_cid = &$drupal_static_fast['nids_by_cid'];
+
+  $cid = $account->uid . ':' . md5(serialize($known_grants));
+
+  if (isset($nids_by_cid[$cid])) {
+    return $nids_by_cid[$cid];
+  }
+
+  return $nids_by_cid[$cid] = _c4m_content_share_determine_nids_with_access($account, $known_grants);
+}
+
+/**
+ * @param object $account
+ *   The user account object. Anonymous has ->uid === 0.
+ * @param int[][] $known_grants
+ *   Format: $[$realm][] = $grant_id
+ *
+ * @return int[]
+ *   Format: $[] = $nid
+ */
+function _c4m_content_share_determine_nids_with_access($account, $known_grants) {
 
   // Retrieve all shares on the platform.
   $query = db_select('node', 'n');
