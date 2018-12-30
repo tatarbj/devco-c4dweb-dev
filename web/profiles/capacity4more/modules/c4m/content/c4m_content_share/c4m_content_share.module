@@ -359,6 +359,82 @@ function c4m_content_share_node_access_records_alter(&$grants, $node) {
 }
 
 /**
+ * Implements hook_node_update().
+ *
+ * When a node is updated, all its shares need their access records
+ * recalculated. hook_node_update() might be too early for this.
+ * See https://stackoverflow.com/a/24035797/246724
+ *
+ * A special implementation for hook_node_insert() is not needed, because a node
+ * that was just created cannot have any shares.
+ *
+ * @param object $node
+ *
+ * @todo Only process sharable node types?
+ */
+function c4m_content_share_node_update($node) {
+
+  try {
+    $share_nids = _c4m_content_share_node_get_share_nids($node->nid);
+  }
+  catch (Exception $e) {
+    watchdog(
+      WATCHDOG_ERROR,
+      "Failed to determine share nids for node @nid. Exception:\n@exception",
+      array(
+        '@nid' => $node->nid,
+        '@exception' => _drupal_decode_exception($e),
+      ));
+    return;
+  }
+
+  if (array() === $share_nids) {
+    return;
+  }
+
+  /* @see _c4m_content_share_recalculate_access_records() */
+  drupal_register_shutdown_function('_c4m_content_share_recalculate_access_records', $share_nids);
+}
+
+/**
+ * Recalculates access records for the share nodes.
+ *
+ * @param int[] $share_nids
+ */
+function _c4m_content_share_recalculate_access_records(array $share_nids) {
+
+  $share_nodes = node_load_multiple($share_nids);
+
+  foreach ($share_nodes as $share_node) {
+    node_access_acquire_grants($share_node);
+  }
+}
+
+/**
+ * @param int|string $source_nid
+ *   E.g. 123 or "123".
+ *
+ * @return int[]
+ * @throws \Exception
+ */
+function _c4m_content_share_node_get_share_nids($source_nid) {
+
+  $q = db_select('field_data_c4m_source_entity', 'f');
+  $q->condition('f.entity_type', 'node');
+  $q->condition('f.delta', 0);
+  $q->condition('f.language', LANGUAGE_NONE);
+  $q->condition('f.deleted', 0);
+  $q->condition('f.c4m_source_entity_target_id', $source_nid);
+  $q->addField('f', 'entity_id', 'share_nid');
+
+  // Make sure the share node exists and has the correct type.
+  $q->leftJoin('node', 'n', 'n.nid = f.entity_id');
+  $q->condition('n.type', 'share');
+
+  return _c4m_content_share_select_query_execute_and_fetch_int_column($q);
+}
+
+/**
  * Implements hook_node_grants_alter().
  *
  * @param int[][] $grants
