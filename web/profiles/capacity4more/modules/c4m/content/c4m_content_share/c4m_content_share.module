@@ -415,25 +415,147 @@ function _c4m_content_share_get_nids_with_access($account, array $known_grants) 
  */
 function _c4m_content_share_determine_nids_with_access($account, $known_grants) {
 
+  /**
+   * @var int[][][] $map
+   *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
+   */
+  $map = _c4m_content_share_get_access_map();
+
+  if (array() === $map) {
+    return array();
+  }
+
+  $group_nodes = node_load_multiple(array_keys($map));
+
+  /**
+   * @var int[][][] $map_filtered
+   *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
+   */
+  $map_filtered = array();
+  foreach ($group_nodes as $group_nid => $group_node) {
+    $group_access = c4m_content_share_custom_node_access('view', $group_node, $account, $known_grants);
+
+    if ($group_access) {
+      $map_filtered[$group_nid] = $map[$group_nid];
+    }
+  }
+
+  if (array() === $map_filtered) {
+    return array();
+  }
+
+  /**
+   * @var int[][] $nids_by_original
+   *   Format: $[$original_nid][$share_nid] = $share_nid
+   */
+  $nids_by_original = call_user_func_array('array_replace_recursive', $map_filtered);
+
+  if (array() === $nids_by_original) {
+    return array();
+  }
+
+  $original_nodes = node_load_multiple(array_keys($nids_by_original));
+
+  /**
+   * @var int[][] $nids_by_original_filtered
+   *   Format: $[$original_nid][$share_nid] = $share_nid
+   */
+  $nids_by_original_filtered = array();
+  foreach ($original_nodes as $original_nid => $original_node) {
+    $original_access = c4m_content_share_custom_node_access('view', $original_node, $account, $known_grants);
+
+    if ($original_access) {
+      $nids_by_original_filtered[$original_nid] = $nids_by_original[$original_nid];
+    }
+  }
+
+  if (array() === $nids_by_original_filtered) {
+    return array();
+  }
+
+  /**
+   * @var int[] $nids_with_access
+   *   Format: $[$share_nid] = $share_nid
+   */
+  $nids_with_access = call_user_func_array('array_replace_recursive', $nids_by_original_filtered);
+
+  if (array() === $nids_with_access) {
+    return array();
+  }
+
+  return array_values($nids_with_access);
+}
+
+/**
+ * @param bool $reset
+ *
+ * @return int[][][]
+ *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
+ */
+function _c4m_content_share_get_access_map($reset = FALSE) {
+  static $drupal_static_fast;
+
+  if (NULL === $drupal_static_fast) {
+    $drupal_static_fast['map'] = &drupal_static(__FUNCTION__);
+  }
+  $map = &$drupal_static_fast['map'];
+
+  if (NULL !== $map) {
+    return $map;
+  }
+
+  if (!$reset && $cache = cache_get('c4m_content_share_access_map')) {
+    $map = $cache->data['map'];
+    $timestamp = $cache->data['timestamp'];
+    // There is a cached value, but we still check recently updated shares.
+  }
+  else {
+    $map = array();
+    $timestamp = NULL;
+  }
+
+  $now = time();
+
   // Retrieve all shares on the platform.
   $query = db_select('node', 'n');
   $query->addField('n', 'nid');
   $query->condition('n.type', 'share');
+  if (NULL !== $timestamp) {
+    // Only process recently updated share nodes.
+    $query->condition('n.changed', $timestamp, '>');
+  }
+  $nids = $query->execute()->fetchCol();
 
-  $result = $query->execute()->fetchAll();
+  foreach (array_chunk($nids, 50) as $nids_in_chunk) {
+    _c4m_content_share_nids_populate_access_map($map, $nids_in_chunk);
+  }
 
-  $nids_with_access = array();
-  foreach ($result as $nid) {
-    // Share object.
-    $node = node_load($nid->nid);
+  cache_set(
+    'c4m_content_share_access_map',
+    array(
+      'map' => $map,
+      'timestamp' => $now,
+    ));
+
+  return $map;
+}
+
+/**
+ * @param int[][][] $map
+ *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
+ * @param int[] $nids
+ *   Format: $[] = $share_nid
+ */
+function _c4m_content_share_nids_populate_access_map(array &$map, array $nids) {
+
+  $nodes = node_load_multiple($nids);
+
+  foreach ($nodes as $nid => $node) {
 
     // Check node access on the target groups:
     $group = c4m_og_get_group_of_content($node);
 
-    $access = c4m_content_share_custom_node_access('view', $group, $account, $known_grants);
-
-    if (!$access) {
-      // No point in continuing if we already fail here.
+    if (!$group) {
       continue;
     }
 
@@ -441,15 +563,12 @@ function _c4m_content_share_determine_nids_with_access($account, $known_grants) 
     $node_wrapper = entity_metadata_wrapper('node', $node);
     $original_node = $node_wrapper->c4m_source_entity->value();
 
-    // Check access to the original node:
-    $access_source = c4m_content_share_custom_node_access('view', $original_node, $account, $known_grants);
-
-    if ($access && $access_source) {
-      $nids_with_access[] = $node->nid;
+    if (!$original_node) {
+      continue;
     }
-  }
 
-  return $nids_with_access;
+    $map[$group->nid][$original_node->nid][$node->nid] = $node->nid;
+  }
 }
 
 /**
