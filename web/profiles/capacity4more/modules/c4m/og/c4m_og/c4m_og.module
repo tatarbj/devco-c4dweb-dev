@@ -2523,7 +2523,8 @@ function c4m_og_view_node_access($node, $account) {
     // user type, access is allowed.
     return in_array($group_state, $allowed_states[$user_type]) ? NODE_ACCESS_ALLOW : NODE_ACCESS_DENY;
   }
-  elseif (og_is_group_content_type('node', $node->type)) {
+
+  if (og_is_group_content_type('node', $node->type)) {
     // We have a custom access handler for shares in.
     // @seealso c4m_content_share_node_access_records_alter().
     if ($node->type == 'share') {
@@ -2538,17 +2539,26 @@ function c4m_og_view_node_access($node, $account) {
     // Group content is saved as draft.
     if ($node->status == NODE_NOT_PUBLISHED) {
 
-      $user_type = _c4m_features_og_members_get_user_type($group, $account);
-      // Not relevant for projects, as they do not have regular members.
-      $allowed_wiki_page = $node->type == 'wiki_page' && $user_type == C4M_USER_TYPE_GM && c4m_content_wiki_page_is_editable_by_members($node);
-
-      // Only power user or content author may view the node.
-      if (c4m_features_og_members_is_power_user($group) || $node->uid == $account->uid || $allowed_wiki_page) {
+      // If-blocks are separated for easier debugging.
+      if ($node->uid == $account->uid) {
+        // The content author may view the unpublished node.
         return NODE_ACCESS_ALLOW;
       }
-      else {
-        return NODE_ACCESS_DENY;
+
+      if (c4m_features_og_members_is_power_user($group, $account)) {
+        // A group power user may view the unpublished node.
+        return NODE_ACCESS_ALLOW;
       }
+
+      // Not relevant for projects, as they do not have regular members.
+      if ($node->type == 'wiki_page'
+        && C4M_USER_TYPE_GM == _c4m_features_og_members_get_user_type($group, $account)
+        && c4m_content_wiki_page_is_editable_by_members($node)
+      ) {
+        return NODE_ACCESS_ALLOW;
+      }
+
+      return NODE_ACCESS_DENY;
     }
 
     // View access of content is same as view access of group it belongs to.
