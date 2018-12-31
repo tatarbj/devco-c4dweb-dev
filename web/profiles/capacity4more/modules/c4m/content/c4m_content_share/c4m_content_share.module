@@ -339,8 +339,12 @@ function c4m_content_share_c4m_helper_entity_label_info() {
  */
 function c4m_content_share_node_access_records_alter(&$grants, $node) {
   if ($node->type == 'share') {
-    // Reset default OG grants.
-    $grants = array();
+    // Add a realm prefix to all default OG grants.
+    // This allows to make special prefixed access queries, while disabling
+    // these grants for regular access checks.
+    foreach ($grants as &$grant) {
+      $grant['realm'] = 'c4m_content_share:' . $grant['realm'];
+    }
 
     $grants[] = array(
       'realm' => C4M_CONTENT_SHARE_ACCESS_REALM,
@@ -372,22 +376,18 @@ function c4m_content_share_node_grants_alter(&$grants, $account, $op) {
 
     $realm = C4M_CONTENT_SHARE_ACCESS_REALM;
 
-    $grants[$realm] = _c4m_content_share_get_nids_with_access(
-      $account,
-      $known_grants);
+    $grants[$realm] = _c4m_content_share_get_nids_with_access($known_grants);
   }
 }
 
 /**
- * @param object $account
- *   The user account object. Anonymous has ->uid === 0.
  * @param int[][] $known_grants
  *   Format: $[$realm][] = $grant_id
  *
  * @return int[]
  *   Format: $[] = $nid
  */
-function _c4m_content_share_get_nids_with_access($account, array $known_grants) {
+function _c4m_content_share_get_nids_with_access(array $known_grants) {
   static $drupal_static_fast;
 
   if (NULL === $drupal_static_fast) {
@@ -395,297 +395,99 @@ function _c4m_content_share_get_nids_with_access($account, array $known_grants) 
   }
   $nids_by_cid = &$drupal_static_fast['nids_by_cid'];
 
-  $cid = $account->uid . ':' . md5(serialize($known_grants));
+  $cid = md5(serialize($known_grants));
 
   if (isset($nids_by_cid[$cid])) {
     return $nids_by_cid[$cid];
   }
 
-  return $nids_by_cid[$cid] = _c4m_content_share_determine_nids_with_access($account, $known_grants);
+  return $nids_by_cid[$cid] = _c4m_content_share_determine_nids_with_access($known_grants);
 }
 
 /**
- * @param object $account
- *   The user account object. Anonymous has ->uid === 0.
  * @param int[][] $known_grants
  *   Format: $[$realm][] = $grant_id
  *
  * @return int[]
  *   Format: $[] = $nid
  */
-function _c4m_content_share_determine_nids_with_access($account, $known_grants) {
+function _c4m_content_share_determine_nids_with_access(array $known_grants) {
 
-  /**
-   * @var int[][][] $map
-   *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
-   */
-  $map = _c4m_content_share_get_access_map();
+  $prefixed_grants = [];
+  foreach ($known_grants as $realm => $gids) {
+    $prefixed_grants['c4m_content_share:' . $realm] = $gids;
+  }
 
-  if (array() === $map) {
+  $q = db_select('field_data_c4m_source_entity', 'f');
+  $q->condition('f.entity_type', 'node');
+  $q->condition('f.delta', 0);
+  $q->condition('f.language', LANGUAGE_NONE);
+  $q->condition('f.deleted', 0);
+  $q->addField('f', 'entity_id', 'share_nid');
+
+  // Make sure the share node exists.
+  $q->leftJoin('node', 'n', 'n.nid = f.entity_id');
+  $q->condition('n.type', 'share');
+
+  _c4m_content_share_select_query_check_node_grants(
+    $q,
+    'f.c4m_source_entity_target_id',
+    $known_grants);
+
+  _c4m_content_share_select_query_check_node_grants(
+    $q,
+    'f.entity_id',
+    $prefixed_grants);
+
+  try {
+    $nids_with_access = _c4m_content_share_select_query_execute_and_fetch_int_column($q);
+  }
+  catch (Exception $e) {
+    watchdog(
+      WATCHDOG_ERROR,
+      "Failed to determine share nids with access. Exception:\n@exception",
+      array(
+        '@exception' => _drupal_decode_exception($e),
+      ));
+
     return array();
   }
 
-  $group_nodes = node_load_multiple(array_keys($map));
-
-  /**
-   * @var int[][][] $map_filtered
-   *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
-   */
-  $map_filtered = array();
-  foreach ($group_nodes as $group_nid => $group_node) {
-    $group_access = c4m_content_share_custom_node_access('view', $group_node, $account, $known_grants);
-
-    if ($group_access) {
-      $map_filtered[$group_nid] = $map[$group_nid];
-    }
-  }
-
-  if (array() === $map_filtered) {
-    return array();
-  }
-
-  /**
-   * @var int[][] $nids_by_original
-   *   Format: $[$original_nid][$share_nid] = $share_nid
-   */
-  $nids_by_original = call_user_func_array('array_replace_recursive', $map_filtered);
-
-  if (array() === $nids_by_original) {
-    return array();
-  }
-
-  $original_nodes = node_load_multiple(array_keys($nids_by_original));
-
-  /**
-   * @var int[][] $nids_by_original_filtered
-   *   Format: $[$original_nid][$share_nid] = $share_nid
-   */
-  $nids_by_original_filtered = array();
-  foreach ($original_nodes as $original_nid => $original_node) {
-    $original_access = c4m_content_share_custom_node_access('view', $original_node, $account, $known_grants);
-
-    if ($original_access) {
-      $nids_by_original_filtered[$original_nid] = $nids_by_original[$original_nid];
-    }
-  }
-
-  if (array() === $nids_by_original_filtered) {
-    return array();
-  }
-
-  /**
-   * @var int[] $nids_with_access
-   *   Format: $[$share_nid] = $share_nid
-   */
-  $nids_with_access = call_user_func_array('array_replace_recursive', $nids_by_original_filtered);
-
-  if (array() === $nids_with_access) {
-    return array();
-  }
-
-  return array_values($nids_with_access);
+  return $nids_with_access;
 }
 
 /**
- * @param bool $reset
- *
- * @return int[][][]
- *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
- */
-function _c4m_content_share_get_access_map($reset = FALSE) {
-  static $drupal_static_fast;
-
-  if (NULL === $drupal_static_fast) {
-    $drupal_static_fast['map'] = &drupal_static(__FUNCTION__);
-  }
-  $map = &$drupal_static_fast['map'];
-
-  if (NULL !== $map) {
-    return $map;
-  }
-
-  if (!$reset && $cache = cache_get('c4m_content_share_access_map')) {
-    $map = $cache->data['map'];
-    $timestamp = $cache->data['timestamp'];
-    // There is a cached value, but we still check recently updated shares.
-  }
-  else {
-    $map = array();
-    $timestamp = NULL;
-  }
-
-  $now = time();
-
-  // Retrieve all shares on the platform.
-  $query = db_select('node', 'n');
-  $query->addField('n', 'nid');
-  $query->condition('n.type', 'share');
-  if (NULL !== $timestamp) {
-    // Only process recently updated share nodes.
-    $query->condition('n.changed', $timestamp, '>');
-  }
-  $nids = $query->execute()->fetchCol();
-
-  foreach (array_chunk($nids, 50) as $nids_in_chunk) {
-    _c4m_content_share_nids_populate_access_map($map, $nids_in_chunk);
-  }
-
-  cache_set(
-    'c4m_content_share_access_map',
-    array(
-      'map' => $map,
-      'timestamp' => $now,
-    ));
-
-  return $map;
-}
-
-/**
- * @param int[][][] $map
- *   Format: $[$group_nid][$original_node_nid][$share_nid] = $share_nid
- * @param int[] $nids
- *   Format: $[] = $share_nid
- */
-function _c4m_content_share_nids_populate_access_map(array &$map, array $nids) {
-
-  $nodes = node_load_multiple($nids);
-
-  foreach ($nodes as $nid => $node) {
-
-    // Check node access on the target groups:
-    $group = c4m_og_get_group_of_content($node);
-
-    if (!$group) {
-      continue;
-    }
-
-    // Original node:
-    $node_wrapper = entity_metadata_wrapper('node', $node);
-    $original_node = $node_wrapper->c4m_source_entity->value();
-
-    if (!$original_node) {
-      continue;
-    }
-
-    $map[$group->nid][$original_node->nid][$node->nid] = $node->nid;
-  }
-}
-
-/**
- * Custom version of the `node_access()` function to prevent endless loop.
- *
- * We want to retrieve node access for nodes, but exclude our custom
- * `hook_node_grants` in this module (endless loop). Therefore we duplicated
- * the function signature of `node_access` and prevent our hook to be called.
- *
- * @param string $op
- *   Operation.
- * @param object $node
- *   Node object to check access for.
- * @param object $account
- *   Optional user account object to check access for.
- * @param array $known_grants
- *   Node grants that were calculated for this user.
- *
- * @return bool
- *   Access indicator.
+ * @param \SelectQuery $q
+ * @param string $nid_alias
+ * @param int[][] $known_grants
+ *   Format: $[$realm][] = $grant_id
  *
  * @see node_access()
+ * @see _node_query_node_access_alter()
  */
-function c4m_content_share_custom_node_access($op, $node, $account = NULL, array $known_grants) {
-  $rights = &drupal_static(__FUNCTION__, array());
+function _c4m_content_share_select_query_check_node_grants(SelectQuery $q, $nid_alias, array $known_grants) {
 
-  if (!$node || !in_array($op, array('view', 'update', 'delete', 'create'), TRUE)) {
-    // If there was no node to check against, or the $op was not one of the
-    // supported ones, we return access denied.
-    return FALSE;
-  }
-  // If no user object is supplied, the access check is for the current user.
-  if (empty($account)) {
-    $account = $GLOBALS['user'];
-  }
+  $subquery = db_select('node_access', 'na');
+  $subquery->condition('na.grant_view', 1, '>=');
+  $subquery->where("na.nid = $nid_alias");
+  $subquery->addField('na', 'nid');
 
-  // $node may be either an object or a node type. Since node types cannot be
-  // an integer, use either nid or type as the static cache id.
-  $cid = is_object($node) ? $node->nid : $node;
+  // Make sure only existing nodes are included.
+  $subquery->leftJoin('node', 'n', 'n.nid = na.nid');
+  $subquery->isNotNull('n.nid');
 
-  // If we've already checked access for this node, user and op, return from
-  // cache.
-  if (isset($rights[$account->uid][$cid][$op])) {
-    return $rights[$account->uid][$cid][$op];
+  $or = db_or();
+  foreach ($known_grants as $realm => $gids) {
+    $or->condition(db_and()
+      ->condition('na.realm', $realm)
+      ->condition('na.gid', $gids, 'IN'));
   }
 
-  if (user_access('bypass node access', $account)) {
-    $rights[$account->uid][$cid][$op] = TRUE;
-    return TRUE;
-  }
-  if (!user_access('access content', $account)) {
-    $rights[$account->uid][$cid][$op] = FALSE;
-    return FALSE;
+  if (count($or->conditions())) {
+    $subquery->condition($or);
   }
 
-  // We grant access to the node if both of the following conditions are met:
-  // - No modules say to deny access.
-  // - At least one module says to grant access.
-  // If no module specified either allow or deny, we fall back to the
-  // node_access table.
-  $access = module_invoke_all('node_access', $node, $op, $account);
-  if (in_array(NODE_ACCESS_DENY, $access, TRUE)) {
-    $rights[$account->uid][$cid][$op] = FALSE;
-    return FALSE;
-  }
-  elseif (in_array(NODE_ACCESS_ALLOW, $access, TRUE)) {
-    $rights[$account->uid][$cid][$op] = TRUE;
-    return TRUE;
-  }
-
-  // Check if authors can view their own unpublished nodes.
-  if ($op == 'view' && !$node->status && user_access('view own unpublished content', $account) && $account->uid == $node->uid && $account->uid != 0) {
-    $rights[$account->uid][$cid][$op] = TRUE;
-    return TRUE;
-  }
-
-  // If the module did not override the access rights, use those set in the
-  // node_access table.
-  if ($op != 'create' && $node->nid) {
-    if (module_implements('node_grants')) {
-      $query = db_select('node_access');
-      $query->addExpression('1');
-      $query->condition('grant_' . $op, 1, '>=');
-      $nids = db_or()->condition('nid', $node->nid);
-      if ($node->status) {
-        $nids->condition('nid', 0);
-      }
-      $query->condition($nids);
-      $query->range(0, 1);
-
-      $grants = db_or();
-      foreach ($known_grants as $realm => $gids) {
-        foreach ($gids as $gid) {
-          $grants->condition(db_and()
-            ->condition('gid', $gid)
-            ->condition('realm', $realm)
-          );
-        }
-      }
-      if (count($grants) > 0) {
-        $query->condition($grants);
-      }
-      $result = (bool) $query
-        ->execute()
-        ->fetchField();
-      $rights[$account->uid][$cid][$op] = $result;
-      return $result;
-    }
-    elseif (is_object($node) && $op == 'view' && $node->status) {
-      // If no modules implement hook_node_grants(), the default behavior is to
-      // allow all users to view published nodes, so reflect that here.
-      $rights[$account->uid][$cid][$op] = TRUE;
-      return TRUE;
-    }
-  }
-
-  return FALSE;
+  $q->exists($subquery);
 }
 
 /**
@@ -828,4 +630,49 @@ function _c4m_content_share_get_shared_content_per_group_query($og_id) {
     ->condition('og.gid', $og_id, '=');
 
   return $query;
+}
+
+/**
+ * @param \SelectQuery $q
+ * @param bool $unique
+ *
+ * @return int[]
+ * @throws \Exception
+ */
+function _c4m_content_share_select_query_execute_and_fetch_int_column(SelectQuery $q, $unique = TRUE) {
+
+  $stmt = $q->execute();
+
+  if (!$stmt instanceof DatabaseStatementInterface) {
+    throw new \Exception('$q->execute() did not return a database statement object.');
+  }
+
+  $integers_as_strings = $stmt->fetchCol();
+
+  if ($unique) {
+    $integers_as_strings = array_unique($integers_as_strings);
+  }
+
+  return _c4m_content_share_get_strings_as_integers($integers_as_strings);
+}
+
+/**
+ * Converts an array of integer-like strings to an array of integers.
+ *
+ * This is useful to process values coming from a database.
+ *
+ * @param string[] $integers_as_strings
+ *   E.g. array("123", "456").
+ *
+ * @return int[]
+ *   E.g. array(123, 456).
+ */
+function _c4m_content_share_get_strings_as_integers(array $integers_as_strings) {
+
+  if (array() === $integers_as_strings) {
+    return array();
+  }
+
+  // Fastest way to convert string nids to integer.
+  return json_decode('[' . implode(',', $integers_as_strings) . ']');
 }
