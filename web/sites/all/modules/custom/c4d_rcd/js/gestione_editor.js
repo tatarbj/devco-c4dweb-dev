@@ -595,7 +595,7 @@ var svg_obj = {
   ,
   carica_progetti: function () {
     $.ajax({
-      url: '/c4d_rcd/ajax/elenco_progetti',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/elenco_progetti',
       type: 'POST',
       cache: false,
       context: this,
@@ -619,7 +619,7 @@ var svg_obj = {
       type: 'POST',
       context: this,
 
-      url: '/c4d_rcd/ajax/load_positions',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/load_positions',
       data: {area_select: $('#area_select').val(), 'id_prj': id_prj},
       dataType: 'json',
       success: function (json) {
@@ -830,7 +830,7 @@ var svg_obj = {
     if (!width && !height) {
       // questa serve a risalvare le modifiche dopo aver trovato le dimenzioni
       $.ajax({
-        url: '/c4d_rcd/ajax/update_element2',
+        url: Drupal.settings.basePath + 'c4d_rcd/ajax/update_element2',
         type: 'POST',
         cache: false,
         data: {
@@ -1026,7 +1026,7 @@ var svg_obj = {
   elimina_elemento_db: function (id_elemento) {
 
     $.ajax({
-      url: '/c4d_rcd/ajax/elimina_ele',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/elimina_ele',
       type: 'POST',
       cache: false,
       data: {'id_elemento': id_elemento},
@@ -1192,7 +1192,7 @@ var svg_obj = {
   salva_posizioni: _.debounce(function () {
     svg_obj.cambiamento_stato = false;
     $.ajax({
-      url: '/c4d_rcd/ajax/save_positions',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/save_positions',
       type: 'POST',
       cache: false,
       context: this,
@@ -1220,7 +1220,7 @@ var svg_obj = {
   salva_posizioni_immediate: function () {
     svg_obj.cambiamento_stato = false;
     $.ajax({
-      url: '/c4d_rcd/ajax/save_positions',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/save_positions',
       type: 'POST',
       cache: false,
       context: this,
@@ -1267,7 +1267,7 @@ var svg_obj = {
     var riga_1 = riga_2 = riga_3 = "";
     // if(bg_color=="") bg_color="#ffffff";
     $.ajax({
-      url: '/c4d_rcd/ajax/save_position',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/save_position',
       type: 'POST',
       cache: false,
       data: $('#form_inserisci_elemento').serializefiles(),
@@ -1312,7 +1312,7 @@ var svg_obj = {
     console.log('Valore select -> ' & valore_select);
 
     $.ajax({
-      url: '/c4d_rcd/ajax/elenco_priority_area',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/elenco_priority_area',
       data: {'id_prj': id_prj},
       cache: false,
       async: false,
@@ -1448,7 +1448,7 @@ var svg_obj = {
     // cio� prima popola la select area, poi gli da l'id da usare 
     // quindi la funzione che gestisce il popolamento della select deve anche impostare l'id colonna ...
     $.ajax({
-      url: '/c4d_rcd/ajax/dettaglio_elemento',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/dettaglio_elemento',
       cache: false,
       type: 'POST',
       dataType: 'json',
@@ -1519,7 +1519,7 @@ var svg_obj = {
   // Questa serve a modificare l'elemetno sul database
   modifica_elemento_db: function () {
     $.ajax({
-      url: '/c4d_rcd/ajax/update_element',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax/update_element',
       type: 'POST',
       cache: false,
       async: false,
@@ -1553,7 +1553,7 @@ var svg_obj = {
         file_form = "form_modifica_impact";
 
       $.ajax({
-        url: '/c4d_rcd/ajax_forms/' + file_form,
+        url: Drupal.settings.basePath + 'c4d_rcd/ajax_forms/' + file_form,
         type: 'POST',
         cache: false,
         dataType: 'html',
@@ -1652,7 +1652,7 @@ var svg_obj = {
   // Questa serve ad aggiungere l'elemento vertical all'svg
   aggiungi_vertical: function () {
     $.ajax({
-      url: '/c4d_rcd/ajax_forms/form_inserisci_vertical',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax_forms/form_inserisci_vertical',
       type: 'POST',
       cache: false,
       dataType: 'html',
@@ -1713,7 +1713,7 @@ var svg_obj = {
   ,
   aggiungi_scritta_float: function () {
     $.ajax({
-      url: '/c4d_rcd/ajax_forms/form_inserisci_float',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax_forms/form_inserisci_float',
       type: 'POST',
       cache: false,
       dataType: 'html',
@@ -1750,7 +1750,7 @@ var svg_obj = {
   // questa � la paret che aggiunge l'impact
   aggiungi_impact: function () {
     $.ajax({
-      url: '/c4d_rcd/ajax_forms/form_inserisci_impact',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax_forms/form_inserisci_impact',
       type: 'POST',
       cache: false,
       dataType: 'html',
@@ -1790,7 +1790,7 @@ var svg_obj = {
   ,
   aggiungi_elemento: function () {
     $.ajax({
-      url: '/c4d_rcd/ajax_forms/form_inserisci',
+      url: Drupal.settings.basePath + 'c4d_rcd/ajax_forms/form_inserisci',
       type: 'POST',
       cache: false,
       dataType: 'html',
