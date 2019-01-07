@@ -13,4 +13,6 @@ function c4d_rcd_preprocess_svg(&$variables) {
 function c4d_rcd_preprocess_svg_iframe_content(&$variables) {
   $diagram = $variables['diagram'];
   $variables['id'] = $diagram->id;
+  $variables['basePath'] = base_path();
+  $variables['modulePath'] = base_path() . drupal_get_path('module', 'c4d_rcd') . '/';
 }

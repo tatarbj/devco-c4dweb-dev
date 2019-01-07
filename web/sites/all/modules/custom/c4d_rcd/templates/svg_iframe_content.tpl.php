@@ -74,9 +74,11 @@
 </head>
 <body>
 
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/jquery.js"></script>
+<script src="<?php print $modulePath ?>front/js/jquery.js"></script>
 
 <script type="text/javascript">
+  var basePath = '<?php print $basePath ?>';
+  var modulePath = '<?php print $modulePath ?>';
 $( document ).ready(function() {
 	// alert('start');
 	$('#t1').show();

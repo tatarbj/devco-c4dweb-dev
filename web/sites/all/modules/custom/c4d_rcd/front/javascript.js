@@ -63,11 +63,11 @@ zoom_att = draw.panZoom({'zoom': arr, 'zoomSpeed ': 0});
 
 
 
-var image_plus = comandi_group.image('http://capacity4dev-old.local/common/img/plus.jpg', 50, 25)
+var image_plus = comandi_group.image(modulePath + 'front/images/plus.jpg', 50, 25);
 image_plus.x('91%');
 image_plus.y(10);
 
-var image_minus = comandi_group.image('http://capacity4dev-old.local/common/img/minus.jpg', 50, 25)
+var image_minus = comandi_group.image(modulePath + 'front/images/minus.jpg', 50, 25);
 image_minus.x('94%');
 image_minus.y(10);
 
@@ -283,7 +283,7 @@ var svg_obj = {
       type: 'POST',
       context: this,
       async: false,
-      url: '/c4d_rcd/ajax/load_positions',
+      url: basePath + 'c4d_rcd/ajax/load_positions',
       data: {area_select: $('#area_select').val(), 'id_prj': id_prj},
       dataType: 'json',
       success: function (json) {
@@ -495,7 +495,7 @@ var svg_obj = {
             if (id_att == id_record) {
 
               var a = document.createElement('a');
-              a.href = '/results-indicators/' + $('#prj_id').val() + '/' + id_record + '/all';
+              a.href = basePath + 'results-indicators/' + $('#prj_id').val() + '/' + id_record + '/all';
               //a.href= 'http://capacity4dev-old.local/web1/indicator_list/' +  $('#prj_id').val() + "/" + id_record ; 
               a.target = '_blank';
               a.className = "link_creato";
@@ -541,7 +541,7 @@ var svg_obj = {
             if (codice.length < 1) {
               codice = 'all';
             }
-            a.href = '/results-indicators/' + $('#prj_id').val() + '/' + id_record + '/' + codice;
+            a.href = basePath + 'results-indicators/' + $('#prj_id').val() + '/' + id_record + '/' + codice;
 
             a.target = '_blank';
             a.className = "link_creato";
@@ -710,7 +710,7 @@ var svg_obj = {
                     if (!width && !height) {
                       // questa serve a risalvare le modifiche dopo aver trovato le dimenzioni
                       $.ajax({
-                        url: '/c4d_rcd/ajax//update_element2',
+                        url: basePath + 'c4d_rcd/ajax//update_element2',
                         type: 'POST',
                         cache: false,
                         data: {
@@ -997,7 +997,7 @@ var svg_obj = {
             console.log('Valore select -> ' & valore_select);
 
             $.ajax({
-              url: '/c4d_rcd/ajax/elenco_priority_area',
+              url: basePath + 'c4d_rcd/ajax/elenco_priority_area',
               data: {'id_prj': id_prj},
               cache: false,
               async: false,
@@ -1043,7 +1043,7 @@ var svg_obj = {
           ,
           aggiungi_elemento: function () {
             $.ajax({
-              url: '/c4d_rcd/ajax/form_inserisci',
+              url: basePath + 'c4d_rcd/ajax/form_inserisci',
               type: 'POST',
               cache: false,
               dataType: 'html',

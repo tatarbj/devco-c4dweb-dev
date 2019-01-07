@@ -47,8 +47,7 @@ function c4d_rcd_menu() {
     'title' => 'Diagram management',
     'title callback' => 'c4d_rcd_diagram_management_title',
     'title arguments' => [4],
-    'access callback' => 'c4d_rcd_diagram_access',
-    'access arguments' => [4],
+    'access arguments' => ['manage diagrams'],
     'page callback' => 'c4d_rcd_diagram_management',
     'page arguments' => [4],
     'file' => 'c4d_rcd.admin.inc',
@@ -197,19 +196,6 @@ function c4d_rcd_admin_paths() {
     'c4d_rcd/get_iframe_code/*/*' => TRUE,
   ];
   return $paths;
-}
-
-/**
- * Custom access callback grant access to diagram management pages.
- *
- * @param object $entity
- *
- * @return bool
- *    TRUE if access is granted, FALSE otherwise.
- */
-function c4d_rcd_diagram_access($entity) {
-  // We rely on the ECK permissions to grant access to diagrams.
-  return eck__entity_menu_access('update', C4D_RCD_ENTITY_TYPE, $entity->type, $entity->id);
 }
 
 /**
