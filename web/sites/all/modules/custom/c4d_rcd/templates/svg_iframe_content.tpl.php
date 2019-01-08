@@ -28,10 +28,10 @@
   <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script> 
 <![endif]--> 
 
-<link href="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/css/bootstrap-dialog.min.css" rel="stylesheet"> 
-<link rel="stylesheet" href="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/css/main.css"> 
-<link rel="stylesheet" href="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/css/slider.css"> 
-<link rel="stylesheet" href="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/css/bootstrap-dialog.min.css"> 
+<link href="<?php print $modulePath; ?>front/css/bootstrap-dialog.min.css" rel="stylesheet"> 
+<link rel="stylesheet" href="<?php print $modulePath; ?>front/css/main.css"> 
+<link rel="stylesheet" href="<?php print $modulePath; ?>front/css/slider.css"> 
+<link rel="stylesheet" href="<?php print $modulePath; ?>front/css/bootstrap-dialog.min.css"> 
 
 <style> 
 	
@@ -74,11 +74,11 @@
 </head>
 <body>
 
-<script src="<?php print $modulePath ?>front/js/jquery.js"></script>
+<script src="<?php print $modulePath; ?>front/js/jquery.js"></script>
 
 <script type="text/javascript">
-  var basePath = '<?php print $basePath ?>';
-  var modulePath = '<?php print $modulePath ?>';
+  var basePath = '<?php print $basePath; ?>';
+  var modulePath = '<?php print $modulePath; ?>';
 $( document ).ready(function() {
 	// alert('start');
 	$('#t1').show();
@@ -206,20 +206,20 @@ $bg_col = "#ddd";
 
 <div id="drawing" style="border: 0px solid #333; width: 100%; height:88vh;"></div>
 
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/bootstrap.min.js"></script>
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/bootstrap-dialog.min.js"></script>
+<script src="<?php print $modulePath; ?>front/js/bootstrap.min.js"></script>
+<script src="<?php print $modulePath; ?>front/js/bootstrap-dialog.min.js"></script>
 
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/main.js"></script>
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/svg.js"></script>
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/slider.js"></script>
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/pan_zoom_full.js"></script>
+<script src="<?php print $modulePath; ?>front/js/main.js"></script>
+<script src="<?php print $modulePath; ?>front/js/svg.js"></script>
+<script src="<?php print $modulePath; ?>front/js/slider.js"></script>
+<script src="<?php print $modulePath; ?>front/js/pan_zoom_full.js"></script>
 
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/draggy.js"></script>
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/main.js"></script>
+<script src="<?php print $modulePath; ?>front/js/draggy.js"></script>
+<script src="<?php print $modulePath; ?>front/js/main.js"></script>
 
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/context.js"></script>
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/javascript.js"></script>
-<script src="/<?php echo drupal_get_path('module', 'c4d_rcd'); ?>/front/js/vivus.js"></script>
+<script src="<?php print $modulePath; ?>front/js/context.js"></script>
+<script src="<?php print $modulePath; ?>front/javascript.js"></script>
+<script src="<?php print $modulePath; ?>front/js/vivus.js"></script>
 
 </body>
 </html>
