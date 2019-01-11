@@ -15,6 +15,7 @@ function c4m_user_user_default_permissions() {
   $permissions['access administration pages'] = array(
     'name' => 'access administration pages',
     'roles' => array(
+      'SIG administrator' => 'SIG administrator',
       'administrator' => 'administrator',
     ),
     'module' => 'system',
@@ -62,6 +63,7 @@ function c4m_user_user_default_permissions() {
   $permissions['access contextual links'] = array(
     'name' => 'access contextual links',
     'roles' => array(
+      'SIG administrator' => 'SIG administrator',
       'administrator' => 'administrator',
     ),
     'module' => 'contextual',
@@ -142,6 +144,16 @@ function c4m_user_user_default_permissions() {
       'administrator' => 'administrator',
     ),
     'module' => 'statistics',
+  );
+
+  // Exported permission: 'access toolbar'.
+  $permissions['access toolbar'] = array(
+    'name' => 'access toolbar',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+      'administrator' => 'administrator',
+    ),
+    'module' => 'toolbar',
   );
 
   // Exported permission: 'access user contact forms'.
@@ -1356,6 +1368,222 @@ function c4m_user_user_default_permissions() {
     'module' => 'eu_cookie_compliance',
   );
 
+  // Exported permission: 'eck add result_chain_diagram diagram entities'.
+  $permissions['eck add result_chain_diagram diagram entities'] = array(
+    'name' => 'eck add result_chain_diagram diagram entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck add result_chain_diagram float entities'.
+  $permissions['eck add result_chain_diagram float entities'] = array(
+    'name' => 'eck add result_chain_diagram float entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck add result_chain_diagram impact entities'.
+  $permissions['eck add result_chain_diagram impact entities'] = array(
+    'name' => 'eck add result_chain_diagram impact entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck add result_chain_diagram indicator entities'.
+  $permissions['eck add result_chain_diagram indicator entities'] = array(
+    'name' => 'eck add result_chain_diagram indicator entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck add result_chain_diagram priority_area entities'.
+  $permissions['eck add result_chain_diagram priority_area entities'] = array(
+    'name' => 'eck add result_chain_diagram priority_area entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck add result_chain_diagram result entities'.
+  $permissions['eck add result_chain_diagram result entities'] = array(
+    'name' => 'eck add result_chain_diagram result entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete result_chain_diagram diagram entities'.
+  $permissions['eck delete result_chain_diagram diagram entities'] = array(
+    'name' => 'eck delete result_chain_diagram diagram entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete result_chain_diagram float entities'.
+  $permissions['eck delete result_chain_diagram float entities'] = array(
+    'name' => 'eck delete result_chain_diagram float entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete result_chain_diagram impact entities'.
+  $permissions['eck delete result_chain_diagram impact entities'] = array(
+    'name' => 'eck delete result_chain_diagram impact entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete result_chain_diagram indicator entities'.
+  $permissions['eck delete result_chain_diagram indicator entities'] = array(
+    'name' => 'eck delete result_chain_diagram indicator entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete result_chain_diagram priority_area entities'.
+  $permissions['eck delete result_chain_diagram priority_area entities'] = array(
+    'name' => 'eck delete result_chain_diagram priority_area entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck delete result_chain_diagram result entities'.
+  $permissions['eck delete result_chain_diagram result entities'] = array(
+    'name' => 'eck delete result_chain_diagram result entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit result_chain_diagram diagram entities'.
+  $permissions['eck edit result_chain_diagram diagram entities'] = array(
+    'name' => 'eck edit result_chain_diagram diagram entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit result_chain_diagram float entities'.
+  $permissions['eck edit result_chain_diagram float entities'] = array(
+    'name' => 'eck edit result_chain_diagram float entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit result_chain_diagram impact entities'.
+  $permissions['eck edit result_chain_diagram impact entities'] = array(
+    'name' => 'eck edit result_chain_diagram impact entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit result_chain_diagram indicator entities'.
+  $permissions['eck edit result_chain_diagram indicator entities'] = array(
+    'name' => 'eck edit result_chain_diagram indicator entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit result_chain_diagram priority_area entities'.
+  $permissions['eck edit result_chain_diagram priority_area entities'] = array(
+    'name' => 'eck edit result_chain_diagram priority_area entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck edit result_chain_diagram result entities'.
+  $permissions['eck edit result_chain_diagram result entities'] = array(
+    'name' => 'eck edit result_chain_diagram result entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view result_chain_diagram diagram entities'.
+  $permissions['eck view result_chain_diagram diagram entities'] = array(
+    'name' => 'eck view result_chain_diagram diagram entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view result_chain_diagram float entities'.
+  $permissions['eck view result_chain_diagram float entities'] = array(
+    'name' => 'eck view result_chain_diagram float entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view result_chain_diagram impact entities'.
+  $permissions['eck view result_chain_diagram impact entities'] = array(
+    'name' => 'eck view result_chain_diagram impact entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view result_chain_diagram indicator entities'.
+  $permissions['eck view result_chain_diagram indicator entities'] = array(
+    'name' => 'eck view result_chain_diagram indicator entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view result_chain_diagram priority_area entities'.
+  $permissions['eck view result_chain_diagram priority_area entities'] = array(
+    'name' => 'eck view result_chain_diagram priority_area entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
+  // Exported permission: 'eck view result_chain_diagram result entities'.
+  $permissions['eck view result_chain_diagram result entities'] = array(
+    'name' => 'eck view result_chain_diagram result entities',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+    ),
+    'module' => 'eck',
+  );
+
   // Exported permission: 'edit any article content'.
   $permissions['edit any article content'] = array(
     'name' => 'edit any article content',
@@ -1924,6 +2152,16 @@ function c4m_user_user_default_permissions() {
     'module' => 'campaignmonitor',
   );
 
+  // Exported permission: 'manage diagrams'.
+  $permissions['manage diagrams'] = array(
+    'name' => 'manage diagrams',
+    'roles' => array(
+      'SIG administrator' => 'SIG administrator',
+      'administrator' => 'administrator',
+    ),
+    'module' => 'c4d_rcd',
+  );
+
   // Exported permission: 'manage features'.
   $permissions['manage features'] = array(
     'name' => 'manage features',
@@ -2346,6 +2584,7 @@ function c4m_user_user_default_permissions() {
   $permissions['use text format filtered_html'] = array(
     'name' => 'use text format filtered_html',
     'roles' => array(
+      'SIG administrator' => 'SIG administrator',
       'administrator' => 'administrator',
       'authenticated user' => 'authenticated user',
     ),
@@ -2429,6 +2668,7 @@ function c4m_user_user_default_permissions() {
   $permissions['view the administration theme'] = array(
     'name' => 'view the administration theme',
     'roles' => array(
+      'SIG administrator' => 'SIG administrator',
       'administrator' => 'administrator',
     ),
     'module' => 'system',
