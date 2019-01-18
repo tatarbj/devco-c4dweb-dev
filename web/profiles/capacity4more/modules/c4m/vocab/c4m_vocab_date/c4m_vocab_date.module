@@ -1,8 +1,0 @@
-<?php
-
-/**
- * @file
- * Code for the Date vocabulary feature.
- */
-
-include_once 'c4m_vocab_date.features.inc';

@@ -1,4 +1,0 @@
-name = Administrator functionality
-description = This module provides admin functionality.
-core = 7.x
-package = capacity4more - Admin
