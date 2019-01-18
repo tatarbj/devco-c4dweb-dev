@@ -54,15 +54,3 @@ db.dl.password = <password>
 ```
 </p></details>
 <details><summary>Execute: <code>./toolkit/phing build-platform build-subsite-dev install-clone</code></summary></details>
-
-### 2.4 Upgrade platform
-
-<details><summary>Edit file: <code>build.develop.props</code></summary><p>
-Change the build property `platform.package.version` to the next major version.
-</p></details>
-<details><summary>Execute: <code>./toolkit/phing build-platform</code></summary></details>
-<details><summary>Execute: <code>./toolkit/drush -r build updb -y</code></summary></details>
-
-```ini
-platform.package.reference = 2.5
-```
