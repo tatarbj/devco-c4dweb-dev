@@ -1,22 +1,68 @@
-# NextEuropa
-<img align="left" width="50%" src="https://ec.europa.eu/info/sites/info/themes/europa/images/svg/logo/logo--en.svg" />
+# Capacity4Dev
+Connecting the development community.
 
-<p>The Next EUROPA IT Platform is the technical side of the digital
-transformation programme at the Commission. This composer project
-contains the subsite template that are used to build the projects. It
-also containse tools for Quality Assurance.</p>
+[![Build Status](https://drone.fpfis.eu/api/badges/ec-europa/c4dweb-reference/status.svg)](https://drone.fpfis.eu/ec-europa/c4dweb-reference) [![Website https://europa.eu/capacity4dev](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://europa.eu/capacity4dev)
 
-## Installation
-The build system for NextEuropa projects is packaged in a toolkit that can
-be found here: [ec-europa/toolkit](https://github.com/ec-europa/toolkit). This is
-the only required composer package to set up your project. To iniated a new
-project you can execute the following command:
+## 1. Documentation resources
 
-```bash
-composer create-project ec-europa/subsite project-folder-name dev-master --no-interaction
+> Please read all documentation resources before starting work on this project.
+> Make sure that with each code delivery you have updated the documentation
+> accordingly.
+
+### 1.1 Project resources
+
+* https://github.com/ec-europa/toolkit
+* https://github.com/ec-europa/platform-dev
+
+### 1.2 Delivery procedures
+
+* [FPFIS Wiki - Delivery and QA procedure](https://webgate.ec.europa.eu/fpfis/wikis/display/MULTISITE/Delivery+and+QA+procedure)
+* [FPFIS Wiki - Guide into code reviewing for Drupal 7](https://webgate.ec.europa.eu/fpfis/wikis/display/MULTISITE/Guide+into+code+reviewing+for+Drupal+7)
+
+## 2. Installation procedures
+
+### 2.1 Setup project
+
+<details><summary>Execute: <code>git clone git@github.com:ec-europa/c4dweb-reference.git</code></summary></details>
+<details><summary>Execute: <code>cd c4dweb-reference</code></summary></details>
+<details><summary>Execute: <code>composer install</code></summary></details>
+
+### 2.2 Clean installation
+
+<details><summary>Edit file: <code>build.develop.props</code></summary><p>
+Depending on your environment you need to set the following properties.
+Connection settings or secrets should never be committed or pushed to GitHub!
+
+```ini
+project.url.base = http://localhost
+solr.host = 127.0.0.1
+mysql.host = 127.0.0.1
 ```
+</p></details>
 
-This will clone the current repository and install the toolkit. After this is done
-the .git/ files of the template repository will be removed. This sets up a clean
-toolkit that you can `git init` your own project on. For any information on toolkit
-usage, please refer to its documentation: [ec-europa/toolkit](https://github.com/ec-europa/toolkit)
+<details><summary>Execute: <code>./toolkit/phing build-platform build-subsite-dev install-clean</code></summary></details>
+
+### 2.3 Clone installation
+
+<details><summary>Edit file: <code>build.develop.props</code></summary><p>
+Depending on your environment you need to set the following properties.
+Connection settings or secrets should never be committed or pushed to GitHub!
+
+```ini
+db.dl.username = <project-id>
+db.dl.password = <password>
+```
+</p></details>
+<details><summary>Execute: <code>./toolkit/phing build-platform build-subsite-dev install-clone</code></summary></details>
+
+### 2.4 Upgrade platform
+
+<details><summary>Edit file: <code>build.develop.props</code></summary><p>
+Change the build property `platform.package.version` to the next major version.
+</p></details>
+<details><summary>Execute: <code>./toolkit/phing build-platform</code></summary></details>
+<details><summary>Execute: <code>./toolkit/drush -r build updb -y</code></summary></details>
+
+```ini
+platform.package.reference = 2.5
+```
