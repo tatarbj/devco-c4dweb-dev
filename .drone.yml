@@ -1,0 +1,439 @@
+# ==============================================================================
+# Pull request clone ===========================================================
+# ==============================================================================
+# Use plugin to checkout pull requests for caching issue:
+# https://github.com/drone/drone/issues/2390
+# ==============================================================================
+clone:
+  git:
+    image: plugins/git:next
+
+# ==============================================================================
+# Workspace location ===========================================================
+# ==============================================================================
+# The workspace location is at /test/toolkit. Git will place all files from the
+# repository in this folder. Useful to know if you want to access a demo build.
+# ==============================================================================
+workspace:
+  base: /test
+  path: toolkit
+
+# ==============================================================================
+# Main services ================================================================
+# ==============================================================================
+# We always start the web and mysql service before starting the pipeline as they
+# are used throughout the entire pipeline. Other services are only started in
+# the section before they are needed. This workflow saves several minutes off
+# of the entire pipeline duration.
+# ==============================================================================
+#services:
+#  mysql:
+#    image: percona/percona-server:5.6
+#    environment:
+#      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+# ==============================================================================
+# Toolkit pipeline =============================================================
+# ==============================================================================
+# This is the actual Toolkit pipeline section where you can find all steps that
+# will be executed. The pipeline is divided into different sections to allow for
+# parallelisation within sections.
+# ==============================================================================
+pipeline:
+
+  mysql:
+    # Starts a MySQL server with some tweaks to avoid hitting the redo log limit
+    group: setup
+    image: percona/percona-server:5.6
+    detach: true
+    command: --innodb-log-file_size=128M --max-allowed-packet=1G --innodb-buffer-pool-size=512M
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+  # ============================================================================
+  # Setup ======================================================================
+  # ============================================================================
+  # The toolkit step ensures that each build uses the latest release of toolkit.
+  # After toolkit is installed it will copy the default properties for Drone to
+  # build.develop.props in the root of the build. This is important to know when
+  # you need to add, remove or change properties that are used in this pipeline.
+  # ============================================================================
+  toolkit:
+    image: fpfis/httpd-php-dev:5.6
+    group: setup
+    commands:
+      - composer require ec-europa/toolkit:3.0.14
+      - composer require ec-europa/php-docker-infra:~0.1
+      - cp vendor/ec-europa/toolkit/includes/phing/props/drone.props build.develop.props
+      - cp vendor/ec-europa/php-docker-infra/images/Dockerfile.nexteuropa Dockerfile
+    volumes:
+      - /cache:/cache
+
+  # ============================================================================
+  # The tunnel step starts the service in preparation for the other sections.
+  # This step makes your build accessible through the url displayed in the logs.
+  # You can visit the website at the root url. And you can access the bash
+  # through visiting the url and appending /shell.
+  # ============================================================================
+  tunnel:
+    image: fpfis/drone-frpc-plugin:latest
+    group: setup
+    detach: true
+    when:
+      event: [ push, pull_request, tag ]
+      refspec:
+        exclude: [ "demo:master" ]
+    secrets: [ frpc_token, frpc_server ]
+    environment:
+      - PLUGIN_ENDPOINT=web:8080
+      - PLUGIN_GEN_AUTH=yes
+      - PLUGIN_DOMAIN=${DRONE_REPO_NAME}-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER}.ci.fpfis.tech.ec.europa.eu
+      - PLUGIN_URL_OUTPUT_FILE=/test/toolkit/.frpc
+
+  # ============================================================================
+  # Coding Standards ===========================================================
+  # ============================================================================
+  # The coding standards checks are run with a php71 docker image to improve the
+  # performance and save time. The steps in this section are also ran in
+  # parallel.
+  # ============================================================================
+
+  # ============================================================================
+  # The phpcs step has to pass! If it fails the Quality Assurance team will not
+  # start manual code review. Developers need to be added to the GitHub team of
+  # the repository to be able to check the log for what they need to do.
+  # ============================================================================
+  phpcs:
+    image: fpfis/httpd-php-dev:7.1
+    group: coding-standards
+    commands:
+      - ./toolkit/phing test-run-phpcs -logger phing.listener.AnsiColorLogger
+    when:
+      refspec:
+        exclude: [ "demo:master" ]
+
+  # ============================================================================
+  # The php7-comp is run on the result of build-subsite-dist to check if the
+  # project is ready to switch over to PHP7. This step will always be green
+  # regardless of whether it fails or not.
+  # ============================================================================
+  php7-comp:
+    image: fpfis/httpd-php-dev:7.1
+    group: coding-standards
+    commands:
+      - ./toolkit/phing build-subsite-dist -logger phing.listener.AnsiColorLogger
+      - ./toolkit/phing test-phpcs-setup -D'phpcs.files'='$${build.dist.dir}' -D'phpcs.standards'='PHPCompatibility' -D'phpcs.extensions'='php inc module install test profile theme' -logger phing.listener.AnsiColorLogger
+      - ./toolkit/phpcs --runtime-set testVersion 7.0- || echo "PHPCompatibility failed..."
+    when:
+      refspec:
+        exclude: [ "demo:master" ]
+
+  # ============================================================================
+  # Build ======================================================================
+  # ============================================================================
+  # The build section sets up a full project codebase in development mode to
+  # prepare for a cloned installation of the project. It also starts any
+  # services that are required in the Test section.
+  # ============================================================================
+  
+  # ============================================================================
+  # The build step builds the platform codebase by downloading the release
+  # defined in the build properties. After that it builds the subsite codebase
+  # by symlinking the source code, executing make files and running composer
+  # install. As per documentation provided by toolkit.
+  # ============================================================================
+  build:
+    image: fpfis/httpd-php-dev:5.6
+    group: build
+    commands:
+      - ./toolkit/phing build-platform build-subsite-dev -logger phing.listener.AnsiColorLogger
+    volumes:
+      - /cache/${DRONE_REPO_NAME}:/cache
+
+  # ============================================================================
+  # The asda step downloads a sanitized database of production if it has not
+  # been downloaded already. Currently we do not have a way to clear caches on
+  # asda downloads. To remove the cache either contact devops or use the tunnel
+  # to remove the sql download during the build.
+  # ============================================================================
+  asda:
+    image: fpfis/drone-plugin-asda
+    group: build
+    target: /test/toolkit/dump.sql
+    website: ${DRONE_REPO_NAME%%-reference}
+    secrets: [ asda_url ]
+    volumes:
+      - /cache:/cache
+
+  # ============================================================================
+  # The solr step starts the service in preparation for the install section.
+  # ============================================================================
+  solr:
+    image: fpfis/solr5
+    group: build
+    detach: true
+    when:
+      event: [ push, pull_request, tag ]
+
+  # ============================================================================
+  # Install ====================================================================
+  # ============================================================================
+  # The install section provides a working website and starts any services
+  # needed in the test section.
+  # ============================================================================
+  
+  # ============================================================================
+  # The install step creates a clone of the production website.
+  # ============================================================================
+  install:
+    image: fpfis/httpd-php-dev:5.6
+    group: install
+    commands:
+      - ./toolkit/phing install-clone -D'project.url.base'="https://${DRONE_REPO_NAME}-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER}.ci.fpfis.tech.ec.europa.eu" -logger phing.listener.AnsiColorLogger
+    volumes:
+      - /cache/${DRONE_REPO_NAME}:/cache
+
+  # ============================================================================
+  # The selenium step starts the service in preparation for the test section.
+  # ============================================================================
+  selenium:
+    image: selenium/standalone-chrome
+    environment:
+      - JAVA_OPTS=-Dselenium.LOGGER.level=WARNING
+    group: install
+    detach: true
+
+  # ============================================================================
+  # The web step starts the service in preparation for the test section.
+  # ============================================================================
+  web:
+    image: fpfis/httpd-php-dev:5.6
+    group: install
+    detach: true
+    environment:
+      - DOCUMENT_ROOT=/test/toolkit/build
+
+  # ============================================================================
+  # Test =======================================================================
+  # ============================================================================
+  # The test section contains all steps, aside from coding standards which
+  # should give QA a way to assess the stability of the delivery. Testing steps
+  # are run sequentially instead of parallel because we are using a local base
+  # url for behat and the tunnel base url for visual regression.
+  # ============================================================================
+  
+  # ============================================================================
+  # The behat step runs the custom tests from the project on the cloned site
+  # installation. We currently do not have any other way yet for a subsite to
+  # test a clean installation other than overriding the installation target or
+  # placing a custom pipeline into their repository. This step should be
+  # considered a blocking issue if it fails.
+  # ============================================================================
+  behat:
+    image: fpfis/httpd-php-dev:5.6
+    commands:
+      - find ./build/profiles/ -type f -name "*.behat.inc" -delete
+      - ./toolkit/phing test-run-behat -logger phing.listener.AnsiColorLogger
+    volumes:
+      - /cache/${DRONE_REPO_NAME}:/cache
+    when:
+      refspec:
+        exclude: [ "demo:master" ]
+
+  # ============================================================================
+  # The visreg step regenerates the settings.php file to change the base_url of
+  # the project so that it becomes available to the outside world. With this
+  # url backtrac is asked to take screenshots from this build and compare them
+  # agains screenshots from PRODUCTION! This has to be changed ASAP.
+  # ============================================================================
+  # visreg:
+  #   image: fpfis/httpd-php-dev:5.6
+  #   secrets: [ BACKTRAC_TOKEN, BACKTRAC_DYNAMIC_PROJECT_ID ]
+  #   commands:
+  #     - ./toolkit/phing drush-settings-generate test-run-backtrac -D'project.url.base'="$(cat /test/toolkit/.frpc)" -D'backtrac.token'=$${BACKTRAC_TOKEN} -D'project.backtrac.id'=$${BACKTRAC_DYNAMIC_PROJECT_ID} -D'backtrac.env'='development' -logger phing.listener.AnsiColorLogger
+  #   when:
+  #     status: [ success ]
+  #     event: [ push ]
+  #     refspec:
+  #       exclude: [ "demo:master" ]
+
+  # ============================================================================
+  # The blackfire step is not in use yet. As soon as all subsites have upgraded
+  # to toolkit QA should assess what they could check on the site installation.
+  # ============================================================================
+# TODO: not needed yet.
+#  blackfire:
+#    image: blackfire/blackfire
+#    secrets: [  blackfire_server_id, blackfire_server_token ]
+
+# TODO : extend Project or support default .blackfire
+#  blackfire-test:
+#    image: blackfire/blackfire
+#    secrets: [ blackfire_client_id, blackfire_client_token ]
+#    commands:
+#      - source /test/ssk/.frpc.env
+#      - cp .blackfire.yml build/
+#      - blackfire build-trigger --external-id=${DRONE_REPO_OWNER}-${DRONE_REPO_NAME}-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER} --external-parent-id=${DRONE_REPO_OWNER}-${DRONE_REPO_NAME}-${DRONE_PREV_BUILD_NUMBER} --http-username="$${FRP_HTTP_USERNAME}" --http-password="$${FRP_HTTP_PASSWORD}" --env=ci "$${FRP_HTTP_URL}" --title="${DRONE_REPO} build ${DRONE_BUILD_NUMBER}" --external-url="${DRONE_BUILD_LINK}"
+
+  # ============================================================================
+  # Notify =====================================================================
+  # ============================================================================
+  # This section contains simpel notification steps. No need to really go deep
+  # into this. It could be improved in the future to also allow projects to get
+  # notifications of builds done by Drone.
+  # ============================================================================
+  slack:
+    image: plugins/slack
+    channel: ci
+    username: Subsite-QA
+    icon_url: https://www.drupal.org/files/examples_meatwad256.png
+    secrets: [ slack_webhook ]
+    when:
+      status: [ success, failure ]
+      event: [ push, pull_request, tag ]
+      refspec:
+        exclude: [ "demo:master" ]
+    template: >
+      {{#success build.status}}
+        {{repo.name}}@{{build.branch}} <{{build.link}}|passed> all subsite tests.
+      {{else}}
+        {{repo.name}}@{{build.branch}} <{{build.link}}|failed> subsite tests.
+      {{/success}}
+
+  #slack:
+  #  image: plugins/slack
+  #  channel: ci
+  #  username: fpfisbot
+  #  icon_url: https://avatars0.githubusercontent.com/u/23079543?v=3&s=400
+  #  secrets: [ slack_webhook ]
+  #  when:
+  #    status: [ success, failure ]
+  #    event: pull_request
+  #    refspec: "demo:master"
+  #  template: >
+  #    {{repo.name}}@{{build.branch}} <https://${DRONE_REPO_NAME}-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER}-demo.ci.fpfis.tech.ec.europa.eu|demo {{build.number}}> started.
+
+  # ============================================================================
+  # Demo =======================================================================
+  # ============================================================================
+  # This section is only set up on pull requests originating from a branch named
+  # 'demo' to the 'master' branch of the reference repository. This demo
+  # environment will stay open for 4 hours regardles of whether the build fails
+  # or not.
+  # ============================================================================
+  demo:
+    image: fpfis/httpd-php-dev:5.6
+    secrets: [ UID1_DEMO_PASSWORD ]
+    commands:
+      - ./toolkit/phing drush-settings-generate -D'project.url.base'="https://${DRONE_REPO_NAME}-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER}.ci.fpfis.tech.ec.europa.eu"
+      - ./toolkit/drush -r build upwd 1 --password=$${UID1_DEMO_PASSWORD}
+      - ./toolkit/drush -r build uli
+    when:
+      event: pull_request
+      refspec: "demo:master"
+  tunnel:
+    image: fpfis/drone-frpc-plugin:latest
+    secrets: [ frpc_token, frpc_server ]
+    environment:
+      - PLUGIN_ENDPOINT=web:8080
+      - PLUGIN_GEN_AUTH=yes
+      - PLUGIN_DOMAIN=${DRONE_REPO_NAME}-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER}.ci.fpfis.tech.ec.europa.eu
+      - PLUGIN_URL_OUTPUT_FILE=/test/toolkit/.frpc
+    when:
+      status: [ success, failure ]
+      event: pull_request
+      refspec: "demo:master"
+
+  # ============================================================================
+  # Docker =====================================================================
+  # ============================================================================
+  # This section is disabled because of: 
+  # https://webgate.ec.europa.eu/CITnet/jira/browse/FPFISSUPP-2438
+  # It was intended to publish a docker image that could be used to fix the
+  # visual regression testing to use an image instead of production to compare
+  # against. But currently it is not stable.
+  # ============================================================================
+  build-subsite-dist:
+    image: fpfis/httpd-php-dev:5.6
+    commands:
+      - ./toolkit/phing build-subsite-dist
+      - rsync -a dist/ build/
+      - echo ${DRONE_COMMIT_SHA} > build/.commit
+    when:
+      event: [ push, tag ]
+      branch: master
+
+  publish-docker-build:
+    image: plugins/docker
+    repo: registry.fpfis.tech.ec.europa.eu/${DRONE_REPO_NAME}
+    tags: ${DRONE_COMMIT_SHA}
+    registry: registry.fpfis.tech.ec.europa.eu
+    secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
+    when:
+      event: [ push, tag ]
+      branch: master
+
+#   publish-docker-master-build:
+#     image: plugins/docker
+#     tags: latest
+#     when:
+#       event: [ push ]
+#       branch: master
+#     secrets:
+#       - source: docker_username
+#         target: docker_username
+#       - source: docker_password
+#         target: docker_password
+#       - source: docker_repo
+#         target: plugin_repo
+#       - source: docker_registry
+#         target: plugin_registry
+
+  # ============================================================================
+  # Deployment =================================================================
+  # ============================================================================
+  # The deployment section is maintained by Devops. It simply sends the signal
+  # to the other Drone instance when a delivery may be automatically deployed.
+  # For more information check the toolkit.yml file in the deploy folder.
+  # ============================================================================
+  
+  # ============================================================================
+  # Playground deployment step for everis team that is working on the toolkit
+  # upgrade for projects. Will only deploy when a pull request originates from
+  # a branch named 'upgrade/toolkit' to the 'master' branch.
+  # ============================================================================
+  deploy-toolkit:
+    image: fpfis/drone-plugin-github-deploy
+    state: create
+    deploy_environment: acc
+    secrets: [ github_api_token ]
+    automerge: false
+    when:
+      event: pull_request
+      branch: toolkit
+
+  # ============================================================================
+  # Playground deployment step for QA where anything that gets merged into
+  # 'master' branch will automatically get deployed to playground.
+  # ============================================================================
+  deploy-playground:
+    image: fpfis/drone-plugin-github-deploy
+    state: create
+    deploy_environment: acc
+    secrets: [ github_api_token ]
+    automerge: false
+    when:
+      event: push
+      branch: master
+
+  # ============================================================================
+  # Production deployments are currently triggered by tagging the master branch.
+  # ============================================================================
+  deploy-production:
+    image: fpfis/drone-plugin-github-deploy
+    state: create
+    deploy_environment: prod
+    secrets: [ github_api_token ]
+    automerge: false
+    when:
+      event: tag
