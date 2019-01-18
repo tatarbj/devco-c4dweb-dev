@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="projectname" description="Custom targets." default="">
+
+  <target name="build-subsite-dev" description="Build a local development version of the site."
+    depends="
+      subsite-type-dev,
+      project-subsite-backup,
+      subsite-delete-dev,
+      project-subsite-restore,
+      subsite-resources-link,
+      project-subsite-composer-dev,
+      subsite-make,
+      project-modules-devel-make,
+      clean-build,
+      enable-profile-dev">
+    <echo msg="Playbook for build-subsite-dev ended." />
+  </target>
+  
+  <target name="build-subsite-dist" description="Build a site intended as a release package."
+    depends="
+        subsite-type-tmp,
+        subsite-delete,
+        subsite-resources-link,
+        subsite-make,
+        subsite-type-dist,
+        subsite-resources-copy,
+        package-version-set,
+        project-subsite-composer-no-dev,
+        clean-dist">
+    
+      <if>
+        <equals arg1="${build.dist.type}" arg2="full" />
+        <then>
+          <phingcall target="enable-profile-dist" />
+        </then>
+      </if>
+
+    <echo msg="Playbook for build-subsite-dist ended." />
+  </target>
+
+  <!--Put profile code in the proper place. -->
+  <target name="enable-profile-dev" description="Move a custom profile into proper location.">
+    <symlink link="${build.${build-type}.dir.profile}">
+        <fileset dir="${profile.lib.dir}">
+            <include name="*" />
+        </fileset>
+    </symlink>
+    <echo msg="Playbook for enable-profile-dev ended." />
+  </target>
+  
+  <!--Check if build.dist.type is full, if ON build core together.-->
+  <target name="enable-profile-dist" description="Move a custom profile into proper location.">
+     <!-- Move dist into temporary folder. -->
+    <echo msg="Move directory ${build.dist} to ${build.dist}.temporary." />
+    <move file="${build.dist}" todir="${project.tmp.dir}/${build.dist}" includeemptydirs="true" />
+    
+    <!-- Download clean core. -->
+    <phingcall target="build-platform">
+        <property name="build.dev" value="${build.dist}" override="true" />
+    </phingcall>
+    
+    <!-- Move custom code in to proper place. -->
+    <copy todir="${build.dist}/sites/default" >
+      <fileset defaultexcludes="false" expandsymboliclinks="true" dir="${project.tmp.dir}/${build.dist}/dist">
+          <include name="*" />
+      </fileset>
+    </copy>
+    
+    <!-- Clean up the temporary directory -->
+    <delete dir="${project.tmp.dir}/${build.dist}" includeemptydirs="true" verbose="true" failonerror="false" />
+    
+    <!-- Move custom profile in to proper place. -->
+    <copy todir="${build.dist}/profiles">
+      <fileset dir="${profile.lib.dir}" />
+    </copy>
+
+    <echo msg="Playbook for enable-profile-dist ended." />
+    
+  </target>
+
+  <target name="subsite-delete" hidden="true" description="Delete build directory.">
+    <if>
+      <available file="${build.${build-type}.dir}" type="dir" />
+      <then>
+        <chmod file="${build.${build-type}.dir}" mode="0777" />
+        <delete dir="${build.${build-type}.dir}" includeemptydirs="true" />
+        
+        <!-- Delete dist package. -->
+        <chmod file="${build.dist}" mode="0777" />
+        <delete dir="${build.dist}" includeemptydirs="true" />
+      </then>
+    </if>
+  </target>
+  
+  <target name="clean-build" description="Download Nexteuropa theme." hidden="true">
+    <echo msg="Moving Europa libraries to proper location: ${build.subsite.dir.themes} (workaround)." />
+    <exec command = "cp -rf ${build.subsite.dir}/1/themes/europa/* ${build.subsite.dir.themes}/europa/" passthru = "true" />
+    <delete dir="${build.subsite.dir}/1" />
+  </target>
+  
+  <target name="clean-dist" description="Download Nexteuropa theme." hidden="true">
+    <echo msg="Moving Europa libraries to proper location: ${build.dist.dir.themes} (workaround)." />
+    <exec command = "cp -rf ${build.dist.dir}/1/themes/europa/* ${build.dist.dir.themes}/europa/" passthru = "true" />
+    <delete dir="${build.dist.dir}/1" />
+    <delete file="${build.dist.dir}/themes/europa/.gitignore" />
+  </target>
+
+</project>

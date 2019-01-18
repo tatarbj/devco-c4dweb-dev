@@ -1,0 +1,33 @@
+# Subsite configuration.
+# ----------------------
+project.id = c4dweb
+project.name = Connecting the development community
+project.install.modules = 
+project.url.production = https://europa.eu/capacity4dev
+
+# Solr configuration.
+# -------------------
+solr.type = d7_apachesolr
+
+# Admin configuration.
+# --------------------
+project.admin.email = 
+
+# Platform configuration.
+# -----------------------
+profile = drupal
+profile.name = capacity4more
+platform.package.version = 7.60
+
+# Backtrac project IDs.
+# =====================
+backtrac.id.static = 
+backtrac.id.dynamic = 
+
+# Custom Profile Configuration
+# =====================
+profile.lib = ${project.basedir}/lib
+profile.lib.dir = ${lib.dir}/profiles
+build.subsite.dir.profile = ${build.platform.dir}/profiles
+
+build.dist.type = full
