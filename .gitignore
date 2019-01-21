@@ -14,14 +14,15 @@ tests/balancer/*.yml
 tests/behat*.yml
 tests/*/behat*.yml
 tests/phpunit.xml
+/tests/composer.lock
 
 # Ignore build artifacts.
 bin/
-toolkit
-toolkit-*
-build/
-dist/
+/toolkit
+/toolkit-*
+/build/
+/dist/
 .tmp/
 vendor/
-resources/git/hooks/pre-push/phpcs
-composer.lock
+/resources/git/hooks/pre-push/phpcs
+/composer.lock
