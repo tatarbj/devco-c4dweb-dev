@@ -12,7 +12,7 @@
       "drupal/context": "3.9",
       "drupal/context_og": "2.1",
       "drupal/ctools": "1.12",
-      "drupal/currency": "2.6.0",
+      "drupal/currency": "2.6",
       "drupal/date": "2.9",
       "drupal/diff": "3.2",
       "drupal/draggableviews": "2.1",
@@ -112,9 +112,8 @@
         "drupal/composer_autoloader": "^1.0"
     },
     "minimum-stability": "dev",
-    "replace": {
-        "drupal/core": "*",
-        "bartfeenstra/currency" : "1.*"
+    "conflict": {
+        "drupal/core": "8.*"
     },
     "extra": {
         "installer-paths": {
@@ -144,6 +143,46 @@
             ],            
             "drupal/maxlength": [
                 "https://www.drupal.org/files/issues/maxlength-7.x-3.2-typo-fix-character-limit-message.patch"
+            ],
+            "drupal/node_gallery": [
+                "https://www.drupal.org/files/issues/node_gallery-entity-delete-exception-2006772-1.patch"
+            ],
+            "drupal/og": [
+                "https://www.drupal.org/files/issues/access_check_when_getting_groups.patch",
+                "https://www.drupal.org/files/issues/og-fix_return_value_of_og_get_groups_by_user-2569471-3.patch",
+                "https://www.drupal.org/files/issues/og_context_is_not_part_of_menu_access_callbacks-2804591-3.patch",
+                "https://patch-diff.githubusercontent.com/raw/Gizra/og/pull/213.patch"
+            ],
+            "drupal/og_purl": [
+                "https://www.drupal.org/files/issues/og_purl_node_delete-2419277-1.patch"
+            ],
+            "drupal/og_vocab": [
+                "https://www.drupal.org/files/issues/og_vocab-fix_strict_warning.patch"
+                "https://www.drupal.org/files/issues/2399883-og_vocab-menuitem-7.patch"
+            ],
+            "drupal/paragraphs": [
+                "https://www.drupal.org/files/issues/paragraphs-fix_parents_access-2562463-20-7.x.patch"
+            ],
+            "drupal/purl": [
+                "https://www.drupal.org/files/purl-1693984-10.patch",
+                "https://www.drupal.org/files/issues/purl_modifiers_xx_cache-2419261-1.patch",
+                "https://www.drupal.org/files/808956-14-purl-menu-behavior.patch"
+            ],
+            "drupal/search_api": [
+                "https://www.drupal.org/files/issues/search-api-indexed-node-author-2769877-2.patch",
+                "https://www.drupal.org/files/issues/1123454-89--vbo_support.patch"
+            ],
+            "drupal/search_api_solr": [
+                "https://www.drupal.org/files/issues/2711685-support-solr6-7.patch"
+            ],
+            "drupal/search_api_spellcheck": [
+                "https://www.drupal.org/files/issues/search_api_spellcheck-adjust_regexp-2304271-3_0.patch"
+            ],
+            "drupal/views_data_export": [
+                "https://www.drupal.org/files/issues/views_data_export-permanent-files-1875456-63-beta9-do-not-test.patch"
+            ],
+            "drupal/views_load_more": [
+                 "https://www.drupal.org/files/1330574_different_item_count_on_first_page_refactored_1.patch"
             ]
         },
         "preserve-paths": [
