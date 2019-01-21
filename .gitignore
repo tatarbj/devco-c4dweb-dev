@@ -4,9 +4,6 @@
 .idea/
 nbproject/
 
-# Ignore profiles for subsites.
-lib/profiles/
-
 # Ignore local configuration overrides.
 build.properties.local
 phpcs.xml

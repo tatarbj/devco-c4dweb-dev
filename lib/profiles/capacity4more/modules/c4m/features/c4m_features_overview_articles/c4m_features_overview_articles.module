@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Code for the Articles Overview feature.
+ */
+
+include_once 'c4m_features_overview_articles.features.inc';
+
+/**
+ * Implements hook_c4m_search_page_info().
+ */
+function c4m_features_overview_articles_c4m_search_page_info() {
+  return array(
+    'search_api_views_c4m_overview_articles' => array(
+      'name' => t('Voices & Views'),
+      'description' => t('Search Voices & Views.'),
+      'machine_name' => 'search_api_views_c4m_overview_articles',
+      'path' => 'articles',
+      'weight' => 1,
+      'default' => FALSE,
+      'type' => 'global',
+    ),
+  );
+}

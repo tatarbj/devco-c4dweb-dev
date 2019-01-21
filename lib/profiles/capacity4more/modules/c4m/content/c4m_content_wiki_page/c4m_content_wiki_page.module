@@ -1,0 +1,608 @@
+<?php
+
+/**
+ * @file
+ * Code for the Wiki page content type feature.
+ */
+
+define('C4M_CONTENT_WIKI_PAGE_MAX_DEPTH', 6);
+
+include_once 'c4m_content_wiki_page.features.inc';
+
+/**
+ * Implements hook_c4m_og_vocab_info_content().
+ */
+function c4m_content_wiki_page_c4m_og_vocab_info_content() {
+  return array(
+    'wiki_page' => array(
+      'entity_type' => 'node',
+      'bundle' => 'wiki_page',
+      'vocabularies' => array(
+        'c4m_vocab_category',
+        'c4m_vocab_tag',
+      ),
+    ),
+  );
+}
+
+/**
+ * Define fields.
+ *
+ * These fields are not overridden through the interface.
+ * If you want those, look at hook_ds_custom_fields_info().
+ *
+ * @param string $entity_type
+ *   The name of the entity which we are requesting fields for, e.g. 'node'.
+ *
+ * @return array
+ *   A collection of fields which keys are the entity type name and values
+ *   a collection fields.
+ *
+ * @see ds_get_fields()
+ */
+function c4m_content_wiki_page_ds_fields_info($entity_type) {
+  $fields = array();
+
+  $path = drupal_get_path('module', 'c4m_content_wiki_page');
+
+  $fields['node']['c4m_content_wiki_page_navigation'] = array(
+    'title' => t('Wiki page navigation'),
+    'field_type' => DS_FIELD_TYPE_FUNCTION,
+    'ui_limit' => array('wiki_page|*'),
+    'file' => $path . '/includes/c4m_content_wiki_page.theme.inc',
+    'function' => 'theme_c4m_content_wiki_page_navigation',
+    'properties' => array(
+      'formatters' => array(
+        'default' => t('Default'),
+      ),
+    ),
+  );
+
+  // Wiki page sidebar collapse button.
+  $fields['node']['c4m_content_wiki_page_collapse'] = array(
+    'title' => t('Wiki page sidebar collapse'),
+    'field_type' => DS_FIELD_TYPE_FUNCTION,
+    'ui_limit' => array('wiki_page|*'),
+    'file' => $path . '/includes/c4m_content_wiki_page.theme.inc',
+    'function' => 'theme_c4m_content_wiki_page_collapse',
+    'properties' => array(
+      'formatters' => array(
+        'default' => t('Default'),
+      ),
+    ),
+  );
+
+  // Wiki page sidebar Add pages links.
+  $fields['node']['c4m_content_wiki_page_add_links'] = array(
+    'title' => t('Add pages links'),
+    'field_type' => DS_FIELD_TYPE_FUNCTION,
+    'ui_limit' => array('wiki_page|*'),
+    'file' => $path . '/includes/c4m_content_wiki_page.theme.inc',
+    'function' => 'theme_c4m_content_wiki_page_add_links',
+    'properties' => array(
+      'formatters' => array(
+        'default' => t('Default'),
+      ),
+    ),
+  );
+
+  return $fields;
+}
+
+/**
+ * Implements hook_node_insert().
+ *
+ * Automatically create a master wiki page
+ * if a group content type is created.
+ */
+function c4m_content_wiki_page_node_insert($node) {
+  // Only for OG enabled content type.
+  if (!og_is_group_type('node', $node->type)) {
+    return;
+  }
+
+  // Make the group the top level of a new book.
+  $node->book = array(
+    'pick-book'          => 'Change book (update list of parents)',
+    'bid'                => 'new',
+    'has_children'       => 0,
+    'options'            => array(),
+    'module'             => 'book',
+    'original_bid'       => 0,
+    'parent_depth_limit' => C4M_CONTENT_WIKI_PAGE_MAX_DEPTH,
+    'weight'             => '0',
+  );
+}
+
+/**
+ * Implements hook_node_prepare().
+ *
+ * Prevent the creation of more than 6 levels in a book, including level 0.
+ */
+function c4m_content_wiki_page_node_prepare($node) {
+  // Find the depth limit for the parent select.
+  if (isset($node->book)) {
+    $node->book['parent_depth_limit'] = _c4m_content_wiki_page_parent_depth_limit($node->book);
+  }
+}
+
+/**
+ * Finds the depth limit for items in the parent select.
+ *
+ * @param array $book_link
+ *   A fully loaded menu link that is part of the book hierarchy.
+ *
+ * @return int
+ *   The depth limit for items in the parent select.
+ */
+function _c4m_content_wiki_page_parent_depth_limit(array $book_link) {
+  $current_depth = ($book_link['mlid'] && $book_link['has_children'])
+    ? menu_link_children_relative_depth($book_link)
+    : 0;
+  return C4M_CONTENT_WIKI_PAGE_MAX_DEPTH - ($current_depth + 1);
+}
+
+/**
+ * Implements hook_form_BASE_ID_alter().
+ *
+ * The Group node is the book.
+ */
+function c4m_content_wiki_page_form_node_form_alter(&$form, &$form_state, $form_id) {
+  $node = $form['#node'];
+  if (og_is_group('node', $node)) {
+    $form['book']['bid']['#disabled'] = TRUE;
+  }
+
+  // Only power users should be allowed to set this field.
+  if (!empty($form['c4m_edit_by_members'])) {
+    $form['c4m_edit_by_members']['#access'] = c4m_features_og_members_is_power_user();
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Verifies user has access to the form.
+ * Prevent the creation of more than 6 levels in a book, including level 0.
+ */
+function c4m_content_wiki_page_form_wiki_page_node_form_alter(&$form, &$form_state, $form_id) {
+  c4m_content_create_group_content_access();
+
+  $node = $form['#node'];
+  // If the form is being processed during the Ajax callback of our book bid
+  // dropdown, then $form_state will hold the value that was selected.
+  if (isset($form_state['values']['book'])) {
+    $node->book = $form_state['values']['book'];
+  }
+
+  // The book MUST be the group if we are in a group context.
+  $group = c4m_og_current_group();
+  if ($group) {
+    // Make the group automatically the selected book.
+    $form['book']['bid']['#default_value'] = $group->book['bid'];
+    $form['book']['bid']['#access'] = FALSE;
+
+    // Make sure that the parent selector is available when inserting a wiki
+    // page without reference to the parent.
+    if (empty($form['book']['plid']['#type'])
+      || $form['book']['plid']['#type'] !== 'select'
+    ) {
+      if (isset($node->book)) {
+        $book = $node->book;
+        $book['bid'] = $group->book['bid'];
+        $book['plid'] = $group->book['mlid'];
+        $form['book']['plid'] = _book_parent_select($book);
+      }
+    }
+  }
+
+  if (isset($node->book) && $node->book['nid'] !== $node->book['bid']) {
+    $form['book']['plid']['#description'] = t('The parent page in the book. The
+      maximum depth for a book and all child pages is !maxdepth. Some pages in
+      the selected book may not be available as parents if selecting them would
+      exceed this limit.', array('!maxdepth' => C4M_CONTENT_WIKI_PAGE_MAX_DEPTH));
+  }
+
+  // Adding a submit handler to fix the revision value at the first position
+  // so it will run before saving the node.
+  array_unshift($form['actions']['submit']['#submit'], 'c4m_content_wiki_page_fix_revision');
+
+  // Add author information to the edit wiki page form.
+  c4m_og_add_content_author_options_to_power_users($form);
+}
+
+/**
+ * Helper function; Fixing the correct revision value chosen by a power user.
+ *
+ * The 'book' contrib module sets the revision value to TRUE for all users
+ * without 'administer nodes' permission, but since a power users are also
+ * GO/GA which doesn't have that permission then they can not really set the
+ * revision.
+ *
+ * @see book_node_presave()
+ *
+ * This function is setting the chosen value by the power user to a temporary
+ * property, and then a hook_node_presave will set the right value on the
+ * 'revision' property.
+ *
+ * @see c4m_content_wiki_page_node_presave()
+ */
+function c4m_content_wiki_page_fix_revision($form, &$form_state) {
+  if (!c4m_features_og_members_is_power_user()) {
+    return;
+  }
+
+  $form_state['node']->_c4m_override_revision = $form_state['values']['revision'];
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * @see c4m_content_wiki_page_fix_revision()
+ */
+function c4m_content_wiki_page_node_presave($node) {
+  if ($node->type != 'wiki_page' || !isset($node->_c4m_override_revision)) {
+    return;
+  }
+
+  $node->revision = $node->_c4m_override_revision;
+}
+
+/**
+ * Helper function to retrieve the menu mlid from a node id.
+ *
+ * @param int $nid
+ *   Entity node id.
+ *
+ * @return int|null
+ *   Menu link ID if found, else NULL.
+ */
+function c4m_content_wiki_page_get_mlid_by_nid($nid) {
+  $q = db_select('book', 'book')
+    ->fields('book', array('mlid'))
+    ->condition('book.nid', $nid, '=')
+    ->range(0, 1);
+  $res = $q->execute()->fetchAll(PDO::FETCH_ASSOC);
+
+  if (!empty($res[0])) {
+    return $res[0]['mlid'];
+  }
+
+  return NULL;
+}
+
+/**
+ * Helper function to retrieve the menu bid from a node id.
+ *
+ * @param int $nid
+ *   Entity node id.
+ *
+ * @return int|null
+ *   Book ID if found, else NULL.
+ */
+function c4m_content_wiki_page_get_bid_by_nid($nid) {
+  $q = db_select('book', 'book')
+    ->fields('book', array('bid'))
+    ->condition('book.nid', $nid, '=')
+    ->range(0, 1);
+  $res = $q->execute()->fetchAll(PDO::FETCH_ASSOC);
+
+  if (!empty($res[0])) {
+    return $res[0]['bid'];
+  }
+
+  return NULL;
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ *
+ * Change the default preprocessing book module executes on the book navigation.
+ */
+function c4m_content_wiki_page_theme_registry_alter(&$theme_registry) {
+  if (empty($theme_registry['book_navigation'])) {
+    return;
+  }
+  $key = array_search('template_preprocess_book_navigation',
+    $theme_registry['book_navigation']['preprocess functions']);
+
+  // Replace the preprocess function.
+  $theme_registry['book_navigation']['preprocess functions'] = array_replace(
+    $theme_registry['book_navigation']['preprocess functions'],
+    array($key => 'c4m_content_wiki_page_preprocess_book_navigation'));
+}
+
+/**
+ * Processes variables for book-navigation.tpl.php.
+ *
+ * Override of template_preprocess_book_navigation()
+ * Only difference is that we do not show links to level 0 of book.
+ *
+ * @param array $variables
+ *   An associative array containing the following key:
+ *   - book_link.
+ *
+ * @see book-navigation.tpl.php
+ */
+function c4m_content_wiki_page_preprocess_book_navigation(array &$variables) {
+  $book_link = $variables['book_link'];
+
+  // Provide extra variables for themers. Not needed by default.
+  $variables['book_id'] = $book_link['bid'];
+  $variables['book_title'] = check_plain($book_link['link_title']);
+  $variables['book_url'] = 'node/' . $book_link['bid'];
+  $variables['current_depth'] = $book_link['depth'];
+  $variables['tree'] = '';
+
+  if ($book_link['mlid']) {
+    $variables['tree'] = book_children($book_link);
+    $prev = book_prev($book_link);
+    if ($prev &&
+        // Don't show link to level 0.
+        $prev['mlid'] != $book_link['p1']) {
+      $prev_href = url($prev['href']);
+      drupal_add_html_head_link(array('rel' => 'prev', 'href' => $prev_href));
+      $variables['prev_url'] = $prev_href;
+      $variables['prev_title'] = check_plain($prev['title']);
+    }
+
+    if ($book_link['plid'] &&
+        // Don't show link to level 0.
+        $book_link['plid'] != $book_link['p1'] &&
+        $parent = book_link_load($book_link['plid'])) {
+      $parent_href = url($parent['href']);
+      drupal_add_html_head_link(array('rel' => 'up', 'href' => $parent_href));
+      $variables['parent_url'] = $parent_href;
+      $variables['parent_title'] = check_plain($parent['title']);
+    }
+
+    if ($next = book_next($book_link)) {
+      $next_href = url($next['href']);
+      drupal_add_html_head_link(array('rel' => 'next', 'href' => $next_href));
+      $variables['next_url'] = $next_href;
+      $variables['next_title'] = check_plain($next['title']);
+    }
+  }
+
+  $variables['has_links'] = FALSE;
+  // Link variables to filter for values and set state of the flag variable.
+  $links = array(
+    'prev_url',
+    'prev_title',
+    'parent_url',
+    'parent_title',
+    'next_url',
+    'next_title',
+  );
+  foreach ($links as $link) {
+    if (isset($variables[$link])) {
+      // Flag when there is a value.
+      $variables['has_links'] = TRUE;
+    }
+    else {
+      // Set empty to prevent notices.
+      $variables[$link] = '';
+    }
+  }
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ *
+ * Only alter a node_access query ...
+ * - If it has 3 conditions of which we know exactly what those are
+ *   (here meaning it originates from menu_tree_check_access() which is called
+ *   by menu_build_tree().
+ *   See c4m_features_og_wiki_block_view_menu_c4m_og_menu_alter.
+ * - And it is querying for group nodes or wiki pages.
+ *   If that is the case, we remove the check on node status as we allow
+ *   group members to see unpublished pages.
+ *
+ * Non-group members still won't be able to see these as this query is tagged
+ * with node_access and grants will be checked for.
+ *
+ * @see menu_tree_check_access()
+ *   Contains the query being altered here. This is most likely the only query
+ *   with tag node_access where the first condition is for the node.status
+ *   column.
+ */
+function c4m_content_wiki_page_query_node_access_alter(QueryAlterableInterface $query) {
+  $c = &$query->conditions();
+  if (count($c) == 3 &&
+      is_string($c[0]['field']) &&
+      $c[0]['field'] == 'n.status' &&
+      is_string($c[1]['field']) &&
+      $c[1]['field'] == 'n.nid' &&
+      $c[1]['operator'] == 'IN' &&
+      is_array($c[1]['value'])) {
+    $nr_of_nids = count($c[1]['value']);
+
+    // Check if values of the query are group or wiki pages.
+    $result = db_select('node', 'n')
+      ->fields('n', array('nid'))
+      ->condition('n.type', array('group', 'wiki_page', 'IN'))
+      ->condition('n.nid', $c[1]['value'], 'IN')
+      ->range(0, $nr_of_nids)
+      ->execute()
+      ->rowCount();
+
+    if ($result === $nr_of_nids) {
+      unset($c[0]);
+    }
+  }
+}
+
+/**
+ * Implements hook_c4m_content_statistics_info().
+ */
+function c4m_content_wiki_page_c4m_content_statistics_info() {
+  return array(
+    'global' => array(
+      'c4m_wiki_pages' => array(
+        'type'        => 'wiki_page',
+        'entity_type' => 'node',
+        'bundles'     => array('wiki_page'),
+        'singular'    => 'Post',
+        'plural'      => 'Posts',
+        'state'       => 1,
+        'skip_access_check' => TRUE,
+        'aggregate'   => array(
+          'type' => 'posts',
+        ),
+        'weight'      => 1,
+        'attributes'  => array(
+          'class' => array('posts'),
+        ),
+        'link'          => array(
+          'path' => 'search',
+        ),
+      ),
+    ),
+    'group' => array(
+      'c4m_og_wiki_pages' => array(
+        'type'          => 'wiki_page',
+        'entity_type'   => 'node',
+        'bundles'       => array('wiki_page'),
+        'singular'      => 'Page',
+        'plural'        => 'Pages',
+        'state'         => 1,
+        'aggregate'     => array(),
+        'weight'        => 0,
+        'feature_name'  => 'c4m_features_og_wiki',
+        'attributes'    => array(
+          'class' => array('og-wiki-pages'),
+        ),
+        'link' => array(
+          'path' => 'wiki',
+        ),
+      ),
+    ),
+    'project' => array(
+      'c4m_og_wiki_pages' => array(
+        'type'          => 'wiki_page',
+        'entity_type'   => 'node',
+        'bundles'       => array('wiki_page'),
+        'singular'      => 'Page',
+        'plural'        => 'Pages',
+        'state'         => 1,
+        'aggregate'     => array(),
+        'weight'        => 0,
+        'feature_name'  => 'c4m_features_og_wiki',
+        'attributes'    => array(
+          'class' => array('og-wiki-pages'),
+        ),
+        'link' => array(
+          'path' => 'wiki',
+        ),
+      ),
+    ),
+    'topic' => array(
+      'c4m_topic_wiki_pages' => array(
+        'type'          => 'wiki_page',
+        'entity_type'   => 'node',
+        'bundles'       => array('wiki_page'),
+        'singular'      => 'Page',
+        'plural'        => 'Pages',
+        'state'         => 1,
+        'aggregate'     => array(),
+        'weight'        => 3,
+        'attributes'    => array(
+          'class' => array('topic-wiki-pages'),
+        ),
+        'link'          => array(
+          'path' => 'search',
+          'options' => array(
+            'query' => array(
+              'f' => array(
+                'c4m_vocab_topic:@TOPIC_ID',
+                'type:wiki_page',
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_c4m_helper_entity_metrics_info().
+ */
+function c4m_content_wiki_page_c4m_helper_entity_metrics_info() {
+  return array(
+    'c4m_og_wiki_pages' => array(
+      'type'      => 'wiki_page',
+      'context'   => 'group',
+      'callback'  => 'c4m_og_group_node_metric',
+      'arguments' => array(array('wiki_page')),
+      'weight'    => 0,
+    ),
+  );
+}
+
+/**
+ * Implements hook_c4m_content_share_fields_info().
+ */
+function c4m_content_wiki_page_c4m_content_share_fields_info() {
+  return array(
+    'wiki_page' => array(
+      'type',
+    ),
+  );
+}
+
+/**
+ * Implements hook_c4m_helper_entity_label_info().
+ */
+function c4m_content_wiki_page_c4m_helper_entity_label_info() {
+  return array(
+    'wiki_page' => array(
+      'article' => t('a'),
+      'singular' => t('wiki page'),
+      'plural' => t('wiki pages'),
+      'insert action' => t('created a new WIKI page'),
+      'update action' => t('updated the WIKI page'),
+      'icon' => 'fa-wikipedia-w',
+    ),
+  );
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * We want module book to run after c4m_content_wiki_page because we need all
+ * the form altering, so we do not change the weight of c4m_content_wiki_page to
+ * run before book module but this means we have to re-execute the behaviour of
+ * book_node_insert now that we made the node a book, because otherwise book
+ * will not do anything for us at node insert of an OG  group node.
+ */
+function c4m_content_wiki_page_module_implements_alter(&$implementations, $hook) {
+  if ($hook != 'node_insert') {
+    return;
+  }
+  if (!isset($implementations['book'])) {
+    return;
+  }
+  $group = $implementations['book'];
+  unset($implementations['book']);
+  $implementations['book'] = $group;
+}
+
+/**
+ * Determine if a members are allowed to edit the wiki page.
+ *
+ * @param object $node
+ *   The wiki page node object.
+ *
+ * @return bool
+ *   TRUE if the wiki page is editable by members, FALSE otherwise.
+ */
+function c4m_content_wiki_page_is_editable_by_members($node) {
+  if ($node->type != 'wiki_page') {
+    return FALSE;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $node);
+
+  return $wrapper->c4m_edit_by_members->value();
+}

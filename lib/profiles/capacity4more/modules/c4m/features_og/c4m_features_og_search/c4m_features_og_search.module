@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Code for the Group Search feature.
+ */
+
+include_once 'c4m_features_og_search.features.inc';
+
+/**
+ * Implements hook_c4m_search_page_info().
+ */
+function c4m_features_og_search_c4m_search_page_info() {
+  return array(
+    'search_api_views_c4m_search_og' => array(
+      'name' => t('Inside this group'),
+      'description' => t('Search in this group.'),
+      'machine_name' => 'search_api_views_c4m_search_og',
+      'path' => 'searchgroup',
+      'weight' => -1,
+      'default' => TRUE,
+      'access' => 'c4m_og_access',
+      'type' => 'group',
+    ),
+  );
+}
+
+/**
+ * Implements hook_views_pre_render().
+ *
+ * Alter the Views page title to match current group type.
+ */
+function c4m_features_og_search_views_pre_render($view) {
+  // Alter the Views page title to match current group type.
+  if ($view->name == 'c4m_search_og' && $view->current_display == 'page') {
+    $group_context = og_context();
+
+    if (!$group_context) {
+      return;
+    }
+
+    if ($group_type = c4m_og_get_group_type($group_context, TRUE)) {
+      $view->set_title(t('Search in this @group_type', array('@group_type' => $group_type)));
+    }
+  }
+}

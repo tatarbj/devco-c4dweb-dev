@@ -1,0 +1,937 @@
+<?php
+
+/**
+ * @file
+ * Code for the Group Management feature.
+ */
+
+include_once 'c4m_features_og_manage.features.inc';
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function c4m_features_og_manage_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function c4m_features_og_manage_menu() {
+  $items = array();
+
+  $items['manage/features'] = array(
+    'title' => 'Manage features',
+    'description' => 'Enable or disable group features.',
+    'page callback' => 'c4m_features_og_manage_features',
+    'file' => 'includes/c4m_features_og_manage_features.inc',
+    'access callback' => array('c4m_features_og_manage_features_access'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['manage/categories'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('c4m_features_og_manage_categories_overview_form'),
+    'access callback' => array('c4m_features_og_manage_categories_access'),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/types'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('c4m_features_og_manage_categories_types_overview_form'),
+    'access callback' => array('c4m_features_og_manage_categories_access'),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/type/add'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('c4m_features_og_manage_categories_type_add_form'),
+    'access callback' => array('c4m_features_og_manage_categories_access'),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/term/%/edit'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('c4m_features_og_manage_categories_term_form', 3),
+    'access callback' => array('c4m_features_og_manage_categories_terms_access'),
+    'access arguments' => array(3),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/type/%/edit'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('c4m_features_og_manage_categories_type_form', 3),
+    'access callback' => array('c4m_features_og_manage_categories_terms_access'),
+    'access arguments' => array(3),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/term/%/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'c4m_features_og_manage_categories_term_delete_confirm_form',
+      3,
+    ),
+    'access callback' => array('c4m_features_og_manage_categories_terms_access'),
+    'access arguments' => array(3),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/type/%/delete'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'c4m_features_og_manage_categories_type_delete_confirm_form',
+      3,
+    ),
+    'access callback' => array('c4m_features_og_manage_categories_terms_access'),
+    'access arguments' => array(3),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/term/%/term-order'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'c4m_features_og_manage_categories_term_order_confirm_form',
+      3,
+    ),
+    'access callback' => array('c4m_features_og_manage_categories_terms_access'),
+    'access arguments' => array(3),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  $items['manage/categories/type/%/term-order'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'c4m_features_og_manage_categories_type_order_confirm_form',
+      3,
+    ),
+    'access callback' => array('c4m_features_og_manage_categories_access'),
+    'file' => 'c4m_manage_categories.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Access callback for manage group categories.
+ */
+function c4m_features_og_manage_categories_access() {
+  if (!og_context_is_init()) {
+    // OG context was not determined yet, so register the path and return early.
+    // The next time this access callback will be called, it will not enter
+    // here.
+    og_context_access_callback_register_path($_GET['q']);
+    return;
+  }
+
+  // Check if in a group.
+  $gid = c4m_og_current_group_id();
+  if (empty($gid)) {
+    return FALSE;
+  }
+
+  return og_user_access('node', $gid, 'administer group');
+}
+
+/**
+ * Access callback for manage group categories edit/delete/reorder term forms.
+ *
+ * @param int $tid
+ *   The taxonomy term ID.
+ *
+ * @return bool
+ *   User's access to the current group.
+ */
+function c4m_features_og_manage_categories_terms_access($tid) {
+  if (!og_context_is_init()) {
+    // OG context was not determined yet, so register the path and return early.
+    // The next time this access callback will be called, it will not enter
+    // here.
+    og_context_access_callback_register_path($_GET['q']);
+    return FALSE;
+  }
+
+  // Check if in a group.
+  $group = c4m_og_current_group();
+  if (empty($group)) {
+    return FALSE;
+  }
+
+  // Validate if the given term is valid.
+  if (!$term = taxonomy_term_load($tid)) {
+    drupal_set_message(t('Type/Term ID is not valid.'), 'error');
+    return FALSE;
+  }
+
+  $vocabulary = c4m_og_vocab_load_group_vocabulary(
+    $group,
+    'c4m_vocab_category'
+  );
+  // Validate if the given category type belongs to the current group
+  // (The group vocab).
+  if (!_og_vocab_term_exists_in_vocab($term->name, $vocabulary->vid)) {
+    drupal_set_message(
+      t(
+        'The term "%name" does not belong to the current group.',
+        array('%name' => $term->name)
+      ),
+      'error'
+    );
+    return FALSE;
+  }
+
+  return og_user_access('node', $group->nid, 'administer group');
+}
+
+/**
+ * Access callback for manage features menu.
+ */
+function c4m_features_og_manage_features_access() {
+  if (!og_context_is_init()) {
+    // OG context was not determined yet, so register the path and return early.
+    // The next time this access callback will be called, it will not enter
+    // here.
+    og_context_access_callback_register_path($_GET['q']);
+    return;
+  }
+
+  // Check if in a group.
+  $gid = c4m_og_current_group_id();
+  if (empty($gid)) {
+    return FALSE;
+  }
+  // Check if user has permission to manage group settings.
+  return og_ui_user_access_group('manage variables', 'node', $gid);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function c4m_features_og_manage_theme() {
+  return array(
+    'c4m_features_og_manage_categories_overview_form' => array(
+      'render element' => 'form',
+    ),
+    'c4m_features_og_manage_categories_types_overview_form' => array(
+      'render element' => 'form',
+    ),
+    'c4m_features_og_manage_categories_term_form' => array(
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * Transforms given values into themed HTML list.
+ *
+ * @param array $list
+ *   The list to transform.
+ *
+ * @return string
+ *   Rendered HTML list.
+ */
+function c4m_features_og_manage_list_simple(array $list) {
+  if (!empty($list)) {
+    $item_list = array(
+      'title' => NULL,
+      'type' => 'ul',
+      'items' => array(),
+      'attributes' => array(),
+    );
+
+    foreach ($list as $list_item) {
+      if ($list_item) {
+        $item_list['items'][] = $list_item;
+      }
+    }
+
+    if (count($item_list['items']) > 0) {
+      return theme_item_list($item_list);
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Rebuild taxonomy array to fit our taxonomy_build_tree function.
+ *
+ * @param array $terms
+ *   The list of terms to rebuild.
+ *
+ * @return array
+ *   Rebuild list of terms.
+ */
+function c4m_features_og_manage_rebuild_taxonomy(array $terms) {
+  if (!empty($terms)) {
+    $taxonomy_rebuild = array();
+    foreach ($terms as $term) {
+      if (empty($term)) {
+        continue;
+      }
+
+      $taxonomy_rebuild[] = array(
+        'tid' => $term->tid,
+        'taxonomy_term' => $term,
+      );
+    }
+
+    return $taxonomy_rebuild;
+  }
+
+  return FALSE;
+}
+
+/**
+ * Transforms given values into themed HTML list.
+ *
+ * @param array $topics
+ *   The list to transform.
+ *
+ * @return string
+ *   Rendered HTML list.
+ */
+function c4m_features_og_manage_list_related_topics(array $topics) {
+  if ($topics_rebuild = c4m_features_og_manage_rebuild_taxonomy($topics)) {
+    return c4m_content_taxonomy_build_tree($topics_rebuild);
+  }
+
+  return FALSE;
+}
+
+/**
+ * Transforms given values into themed HTML list.
+ *
+ * @param array $geo
+ *   The list to transform.
+ *
+ * @return string
+ *   Rendered HTML list.
+ */
+function c4m_features_og_manage_list_regions_countries(array $geo) {
+  if ($geo_rebuild = c4m_features_og_manage_rebuild_taxonomy($geo)) {
+    return c4m_content_taxonomy_build_tree($geo_rebuild);
+  }
+
+  return FALSE;
+}
+
+/**
+ * Transforms given values into themed HTML list.
+ *
+ * @param array $admins
+ *   The list to transform.
+ *
+ * @return string
+ *   Rendered HTML list.
+ */
+function c4m_features_og_manage_list_group_admins(array $admins) {
+  if (!empty($admins)) {
+    $admin_list = array(
+      'title' => NULL,
+      'type' => 'ul',
+      'items' => array(),
+      'attributes' => array(),
+    );
+
+    foreach ($admins as $admin) {
+      $admin_list['items'][] = c4m_user_name($admin);
+    }
+
+    if (count($admin_list['items']) > 0) {
+      return theme_item_list($admin_list);
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Transforms given values into themed HTML list.
+ *
+ * @param array $related
+ *   The list to transform.
+ *
+ * @return string
+ *   Rendered HTML list.
+ */
+function c4m_features_og_manage_list_related(array $related) {
+  if (!empty($related)) {
+    $related_list = array(
+      'title' => NULL,
+      'type' => 'ul',
+      'items' => array(),
+      'attributes' => array(),
+    );
+
+    $url_options = array(
+      'purl' => array(
+        'disabled' => TRUE,
+      ),
+      'absolute' => TRUE,
+    );
+
+    foreach ($related as $rel) {
+      $access_type = c4m_og_get_access_type($rel);
+      $link_options = array(
+        'attributes' => array(
+          'class' => array(
+            'access-title',
+            $access_type['type'],
+          ),
+        ),
+      );
+      $related_list['items'][] = l(
+        $rel->title,
+        url($rel->purl, $url_options),
+        $link_options
+      );
+    }
+
+    if (count($related_list['items']) > 0) {
+      return theme_item_list($related_list);
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Get details about a groups vocabularies/terms and render them.
+ *
+ * @param object $group
+ *   The group object.
+ * @param array $details
+ *   The array to which to append the info about vocabularies and terms.
+ */
+function c4m_features_og_manage_list_taxonomy($group, array &$details) {
+  $og_vocab = c4m_restful_get_og_vocab_by_name(
+    'node',
+    $group->nid,
+    'Categories'
+  );
+  $details['taxonomy_manage_link'] = l(
+    t('Edit'),
+    url('manage/categories', array('absolute' => TRUE))
+  );
+  $categories = taxonomy_get_tree($og_vocab[0]->vid);
+  $categories_count = 0;
+  $terms_count = 0;
+  foreach ($categories as $category) {
+    if ($category->parents[0]) {
+      $terms_count++;
+    }
+    else {
+      $categories_count++;
+    }
+  }
+  $details['categories_count'] = $categories_count;
+  $details['terms_count'] = $terms_count;
+
+  // Get features settings.
+  // Filter out features not applicable to the current group type.
+  foreach ($available_features = c4m_og_feature_info() as $key => $value) {
+    if (!in_array($group->type, $value['group_types'])) {
+      unset($available_features[$key]);
+    }
+  }
+  $details['features_available'] = $available_features;
+  $details['features_manage_link'] = l(
+    t('Edit'),
+    url('manage/features', array('absolute' => TRUE))
+  );
+  $details['features_enabled'] = variable_get('c4m_og_features_group', array());
+}
+
+/**
+ * Gets the group details.
+ *
+ * For the group management dashboard,
+ * this function gets a specific information about the current group.
+ *
+ * @return array|bool
+ *   An array of the current group's info OR false if there's no group in
+ *   current context.
+ */
+function c4m_features_og_manage_group_details() {
+  $group = c4m_og_current_group();
+  if (!$group) {
+    return FALSE;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $group);
+
+  // Info about the membership request field.
+  $membership_field = field_info_field('field_membership_open_request');
+
+  $purl = array(
+    'provider' => "og_purl|node",
+    'id' => $group->nid,
+  );
+  $options = array('purl' => $purl, 'absolute' => TRUE);
+
+  $details = array(
+    'edit_link' => url(
+      'node/' . $group->nid . '/edit',
+      array('absolute' => TRUE)
+    ),
+    'owner' => c4m_user_name(user_load($group->uid)),
+    'owner_edit' => url(
+      'group/node/' . $group->nid . '/admin/owner',
+      array('absolute' => TRUE)
+    ),
+    'admins' => t('No administrators'),
+    'admins_edit' => url('members', $options),
+    'purl' => url($wrapper->value()->purl, array('absolute' => TRUE)),
+    'title' => '<strong>' . $wrapper->label() . '</strong>',
+    'description' => $wrapper->c4m_body->value(),
+    'membership_open_request' => $membership_field['settings']['allowed_values'][$wrapper->field_membership_open_request->value(
+    )],
+    'group_access' => c4m_og_get_access_type($group),
+    'topics' => t('No Group Topics'),
+    'locations' => t('No Group Regions & Countries'),
+    'related_groups' => t('No Related Groups'),
+    'related_projects' => t('No Related Projects'),
+  );
+
+  // List of related topics.
+  $topics = $wrapper->c4m_vocab_topic->value();
+  if ($list = c4m_features_og_manage_list_related_topics($topics)) {
+    $details['topics'] = $list;
+  }
+
+  // List of regions & countries.
+  $geo = $wrapper->c4m_vocab_geo->value();
+  if ($list = c4m_features_og_manage_list_regions_countries($geo)) {
+    $details['locations'] = $list;
+  }
+
+  // Administrators.
+  $admins = c4m_og_get_group_admins($group->nid);
+  if ($list = c4m_features_og_manage_list_group_admins($admins)) {
+    $details['admins'] = $list;
+  }
+
+  // List of related groups.
+  $related_groups = $wrapper->c4m_related_group->value();
+  if ($list = c4m_features_og_manage_list_related($related_groups)) {
+    $details['related_groups'] = $list;
+  }
+
+  // List of related projects.
+  $related_projects = $group->type == 'group' ? $wrapper->c4m_related_projects->value() : $wrapper->c4m_related_projects_unlimited->value();;
+  if ($list = c4m_features_og_manage_list_related($related_projects)) {
+    $details['related_projects'] = $list;
+  }
+
+  // Get categories and terms count for current group.
+  c4m_features_og_manage_list_taxonomy($group, $details);
+
+  return $details;
+}
+
+/**
+ * Gets the project details.
+ *
+ * For the project management dashboard,
+ * this function gets a specific information about the current project.
+ *
+ * @return array|bool
+ *   An array of the current project's info OR false if there's no project in
+ *   current context.
+ */
+function c4m_features_og_manage_project_details() {
+  $project = c4m_og_current_group();
+  if (!$project) {
+    return FALSE;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $project);
+
+  $purl = array(
+    'provider' => "og_purl|node",
+    'id' => $project->nid,
+  );
+  $options = array('purl' => $purl, 'absolute' => TRUE);
+
+  $details = array(
+    'type' => NULL,
+    'edit_link' => url(
+      'node/' . $project->nid . '/edit',
+      array('absolute' => TRUE)
+    ),
+    'menu_link' => url(
+      'group/node/' . $project->nid . '/admin/menus/menu-og-' . $project->nid,
+      array('absolute' => TRUE)
+    ),
+    'owner' => c4m_user_name(user_load($project->uid)),
+    'owner_edit' => url(
+      'project/node/' . $project->nid . '/admin/owner',
+      array('absolute' => TRUE)
+    ),
+    'admins' => t('No administrators'),
+    'admins_edit' => url('group/node/' . $project->nid . '/admin/people', $options),
+    'purl' => url($wrapper->value()->purl, array('absolute' => TRUE)),
+    'title' => '<strong>' . $wrapper->label() . '</strong>',
+    'tagline' => t('No tag line'),
+    'description' => $wrapper->c4m_body->value(),
+    'duration' => t('No duration'),
+    'url' => t('No external URL'),
+    'total_budget' => t('No total budget'),
+    'stakeholders' => t('No stakeholders'),
+    'source_funding' => t('No source of funding'),
+    'partners' => t('No partners'),
+    'cris_decision_number' => t('No CRIS Decision number'),
+    'cris_contract_number' => t('No CRIS Contract number'),
+    'topics' => t('No Group Topics'),
+    'locations' => t('No Group Regions & Countries'),
+    'related_groups' => t('No Related Groups'),
+    'related_projects' => t('No Related Projects'),
+  );
+
+  // Type: Project or Programme.
+  if ($type = $wrapper->c4m_project_type->value()) {
+    $details['type'] = $type;
+  }
+
+  // List of related topics.
+  $topics = $wrapper->c4m_vocab_topic->value();
+  if ($list = c4m_features_og_manage_list_related_topics($topics)) {
+    $details['topics'] = $list;
+  }
+
+  // List of regions & countries.
+  $geo = $wrapper->c4m_vocab_geo->value();
+  if ($list = c4m_features_og_manage_list_regions_countries($geo)) {
+    $details['locations'] = $list;
+  }
+
+  // Administrators.
+  $admins = c4m_og_get_group_admins($project->nid, FALSE, 'project');
+  if ($list = c4m_features_og_manage_list_group_admins($admins)) {
+    $details['admins'] = $list;
+  }
+
+  // Duration.
+  $duration = $wrapper->c4m_date_end->value();
+  if (!empty($duration)) {
+    $duration = field_view_field('node', $project, 'c4m_date_end');
+    $details['duration'] = $duration[0]['#markup'];
+  }
+
+  // URL.
+  $url = $wrapper->c4m_project_url->value();
+  if (!empty($url)) {
+    $details['url'] = $url['url'] . ' (' . $url['title'] . ')';
+  }
+
+  // Total budget.
+  $total_budget = $wrapper->c4m_money->value();
+  if (!empty($total_budget)) {
+    $total_budget = field_view_field('node', $project, 'c4m_money');
+    $details['total_budget'] = $total_budget[0]['#markup'];
+  }
+
+  // Tag line.
+  $tagline = $wrapper->c4m_project_tag_line->value();
+  if (!empty($tagline)) {
+    $tagline = field_view_field('node', $project, 'c4m_project_tag_line');
+    $details['tagline'] = $tagline[0]['#markup'];
+  }
+
+  // Stage.
+  $stage = $wrapper->c4m_project_stage->value();
+  if (!empty($stage)) {
+    $stage = field_view_field('node', $project, 'c4m_project_stage');
+    $details['stage'] = $stage[0]['#markup'];
+  }
+
+  // Stakeholders.
+  $stakeholders = $wrapper->c4m_project_stakeholders->value();
+  if ($list = c4m_features_og_manage_list_simple($stakeholders)) {
+    $details['stakeholders'] = $list;
+  }
+
+  // Source of funding.
+  $c4m_sources_of_funding = $wrapper->c4m_source_of_funding->value();
+  if ($list = c4m_features_og_manage_list_simple($c4m_sources_of_funding)) {
+    $details['source_funding'] = $list;
+  }
+
+  // CRIS Decision numbers.
+  $cris_decision_numbers = $wrapper->c4m_cris_decision_number->value();
+  if ($list = c4m_features_og_manage_list_simple($cris_decision_numbers)) {
+    $details['cris_decision_number'] = $list;
+  }
+
+  // CRIS Contract numbers.
+  $cris_contract_numbers = $wrapper->c4m_cris_contract_number->value();
+  if ($list = c4m_features_og_manage_list_simple($cris_contract_numbers)) {
+    $details['cris_contract_number'] = $list;
+  }
+
+  // List of related groups.
+  $related_groups = $wrapper->c4m_related_group->value();
+  if ($list = c4m_features_og_manage_list_related($related_groups)) {
+    $details['related_groups'] = $list;
+  }
+
+  // List of related projects.
+  $related_projects = $wrapper->c4m_related_projects_unlimited->value();
+  if ($list = c4m_features_og_manage_list_related($related_projects)) {
+    $details['related_projects'] = $list;
+  }
+
+  // List of partners.
+  $partners = $wrapper->c4m_partners->value();
+  if (!empty($partners)) {
+    $partner_titles = array();
+    foreach ($partners as $partner) {
+      $partner_titles[] = $partner->c4m_heading[LANGUAGE_NONE][0]['safe_value'];
+    }
+    $details['partners'] = c4m_features_og_manage_list_simple($partner_titles);
+  }
+
+  // Get categories and terms count for current group.
+  c4m_features_og_manage_list_taxonomy($project, $details);
+
+  return $details;
+}
+
+/**
+ * Gets the group status and thumbnail.
+ *
+ * For the group management dashboard,
+ * This function gets the current status of the group,
+ * An archive link (If the group is not archived),
+ * The number of the group membership requests which links to the "members"
+ * page (Filtered by pending) and a thumbnail image of the group with an edit
+ * link.
+ *
+ * @return array|bool
+ *   An array of current group's status and thumbnail image OR false if there's
+ *   no group in current context.
+ */
+function c4m_features_og_manage_group_status_and_thumbnail() {
+  $group = c4m_og_current_group();
+  if (!$group) {
+    return FALSE;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $group);
+
+  // Pending memberships count link.
+  $pending_memberships_count_text = t(
+    '@count Group membership requests',
+    array(
+      '@count' => c4m_og_get_members_count($group, OG_STATE_PENDING),
+    )
+  );
+  $link_options = array(
+    'absolute' => TRUE,
+    'query' => array(
+      'f[0]' => 'c4m_og_membership_type:' . $group->nid . '_pending',
+    ),
+  );
+  $info = array(
+    'status' => $wrapper->c4m_og_status->value(),
+    'pending_members_link' => l(
+      $pending_memberships_count_text,
+      url('members', $link_options)
+    ),
+  );
+
+  // Group thumbnail image with edit link.
+  $info['thumbnail_image'] = NULL;
+  $file = $wrapper->c4m_media->value();
+  if (!empty($file)) {
+    $options = array(
+      'html' => TRUE,
+      'attributes' => array(
+        'class' => array(
+          'edit-thumbnail',
+        ),
+      ),
+    );
+    $edit_link['element'] = array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => array('edit-link'),
+      ),
+      '#value' => t('Edit'),
+    );
+    $file['style_name'] = 'medium';
+    $file['path'] = $file['uri'];
+    $file['attributes'] = array('class' => 'group-thumbnail');
+    $info['thumbnail_image'] = l(
+      theme_image_style($file) . theme_html_tag($edit_link),
+      url(
+        'node/' . $group->nid . '/edit',
+        array('absolute' => TRUE, 'fragment' => 'edit-image-list')
+      ),
+      $options
+    );
+  }
+
+  // Archive group link (If group is not archived already).
+  $info['archive_link'] = $info['status'] != 'archived' ? l(
+    t('Archive group'),
+    url('node/' . $group->nid . '/edit', array('absolute' => TRUE))
+  ) : '';
+
+  return $info;
+}
+
+/**
+ * Gets the project thumbnail.
+ *
+ * For the group management dashboard,
+ * This function gets a thumbnail image of the group with an edit
+ * link.
+ *
+ * @return array|bool
+ *   An array of current group's thumbnail image OR false if there's
+ *   no group in current context.
+ */
+function c4m_features_og_manage_project_thumbnail() {
+  $project = c4m_og_current_group();
+  if (!$project) {
+    return FALSE;
+  }
+
+  $wrapper = entity_metadata_wrapper('node', $project);
+
+  // Project thumbnail image with edit link.
+  $info['thumbnail_image'] = NULL;
+  $file = $wrapper->c4m_media->value();
+  if (!empty($file)) {
+    $options = array(
+      'html' => TRUE,
+      'attributes' => array(
+        'class' => array(
+          'edit-thumbnail',
+        ),
+      ),
+    );
+    $edit_link['element'] = array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => array('edit-link'),
+      ),
+      '#value' => t('Edit'),
+    );
+    $file['style_name'] = 'medium';
+    $file['path'] = $file['uri'];
+    $file['attributes'] = array('class' => 'group-thumbnail');
+    $info['thumbnail_image'] = l(
+      theme_image_style($file) . theme_html_tag($edit_link),
+      url(
+        'node/' . $project->nid . '/edit',
+        array('absolute' => TRUE, 'fragment' => 'edit-image-list')
+      ),
+      $options
+    );
+  }
+
+  // Archive project link (If project is not archived already).
+  // TODO: add archive link when ready.
+  /*$info['archive_link'] = $info['status'] != 'archived' ? l(
+  t('Archive project'),
+  url('node/' . $project->nid . '/edit', array('absolute' => TRUE))
+  ) : '';*/
+
+  return $info;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Alter variable manage form layout.
+ */
+function c4m_features_og_manage_form_variable_realm_edit_variables_form_alter(
+  &$form,
+  &$form_state,
+  $form_id
+) {
+  // Don't use vertical tabs.
+  $form['variables']['#type'] = 'div';
+  $form['variables']['c4m_og']['#type'] = 'div';
+  $form['variables']['c4m_og']['c4m_og_features_[group_type]']['c4m_og_features_group']['#title'] = t(
+    'Enable or disable features below.'
+  );
+  $form['variables']['c4m_og']['c4m_og_features_[group_type]']['#type'] = 'div';
+  $form['variables']['c4m_og']['c4m_og_features_[group_type]']['#collapsible'] = FALSE;
+  $form['variables']['c4m_og']['c4m_og_features_[group_type]']['#collapsed'] = FALSE;
+
+  // Remove features not applicable for the active group.
+  foreach ($form['variables']['c4m_og']['c4m_og_features_[group_type]']['c4m_og_features_group']['#options'] as $key => $value) {
+    if (!c4m_og_feature_available($key)) {
+      unset($form['variables']['c4m_og']['c4m_og_features_[group_type]']['c4m_og_features_group']['#options'][$key]);
+    }
+  }
+
+  // Extra submit handler to jump back to the manage dashboard for the group.
+  $form['#submit'][] = 'c4m_features_og_manage_variable_realm_edit_submit';
+
+  // Remove unnecessary buttons.
+  unset($form['variables']['c4m_og']['save_c4m_og']);
+  unset($form['variables']['c4m_og']['reset_c4m_og']);
+}
+
+/**
+ * Make sure our form_alter is called last.
+ */
+function c4m_features_og_manage_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'form_alter') {
+    $group = $implementations['c4m_features_og_manage'];
+    unset($implementations['c4m_features_og_manage']);
+    $implementations['c4m_features_og_manage'] = $group;
+  }
+}
+
+/**
+ * Extra submit handler for variable realm form.
+ */
+function c4m_features_og_manage_variable_realm_edit_submit($form, &$form_state) {
+  // Back to the manage dashboard for the group.
+  $_GET['destination'] = 'manage';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add anchors to the following elements by adding an ID on their elements.
+ */
+function c4m_features_og_manage_form_alter(&$form, &$form_state, $form_id) {
+  if (in_array($form_id, array('group_node_form', 'project_node_form'))) {
+    $form_elements = array(
+      'title' => 'edit-details',
+      'c4m_related_group' => 'edit-related-content',
+      'c4m_banner' => 'edit-image-banner',
+      'c4m_media' => 'edit-image-list',
+    );
+    foreach ($form_elements as $element => $id) {
+      $form[$element]['#prefix'] = "<div id='$id'>";
+      $form[$element]['#suffix'] = '</div>';
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Prevent access to the "description" and "relations" fields for non
+ * platform-administrators.
+ */
+function c4m_features_og_manage_form_taxonomy_form_term_alter(
+  &$form,
+  &$form_state
+) {
+  global $user;
+  if (!in_array('administrator', $user->roles)) {
+    $form['description']['#access'] = FALSE;
+    $form['relations']['#access'] = FALSE;
+  }
+}
