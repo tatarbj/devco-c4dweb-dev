@@ -112,8 +112,9 @@
         "drupal/composer_autoloader": "^1.0"
     },
     "minimum-stability": "dev",
-    "conflict": {
-        "drupal/core": "8.*"
+    "replace": {
+        "drupal/core": "*",
+        "bartfeenstra/currency": "1.*"
     },
     "extra": {
         "installer-paths": {
@@ -157,7 +158,7 @@
                 "https://www.drupal.org/files/issues/og_purl_node_delete-2419277-1.patch"
             ],
             "drupal/og_vocab": [
-                "https://www.drupal.org/files/issues/og_vocab-fix_strict_warning.patch"
+                "https://www.drupal.org/files/issues/og_vocab-fix_strict_warning.patch",
                 "https://www.drupal.org/files/issues/2399883-og_vocab-menuitem-7.patch"
             ],
             "drupal/paragraphs": [
