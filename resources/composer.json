@@ -113,7 +113,7 @@
     },
     "minimum-stability": "dev",
     "replace": {
-        "drupal/core": "*",
+        "drupal/drupal": "*",
         "bartfeenstra/currency": "1.*"
     },
     "extra": {
