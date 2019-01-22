@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e721f9608dcf919e9075fd74606e3321",
+    "content-hash": "d6c7fdef286436ee1e87ed1415e8336f",
     "packages": [
         {
             "name": "bartfeenstra/cldr",
@@ -190,7 +190,7 @@
                 },
                 "drupal": {
                     "version": "7.x-1.24",
-                    "datestamp": "1456190940",
+                    "datestamp": "1548088980",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5580,7 +5580,10 @@
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
-                }
+                },
+                "patches_applied": [
+                    "../../../resources/patches/hal_json_url.temp.patch.txt"
+                ]
             },
             "notification-url": "https://packages.drupal.org/7/downloads",
             "license": [
